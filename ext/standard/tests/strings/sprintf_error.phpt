@@ -2,11 +2,6 @@
 Test sprintf() function : error conditions
 --FILE--
 <?php
-/* Prototype  : string sprintf(string $format [, mixed $arg1 [, mixed ...]])
- * Description: Return a formatted string
- * Source code: ext/standard/formatted_print.c
- */
-
 echo "*** Testing sprintf() : error conditions ***\n";
 
 // Zero arguments
@@ -60,19 +55,33 @@ try {
     echo $e->getMessage(), "\n";
 }
 
+try {
+    var_dump(sprintf('%100$d %d'));
+} catch (\ArgumentCountError $e) {
+    echo $e->getMessage(), "\n";
+}
+
+try {
+    var_dump(sprintf("foo %", 42));
+} catch (ValueError $e) {
+    echo $e->getMessage(), "\n";
+}
+
 echo "Done";
 ?>
---EXPECTF--
+--EXPECT--
 *** Testing sprintf() : error conditions ***
 
 -- Testing sprintf() function with Zero arguments --
-sprintf() expects at least %d parameter, %d given
+sprintf() expects at least 1 argument, 0 given
 
 -- Testing sprintf() function with less than expected no. of arguments --
-2 parameters are required, 1 given
-3 parameters are required, 2 given
-4 parameters are required, 3 given
-3 parameters are required, 1 given
-4 parameters are required, 2 given
-4 parameters are required, 1 given
+2 arguments are required, 1 given
+3 arguments are required, 2 given
+4 arguments are required, 3 given
+3 arguments are required, 1 given
+4 arguments are required, 2 given
+4 arguments are required, 1 given
+101 arguments are required, 1 given
+Missing format specifier at end of string
 Done

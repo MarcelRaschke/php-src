@@ -5,11 +5,6 @@ Hash: hash_hkdf() function: error conditions
 
 error_reporting(E_ALL);
 
-/* Prototype  : string hkdf  ( string $algo  , string $ikm  [, int $length  , string $info = '' , string $salt = ''  ] )
- * Description: HMAC-based Key Derivation Function
- * Source code: ext/hash/hash.c
-*/
-
 function trycatch_dump(...$tests) {
     foreach ($tests as $test) {
         try {
@@ -66,6 +61,6 @@ trycatch_dump(
 [ValueError] hash_hkdf(): Argument #1 ($algo) must be a valid cryptographic hashing algorithm
 
 -- Testing hash_hkdf() function with invalid parameters --
-[ValueError] hash_hkdf(): Argument #2 ($ikm) cannot be empty
+[ValueError] hash_hkdf(): Argument #2 ($key) cannot be empty
 [ValueError] hash_hkdf(): Argument #3 ($length) must be greater than or equal to 0
 [ValueError] hash_hkdf(): Argument #3 ($length) must be less than or equal to 5100

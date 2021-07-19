@@ -1,7 +1,5 @@
 --TEST--
 Bug #61978 (Object recursion not detected for classes that implement JsonSerializable)
---SKIPIF--
-<?php if (!extension_loaded("json")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -19,7 +17,7 @@ class JsonTest2 implements JsonSerializable {
     public function __construct() {
         $this->test = '123';
     }
-    public function jsonSerialize() {
+    public function jsonSerialize(): mixed {
         return array(
             'test' => $this->test,
             'me'   => $this

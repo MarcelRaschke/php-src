@@ -2,11 +2,6 @@
 Test srand() - basic function test for srand()
 --FILE--
 <?php
-/* Prototype  : void srand  ([ int $seed  ] )
- * Description: Seed the random number generator.
- * Source code: ext/standard/rand.c
- */
-
 echo "*** Testing srand() : basic functionality ***\n";
 
 // Should return NULL if given anything that it can convert to long
@@ -18,13 +13,13 @@ var_dump(srand("500"));
 var_dump(srand("500E3"));
 var_dump(srand(true));
 var_dump(srand(false));
-var_dump(srand(NULL));
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing srand() : basic functionality ***
 NULL
 NULL
-NULL
+
+Deprecated: Implicit conversion from float 500.1 to int loses precision in %s on line %d
 NULL
 NULL
 NULL

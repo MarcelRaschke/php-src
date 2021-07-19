@@ -1,7 +1,7 @@
 --TEST--
 Phar: Phar::isValidPharFilename()
---SKIPIF--
-<?php if (!extension_loaded("phar")) die("skip");?>
+--EXTENSIONS--
+phar
 --INI--
 phar.readonly=1
 --FILE--
@@ -72,7 +72,8 @@ var_dump(Phar::isValidPharFilename('dir.phar.php', false));
 --CLEAN--
 <?php
 rmdir(__DIR__ . '/.phar');
---EXPECTF--
+?>
+--EXPECT--
 bool(false)
 bool(false)
 bool(false)

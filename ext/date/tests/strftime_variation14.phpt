@@ -8,12 +8,6 @@ if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
 ?>
 --FILE--
 <?php
-/* Prototype  : string strftime(string format [, int timestamp])
- * Description: Format a local time/date according to locale settings
- * Source code: ext/date/php_date.c
- * Alias to functions:
- */
-
 echo "*** Testing strftime() : usage variation ***\n";
 
 // Initialise function arguments not being substituted (if any)
@@ -42,17 +36,33 @@ foreach($inputs as $key =>$value) {
 *** Testing strftime() : usage variation ***
 
 --Century number--
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(%d) "%d"
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(2) "20"
 
 --Month Date Year--
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(%d) "%d/%d/%d"
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(8) "08/08/08"
 
 --Year with century--
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(%d) "%d"
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(4) "2008"
 
 --Year without century--
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(%d) "%d"
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(2) "08"

@@ -3,7 +3,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -34,7 +34,7 @@ static int numfmt_ctor(INTERNAL_FUNCTION_PARAMETERS)
 	FORMATTER_METHOD_INIT_VARS;
 
 	/* Parse parameters. */
-	if( zend_parse_parameters( ZEND_NUM_ARGS(), "sl|s",
+	if( zend_parse_parameters( ZEND_NUM_ARGS(), "sl|s!",
 		&locale, &locale_len, &style, &pattern, &pattern_len ) == FAILURE )
 	{
 		return FAILURE;
@@ -43,6 +43,10 @@ static int numfmt_ctor(INTERNAL_FUNCTION_PARAMETERS)
 	INTL_CHECK_LOCALE_LEN_OR_FAILURE(locale_len);
 	object = return_value;
 	FORMATTER_METHOD_FETCH_OBJECT_NO_CHECK;
+	if (FORMATTER_OBJECT(nfo)) {
+		zend_throw_error(NULL, "NumberFormatter object is already constructed");
+		return FAILURE;
+	}
 
 	/* Convert pattern (if specified) to UTF-16. */
 	if(pattern && pattern_len) {
@@ -66,11 +70,7 @@ static int numfmt_ctor(INTERNAL_FUNCTION_PARAMETERS)
 }
 /* }}} */
 
-/* {{{ proto NumberFormatter NumberFormatter::create( string $locale, int style[, string $pattern ] )
- * Create number formatter. }}} */
-/* {{{ proto NumberFormatter numfmt_create( string $locale, int style[, string $pattern ] )
- * Create number formatter.
- */
+/* {{{ Create number formatter. */
 PHP_FUNCTION( numfmt_create )
 {
 	object_init_ex( return_value, NumberFormatter_ce_ptr );
@@ -81,9 +81,7 @@ PHP_FUNCTION( numfmt_create )
 }
 /* }}} */
 
-/* {{{ proto NumberFormatter::__construct( string $locale, int style[, string $pattern ] )
- * NumberFormatter object constructor.
- */
+/* {{{ NumberFormatter object constructor. */
 PHP_METHOD( NumberFormatter, __construct )
 {
 	zend_error_handling error_handling;
@@ -99,11 +97,7 @@ PHP_METHOD( NumberFormatter, __construct )
 }
 /* }}} */
 
-/* {{{ proto int NumberFormatter::getErrorCode()
- * Get formatter's last error code. }}} */
-/* {{{ proto int numfmt_get_error_code( NumberFormatter $nf )
- * Get formatter's last error code.
- */
+/* {{{ Get formatter's last error code. */
 PHP_FUNCTION( numfmt_get_error_code )
 {
 	FORMATTER_METHOD_INIT_VARS
@@ -122,11 +116,7 @@ PHP_FUNCTION( numfmt_get_error_code )
 }
 /* }}} */
 
-/* {{{ proto string NumberFormatter::getErrorMessage( )
- * Get text description for formatter's last error code. }}} */
-/* {{{ proto string numfmt_get_error_message( NumberFormatter $nf )
- * Get text description for formatter's last error code.
- */
+/* {{{ Get text description for formatter's last error code. */
 PHP_FUNCTION( numfmt_get_error_message )
 {
 	zend_string *message = NULL;

@@ -1,7 +1,7 @@
 --TEST--
 openssl_error_string() tests
---SKIPIF--
-<?php if (!extension_loaded("openssl")) print "skip"; ?>
+--EXTENSIONS--
+openssl
 --FILE--
 <?php
 // helper function to check openssl errors
@@ -154,7 +154,7 @@ expect_openssl_errors('openssl_csr_get_subjec pem', [$err_pem_no_start_line]);
 <?php
 $output_file =  __DIR__ . "/openssl_error_string_basic_output.tmp";
 if (is_file($output_file)) {
-	unlink($output_file);
+    unlink($output_file);
 }
 ?>
 --EXPECT--

@@ -3,7 +3,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -19,9 +19,7 @@
 #include "php_intl.h"
 #include "spoofchecker_class.h"
 
-/* {{{ proto bool Spoofchecker::isSuspicious( string text[, int &error_code ] )
- * Checks if a given text contains any suspicious characters
- */
+/* {{{ Checks if a given text contains any suspicious characters */
 PHP_METHOD(Spoofchecker, isSuspicious)
 {
 	int ret;
@@ -51,9 +49,7 @@ PHP_METHOD(Spoofchecker, isSuspicious)
 }
 /* }}} */
 
-/* {{{ proto bool Spoofchecker::areConfusable( string str1, string str2[, int &error_code ] )
- * Checks if a given text contains any confusable characters
- */
+/* {{{ Checks if a given text contains any confusable characters */
 PHP_METHOD(Spoofchecker, areConfusable)
 {
 	int ret;
@@ -86,9 +82,7 @@ PHP_METHOD(Spoofchecker, areConfusable)
 }
 /* }}} */
 
-/* {{{ proto void Spoofchecker::setAllowedLocales( string locales )
- * Locales to use when running checks
- */
+/* {{{ Locales to use when running checks */
 PHP_METHOD(Spoofchecker, setAllowedLocales)
 {
 	char *locales;
@@ -110,9 +104,7 @@ PHP_METHOD(Spoofchecker, setAllowedLocales)
 }
 /* }}} */
 
-/* {{{ proto void Spoofchecker::setChecks( int checks )
- * Set the checks to run
- */
+/* {{{ Set the checks to run */
 PHP_METHOD(Spoofchecker, setChecks)
 {
 	zend_long checks;
@@ -133,9 +125,8 @@ PHP_METHOD(Spoofchecker, setChecks)
 /* }}} */
 
 #if U_ICU_VERSION_MAJOR_NUM >= 58
-/* {{{ proto void Spoofchecker::setRestrictionLevel( int $restriction_level )
- * Set the loosest restriction level allowed for strings.
- */
+/* TODO Document this method on PHP.net */
+/* {{{ Set the loosest restriction level allowed for strings. */
 PHP_METHOD(Spoofchecker, setRestrictionLevel)
 {
 	zend_long level;
@@ -153,8 +144,10 @@ PHP_METHOD(Spoofchecker, setRestrictionLevel)
 			USPOOF_MODERATELY_RESTRICTIVE != level &&
 			USPOOF_MINIMALLY_RESTRICTIVE != level &&
 			USPOOF_UNRESTRICTIVE != level) {
-		php_error_docref(NULL, E_WARNING, "Invalid restriction level value");
-		return;
+		zend_argument_value_error(1, "must be one of Spoofchecker::ASCII, Spoofchecker::SINGLE_SCRIPT_RESTRICTIVE, "
+			"Spoofchecker::SINGLE_HIGHLY_RESTRICTIVE, Spoofchecker::SINGLE_MODERATELY_RESTRICTIVE, "
+			"Spoofchecker::SINGLE_MINIMALLY_RESTRICTIVE, or Spoofchecker::UNRESTRICTIVE");
+		RETURN_THROWS();
 	}
 
 	uspoof_setRestrictionLevel(co->uspoof, (URestrictionLevel)level);

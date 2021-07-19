@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -20,9 +20,8 @@
 #endif
 
 #include "php.h"
-#if HAVE_LIBXML && HAVE_DOM
+#if defined(HAVE_LIBXML) && defined(HAVE_DOM)
 #include "php_dom.h"
-#include "documentfragment_arginfo.h"
 
 /*
 * class DOMDocumentFragment extends DOMNode
@@ -31,16 +30,8 @@
 * Since:
 */
 
-const zend_function_entry php_dom_documentfragment_class_functions[] = {
-	PHP_ME(domdocumentfragment, __construct, arginfo_class_DOMDocumentFragment___construct, ZEND_ACC_PUBLIC)
-	PHP_ME(domdocumentfragment, appendXML, arginfo_class_DOMDocumentFragment_appendXML, ZEND_ACC_PUBLIC)
-	PHP_ME(domdocumentfragment, append, arginfo_class_DOMDocumentFragment_append, ZEND_ACC_PUBLIC)
-	PHP_ME(domdocumentfragment, prepend, arginfo_class_DOMDocumentFragment_prepend, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
-/* {{{ proto DOMDocumentFragment::__construct() */
-PHP_METHOD(domdocumentfragment, __construct)
+/* {{{ */
+PHP_METHOD(DOMDocumentFragment, __construct)
 {
 	xmlNodePtr nodep = NULL, oldnode = NULL;
 	dom_object *intern;
@@ -53,7 +44,7 @@ PHP_METHOD(domdocumentfragment, __construct)
 
 	if (!nodep) {
 		php_dom_throw_error(INVALID_STATE_ERR, 1);
-		return;
+		RETURN_THROWS();
 	}
 
 	intern = Z_DOMOBJ_P(ZEND_THIS);
@@ -70,10 +61,10 @@ PHP_METHOD(domdocumentfragment, __construct)
  needed for hack in appendXML due to libxml bug - no need to share this function */
 static void php_dom_xmlSetTreeDoc(xmlNodePtr tree, xmlDocPtr doc) /* {{{ */
 {
-    xmlAttrPtr prop;
+	xmlAttrPtr prop;
 	xmlNodePtr cur;
 
-    if (tree) {
+	if (tree) {
 		if(tree->type == XML_ELEMENT_NODE) {
 			prop = tree->properties;
 			while (prop != NULL) {
@@ -96,12 +87,12 @@ static void php_dom_xmlSetTreeDoc(xmlNodePtr tree, xmlDocPtr doc) /* {{{ */
 			}
 		}
 		tree->doc = doc;
-    }
+	}
 }
 /* }}} */
 
-/* {{{ proto void DOMDocumentFragment::appendXML(string data) */
-PHP_METHOD(domdocumentfragment, appendXML) {
+/* {{{ */
+PHP_METHOD(DOMDocumentFragment, appendXML) {
 	zval *id;
 	xmlNode *nodep;
 	dom_object *intern;
@@ -139,11 +130,10 @@ PHP_METHOD(domdocumentfragment, appendXML) {
 }
 /* }}} */
 
-/* {{{ proto void domdocumentfragment::append(string|DOMNode ...$nodes)
-URL: https://dom.spec.whatwg.org/#dom-parentnode-append
+/* {{{ URL: https://dom.spec.whatwg.org/#dom-parentnode-append
 Since: DOM Living Standard (DOM4)
 */
-PHP_METHOD(domdocumentfragment, append)
+PHP_METHOD(DOMDocumentFragment, append)
 {
 	int argc;
 	zval *args, *id;
@@ -161,11 +151,10 @@ PHP_METHOD(domdocumentfragment, append)
 }
 /* }}} */
 
-/* {{{ proto void domdocumentfragment::prepend(string|DOMNode ...$nodes)
-URL: https://dom.spec.whatwg.org/#dom-parentnode-prepend
+/* {{{ URL: https://dom.spec.whatwg.org/#dom-parentnode-prepend
 Since: DOM Living Standard (DOM4)
 */
-PHP_METHOD(domdocumentfragment, prepend)
+PHP_METHOD(DOMDocumentFragment, prepend)
 {
 	int argc;
 	zval *args, *id;

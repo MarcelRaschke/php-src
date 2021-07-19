@@ -1,7 +1,7 @@
 --TEST--
 FFI 017: Structure constraints & tags cleanup
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ffi
 --INI--
 ffi.enable=1
 --FILE--
@@ -24,7 +24,7 @@ try {
 ?>
 ok
 --EXPECTF--
-FFI\ParserException: 'function' type is not allowed at line 1
+FFI\ParserException: function type is not allowed at line 1
 FFI\ParserException: Struct/union can't contain an instance of itself at line 1
 object(FFI\CData:struct X)#%d (1) {
   ["ptr"]=>

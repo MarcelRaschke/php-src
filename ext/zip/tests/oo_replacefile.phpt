@@ -1,9 +1,7 @@
 --TEST--
 ziparchive::replaceFile() function
---SKIPIF--
-<?php
-if(!extension_loaded('zip')) die('skip');
-?>
+--EXTENSIONS--
+zip
 --FILE--
 <?php
 
@@ -42,7 +40,7 @@ if ($zip->status == ZIPARCHIVE::ER_OK) {
     echo "failed\n";
 }
 if (!$zip->open($file)) {
-	exit('re-open failed');
+    exit('re-open failed');
 }
 var_dump(strlen($zip->getFromName('bar')) == filesize($dirname . 'utils.inc'));
 var_dump(strlen($zip->getFromName('foobar/baz')) == 42);

@@ -1,16 +1,9 @@
 --TEST--
 Test imap_8bit() function : basic functionality
---SKIPIF--
-<?php
-extension_loaded('imap') or die('skip imap extension not available in this build');
-?>
+--EXTENSIONS--
+imap
 --FILE--
 <?php
-/* Prototype  : string imap_8bit  ( string $string  )
- * Description: Convert an 8bit string to a quoted-printable string.
- * Source code: ext/imap/php_imap.c
- */
-
 echo "*** Testing imap_8bit() : basic functionality ***\n";
 
 var_dump(imap_8bit("String with CRLF at end \r\n"));

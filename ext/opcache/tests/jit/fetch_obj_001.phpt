@@ -5,8 +5,8 @@ opcache.enable=1
 opcache.enable_cli=1
 opcache.file_update_protection=0
 opcache.jit_buffer_size=1M
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+opcache
 --FILE--
 <?php
 function foo(&$a) {
@@ -128,10 +128,10 @@ object(stdClass)#%d (2) {
   array(0) {
   }
 }
-Attempt to modify property 'abc' of non-object
+Attempt to modify property "abc" on array
 array(0) {
 }
-Attempt to modify property 'abc' of non-object
+Attempt to modify property "abc" on null
 NULL
-Attempt to modify property 'abc' of non-object
+Attempt to modify property "abc" on string
 string(0) ""

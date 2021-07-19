@@ -1,7 +1,7 @@
 --TEST--
 FFI 015: Incomplete type usage
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ffi
 --INI--
 ffi.enable=1
 --FILE--
@@ -57,9 +57,9 @@ try {
 ?>
 ok
 --EXPECT--
-FFI\ParserException: Incomplete 'struct DIR' at line 1
+FFI\ParserException: Incomplete struct "DIR" at line 1
 ok
-FFI\ParserException: Incomplete 'struct DIR' at line 1
+FFI\ParserException: Incomplete struct "DIR" at line 1
 ok
 ok
 ok

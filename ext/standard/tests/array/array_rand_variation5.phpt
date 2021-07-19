@@ -2,11 +2,6 @@
 Test array_rand() function : usage variation - invalid values for 'req_num' parameter
 --FILE--
 <?php
-/* Prototype  : mixed array_rand(array $input [, int $num_req])
- * Description: Return key/keys for random entry/entries in the array
- * Source code: ext/standard/array.c
-*/
-
 /*
 * Test behaviour of array_rand() function when associative array and
 * various invalid values are passed to the 'input' and 'req_num'
@@ -17,8 +12,7 @@ echo "*** Testing array_rand() : with invalid values for 'req_num' ***\n";
 
 // initialise associative arrays
 $input = array(
-  1 => 'one', 2.2 => 'float key', 0.9 => 'decimal key',
-  2e2 => 'exp key1', 2000e-3 => 'negative exp key',
+  1 => 'one',
   0xabc => 2748, 0x12f => '303', 0xff => "255",
   0123 => 83, 012 => 10, 010 => "8"
 );
@@ -70,13 +64,13 @@ int(%d)
 int(%d)
 
 -- With num_req = 0 --
-Second argument has to be between 1 and the number of elements in the array
+array_rand(): Argument #2 ($num) must be between 1 and the number of elements in argument #1 ($array)
 
 -- With num_req = -1 --
-Second argument has to be between 1 and the number of elements in the array
+array_rand(): Argument #2 ($num) must be between 1 and the number of elements in argument #1 ($array)
 
 -- With num_req = -2 --
-Second argument has to be between 1 and the number of elements in the array
+array_rand(): Argument #2 ($num) must be between 1 and the number of elements in argument #1 ($array)
 
 -- With num_req more than number of members in 'input' array --
-Second argument has to be between 1 and the number of elements in the array
+array_rand(): Argument #2 ($num) must be between 1 and the number of elements in argument #1 ($array)

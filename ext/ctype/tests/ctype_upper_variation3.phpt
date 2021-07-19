@@ -1,14 +1,9 @@
 --TEST--
 Test ctype_upper() function : usage variations - different strings
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ctype
 --FILE--
 <?php
-/* Prototype  : bool ctype_upper(mixed $c)
- * Description: Checks for uppercase character(s)
- * Source code: ext/ctype/ctype.c
- */
-
 /*
  * Pass strings containing different character types to ctype_upper() to test
  * which are considered valid uppercase character only strings

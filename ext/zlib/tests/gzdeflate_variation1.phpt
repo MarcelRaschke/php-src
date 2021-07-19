@@ -1,19 +1,9 @@
 --TEST--
 Test gzdeflate() function : variation
---SKIPIF--
-<?php
-if (!extension_loaded("zlib")) {
-	print "skip - ZLIB extension not loaded";
-}
-?>
+--EXTENSIONS--
+zlib
 --FILE--
 <?php
-/* Prototype  : string gzdeflate(string data [, int level])
- * Description: Gzip-compress a string
- * Source code: ext/zlib/zlib.c
- * Alias to functions:
- */
-
 include(__DIR__ . '/data.inc');
 
 echo "*** Testing gzdeflate() : variation ***\n";

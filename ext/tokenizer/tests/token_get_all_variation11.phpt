@@ -1,14 +1,9 @@
 --TEST--
 Test token_get_all() function : usage variations - with control structure tokens
---SKIPIF--
-<?php if (!extension_loaded("tokenizer")) print "skip"; ?>
+--EXTENSIONS--
+tokenizer
 --FILE--
 <?php
-/* Prototype  : array token_get_all(string $source)
- * Description: splits the given source into an array of PHP language tokens
- * Source code: ext/tokenizer/tokenizer.c
-*/
-
 /*
  * Using different control structure keywords
  *   if..else, elseif - T_IF(301), T_ELSEIF(302), T_ELSE(303)

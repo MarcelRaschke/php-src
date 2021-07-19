@@ -2,12 +2,6 @@
 Test array_column() function: basic functionality
 --FILE--
 <?php
-/* Prototype:
- *  array array_column(array $input, mixed $column_key[, mixed $index_key]);
- * Description:
- *  Returns an array containing all the values from
- *  the specified "column" in a two-dimensional array.
- */
 
 echo "*** Testing array_column() : basic functionality ***\n";
 /* Array representing a possible record set returned from a database */
@@ -232,6 +226,8 @@ array(3) {
   ["ccc"]=>
   string(3) "333"
 }
+
+Deprecated: Implicit conversion from float 0.123 to int loses precision in %s on line %d
 array(3) {
   ["aaa"]=>
   string(3) "111"
@@ -262,6 +258,8 @@ array(3) {
   [2]=>
   string(3) "ccc"
 }
+
+Deprecated: Implicit conversion from float 3.14 to int loses precision in %s on line %d
 array(0) {
 }
 

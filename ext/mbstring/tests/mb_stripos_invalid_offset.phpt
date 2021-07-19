@@ -1,7 +1,7 @@
 --TEST--
 mb_stripos() with invalid offsets
---SKIPIF--
-<?php extension_loaded('mbstring') or die('skip mbstring not available'); ?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
 
@@ -81,13 +81,13 @@ try {
 --EXPECT--
 String len: 42
 == INVALID OFFSET ==
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)

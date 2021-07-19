@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -44,23 +44,11 @@ void tokenizer_token_get_all_register_constants(INIT_FUNC_ARGS) {
 	REGISTER_LONG_CONSTANT("TOKEN_PARSE", TOKEN_PARSE, CONST_CS|CONST_PERSISTENT);
 }
 
-/* {{{ tokenizer_functions[]
- *
- * Every user visible function must have an entry in tokenizer_functions[].
- */
-static const zend_function_entry tokenizer_functions[] = {
-	PHP_FE(token_get_all,	arginfo_token_get_all)
-	PHP_FE(token_name,		arginfo_token_name)
-	PHP_FE_END
-};
-/* }}} */
-
-/* {{{ tokenizer_module_entry
- */
+/* {{{ tokenizer_module_entry */
 zend_module_entry tokenizer_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"tokenizer",
-	tokenizer_functions,
+	ext_functions,
 	PHP_MINIT(tokenizer),
 	NULL,
 	NULL,
@@ -101,10 +89,10 @@ static zend_string *php_token_get_text(zval *obj) {
 	return Z_STR_P(text_zval);
 }
 
-static zend_bool tokenize_common(
+static bool tokenize_common(
 		zval *return_value, zend_string *source, zend_long flags, zend_class_entry *token_class);
 
-PHP_METHOD(PhpToken, getAll)
+PHP_METHOD(PhpToken, tokenize)
 {
 	zend_string *source;
 	zend_long flags = 0;
@@ -203,13 +191,13 @@ PHP_METHOD(PhpToken, is)
 					RETURN_TRUE;
 				}
 			} else {
-				zend_type_error("Kind array must have elements of type int or string");
+				zend_argument_type_error(1, "must only have elements of type string|int, %s given", zend_zval_type_name(entry));
 				RETURN_THROWS();
 			}
 		} ZEND_HASH_FOREACH_END();
 		RETURN_FALSE;
 	} else {
-		zend_type_error("Kind must be of type int, string or array");
+		zend_argument_type_error(1, "must be of type string|int|array, %s given", zend_zval_type_name(kind));
 		RETURN_THROWS();
 	}
 }
@@ -237,7 +225,7 @@ PHP_METHOD(PhpToken, getTokenName)
 	}
 
 	if (Z_LVAL_P(id_zval) < 256) {
-		RETURN_INTERNED_STR(ZSTR_CHAR(Z_LVAL_P(id_zval)));
+		RETURN_CHAR(Z_LVAL_P(id_zval));
 	} else {
 		const char *token_name = get_token_type_name(Z_LVAL_P(id_zval));
 		if (!token_name) {
@@ -260,58 +248,18 @@ PHP_METHOD(PhpToken, __toString)
 	RETURN_STR_COPY(text);
 }
 
-static const zend_function_entry php_token_methods[] = {
-	PHP_ME(PhpToken, getAll, arginfo_class_PhpToken_getAll, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(PhpToken, __construct, arginfo_class_PhpToken___construct, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
-	PHP_ME(PhpToken, is, arginfo_class_PhpToken_is, ZEND_ACC_PUBLIC)
-	PHP_ME(PhpToken, isIgnorable, arginfo_class_PhpToken_isIgnorable, ZEND_ACC_PUBLIC)
-	PHP_ME(PhpToken, getTokenName, arginfo_class_PhpToken_getTokenName, ZEND_ACC_PUBLIC)
-	PHP_ME(PhpToken, __toString, arginfo_class_PhpToken___toString, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
-/* {{{ PHP_MINIT_FUNCTION
- */
+/* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(tokenizer)
 {
-	zend_class_entry ce;
-	zend_string *name;
-	zval default_val;
-	ZVAL_UNDEF(&default_val);
-
 	tokenizer_register_constants(INIT_FUNC_ARGS_PASSTHRU);
 	tokenizer_token_get_all_register_constants(INIT_FUNC_ARGS_PASSTHRU);
-
-	INIT_CLASS_ENTRY(ce, "PhpToken", php_token_methods);
-	php_token_ce = zend_register_internal_class(&ce);
-	zend_class_implements(php_token_ce, 1, zend_ce_stringable);
-
-	name = zend_string_init("id", sizeof("id") - 1, 1);
-	zend_declare_typed_property(php_token_ce, name, &default_val, ZEND_ACC_PUBLIC, NULL,
-		(zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_LONG));
-	zend_string_release(name);
-
-	name = zend_string_init("text", sizeof("text") - 1, 1);
-	zend_declare_typed_property(php_token_ce, name, &default_val, ZEND_ACC_PUBLIC, NULL,
-		(zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_STRING));
-	zend_string_release(name);
-
-	name = zend_string_init("line", sizeof("line") - 1, 1);
-	zend_declare_typed_property(php_token_ce, name, &default_val, ZEND_ACC_PUBLIC, NULL,
-		(zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_LONG));
-	zend_string_release(name);
-
-	name = zend_string_init("pos", sizeof("pos") - 1, 1);
-	zend_declare_typed_property(php_token_ce, name, &default_val, ZEND_ACC_PUBLIC, NULL,
-		(zend_type) ZEND_TYPE_INIT_MASK(MAY_BE_LONG));
-	zend_string_release(name);
+	php_token_ce = register_class_PhpToken(zend_ce_stringable);
 
 	return SUCCESS;
 }
 /* }}} */
 
-/* {{{ PHP_MINFO_FUNCTION
- */
+/* {{{ PHP_MINFO_FUNCTION */
 PHP_MINFO_FUNCTION(tokenizer)
 {
 	php_info_print_table_start();
@@ -369,7 +317,7 @@ static void add_token(
 	zend_hash_next_index_insert_new(Z_ARRVAL_P(return_value), &token);
 }
 
-static zend_bool tokenize(zval *return_value, zend_string *source, zend_class_entry *token_class)
+static bool tokenize(zval *return_value, zend_string *source, zend_class_entry *token_class)
 {
 	zval source_zval;
 	zend_lex_state original_lex_state;
@@ -382,16 +330,15 @@ static zend_bool tokenize(zval *return_value, zend_string *source, zend_class_en
 	ZVAL_STR_COPY(&source_zval, source);
 	zend_save_lexical_state(&original_lex_state);
 
-	if (zend_prepare_string_for_scanning(&source_zval, "") == FAILURE) {
-		zend_restore_lexical_state(&original_lex_state);
-		return 0;
-	}
+	zend_prepare_string_for_scanning(&source_zval, ZSTR_EMPTY_ALLOC());
 
 	LANG_SCNG(yy_state) = yycINITIAL;
 	zend_hash_init(&interned_strings, 0, NULL, NULL, 0);
 	array_init(return_value);
 
 	while ((token_type = lex_scan(&token, NULL))) {
+		ZEND_ASSERT(token_type != T_ERROR);
+
 		add_token(
 			return_value, token_type, zendtext, zendleng, token_line,
 			token_class, &interned_strings);
@@ -408,7 +355,7 @@ static zend_bool tokenize(zval *return_value, zend_string *source, zend_class_en
 				&& --need_tokens == 0
 			) {
 				/* fetch the rest into a T_INLINE_HTML */
-				if (zendcursor != zendlimit) {
+				if (zendcursor < zendlimit) {
 					add_token(
 						return_value, T_INLINE_HTML, zendcursor, zendlimit - zendcursor,
 						token_line, token_class, &interned_strings);
@@ -439,11 +386,33 @@ struct event_context {
 	zend_class_entry *token_class;
 };
 
-void on_event(zend_php_scanner_event event, int token, int line, void *context)
+static zval *extract_token_id_to_replace(zval *token_zv, const char *text, size_t length) {
+	zval *id_zv, *text_zv;
+	ZEND_ASSERT(token_zv);
+	if (Z_TYPE_P(token_zv) == IS_ARRAY) {
+		id_zv = zend_hash_index_find(Z_ARRVAL_P(token_zv), 0);
+		text_zv = zend_hash_index_find(Z_ARRVAL_P(token_zv), 1);
+	} else if (Z_TYPE_P(token_zv) == IS_OBJECT) {
+		id_zv = OBJ_PROP_NUM(Z_OBJ_P(token_zv), 0);
+		text_zv = OBJ_PROP_NUM(Z_OBJ_P(token_zv), 1);
+	} else {
+		return NULL;
+	}
+
+	/* There are multiple candidate tokens to which this feedback may apply,
+	 * check text to make sure this is the right one. */
+	ZEND_ASSERT(Z_TYPE_P(text_zv) == IS_STRING);
+	if (Z_STRLEN_P(text_zv) == length && !memcmp(Z_STRVAL_P(text_zv), text, length)) {
+		return id_zv;
+	}
+	return NULL;
+}
+
+void on_event(
+		zend_php_scanner_event event, int token, int line,
+		const char *text, size_t length, void *context)
 {
 	struct event_context *ctx = context;
-	HashTable *tokens_ht;
-	zval *token_zv;
 
 	switch (event) {
 		case ON_TOKEN:
@@ -454,19 +423,22 @@ void on_event(zend_php_scanner_event event, int token, int line, void *context)
 			} else if (token == T_ECHO && LANG_SCNG(yy_leng) == sizeof("<?=") - 1) {
 				token = T_OPEN_TAG_WITH_ECHO;
 			}
-			add_token(ctx->tokens, token,
-				LANG_SCNG(yy_text), LANG_SCNG(yy_leng), line, ctx->token_class, NULL);
+			add_token(
+				ctx->tokens, token, (unsigned char *) text, length, line, ctx->token_class, NULL);
 			break;
-		case ON_FEEDBACK:
-			tokens_ht = Z_ARRVAL_P(ctx->tokens);
-			token_zv = zend_hash_index_find(tokens_ht, zend_hash_num_elements(tokens_ht) - 1);
-			ZEND_ASSERT(token_zv);
-			if (Z_TYPE_P(token_zv) == IS_ARRAY) {
-				ZVAL_LONG(zend_hash_index_find(Z_ARRVAL_P(token_zv), 0), token);
-			} else {
-				zend_update_property_long(php_token_ce, token_zv, "type", sizeof("type")-1, token);
-			}
+		case ON_FEEDBACK: {
+			HashTable *tokens_ht = Z_ARRVAL_P(ctx->tokens);
+			zval *token_zv, *id_zv = NULL;
+			ZEND_HASH_REVERSE_FOREACH_VAL(tokens_ht, token_zv) {
+				id_zv = extract_token_id_to_replace(token_zv, text, length);
+				if (id_zv) {
+					break;
+				}
+			} ZEND_HASH_FOREACH_END();
+			ZEND_ASSERT(id_zv);
+			ZVAL_LONG(id_zv, token);
 			break;
+		}
 		case ON_STOP:
 			if (LANG_SCNG(yy_cursor) != LANG_SCNG(yy_limit)) {
 				add_token(ctx->tokens, T_INLINE_HTML, LANG_SCNG(yy_cursor),
@@ -477,13 +449,15 @@ void on_event(zend_php_scanner_event event, int token, int line, void *context)
 	}
 }
 
-static zend_bool tokenize_parse(
+static bool tokenize_parse(
 		zval *return_value, zend_string *source, zend_class_entry *token_class)
 {
 	zval source_zval;
+	struct event_context ctx;
+	zval token_stream;
 	zend_lex_state original_lex_state;
-	zend_bool original_in_compilation;
-	zend_bool success;
+	bool original_in_compilation;
+	bool success;
 
 	ZVAL_STR_COPY(&source_zval, source);
 
@@ -491,29 +465,26 @@ static zend_bool tokenize_parse(
 	CG(in_compilation) = 1;
 	zend_save_lexical_state(&original_lex_state);
 
-	if ((success = (zend_prepare_string_for_scanning(&source_zval, "") == SUCCESS))) {
-		struct event_context ctx;
-		zval token_stream;
-		array_init(&token_stream);
+	zend_prepare_string_for_scanning(&source_zval, ZSTR_EMPTY_ALLOC());
+	array_init(&token_stream);
 
-		ctx.tokens = &token_stream;
-		ctx.token_class = token_class;
+	ctx.tokens = &token_stream;
+	ctx.token_class = token_class;
 
-		CG(ast) = NULL;
-		CG(ast_arena) = zend_arena_create(1024 * 32);
-		LANG_SCNG(yy_state) = yycINITIAL;
-		LANG_SCNG(on_event) = on_event;
-		LANG_SCNG(on_event_context) = &ctx;
+	CG(ast) = NULL;
+	CG(ast_arena) = zend_arena_create(1024 * 32);
+	LANG_SCNG(yy_state) = yycINITIAL;
+	LANG_SCNG(on_event) = on_event;
+	LANG_SCNG(on_event_context) = &ctx;
 
-		if((success = (zendparse() == SUCCESS))) {
-			ZVAL_COPY_VALUE(return_value, &token_stream);
-		} else {
-			zval_ptr_dtor(&token_stream);
-		}
-
-		zend_ast_destroy(CG(ast));
-		zend_arena_destroy(CG(ast_arena));
+	if((success = (zendparse() == SUCCESS))) {
+		ZVAL_COPY_VALUE(return_value, &token_stream);
+	} else {
+		zval_ptr_dtor(&token_stream);
 	}
+
+	zend_ast_destroy(CG(ast));
+	zend_arena_destroy(CG(ast_arena));
 
 	/* restore compiler and scanner global states */
 	zend_restore_lexical_state(&original_lex_state);
@@ -524,7 +495,7 @@ static zend_bool tokenize_parse(
 	return success;
 }
 
-static zend_bool tokenize_common(
+static bool tokenize_common(
 		zval *return_value, zend_string *source, zend_long flags, zend_class_entry *token_class)
 {
 	if (flags & TOKEN_PARSE) {
@@ -539,8 +510,7 @@ static zend_bool tokenize_common(
 
 /* }}} */
 
-/* {{{ proto array token_get_all(string source [, int flags])
- */
+/* {{{ */
 PHP_FUNCTION(token_get_all)
 {
 	zend_string *source;
@@ -558,8 +528,7 @@ PHP_FUNCTION(token_get_all)
 }
 /* }}} */
 
-/* {{{ proto string token_name(int type)
- */
+/* {{{ */
 PHP_FUNCTION(token_name)
 {
 	zend_long type;

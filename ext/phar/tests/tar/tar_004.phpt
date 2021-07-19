@@ -1,12 +1,11 @@
 --TEST--
 Phar: tar-based phar, tar phar with stub, mapPhar()
---SKIPIF--
-<?php
-if (!extension_loaded("phar")) die("skip");
-?>
+--EXTENSIONS--
+phar
 --INI--
 phar.readonly=0
 phar.require_hash=0
+opcache.validate_timestamps=1
 --FILE--
 <?php
 include __DIR__ . '/files/tarmaker.php.inc';

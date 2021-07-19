@@ -1,19 +1,7 @@
 --TEST--
 Test str_split() function : usage variations - different integer values for 'split_length' with heredoc 'str'
---SKIPIF--
-<?php
-if (PHP_INT_SIZE != 4) die("skip this test is for 32bit platform only");
-?>
 --FILE--
 <?php
-/* Prototype  : array str_split(string $str [, int $split_length])
- * Description: Convert a string to an array. If split_length is
-                specified, break the string down into chunks each
-                split_length characters long.
- * Source code: ext/standard/string.c
- * Alias to functions: none
-*/
-
 /*
 * passing different integer values for 'split_length' and heredoc string as 'str' argument to str_split()
 */
@@ -49,7 +37,7 @@ for($count = 0; $count < count($values); $count++) {
 --EXPECT--
 *** Testing str_split() : different integer values for 'split_length' with heredoc 'str' ***
 -- Iteration 1 --
-str_split(): Argument #2 ($split_length) must be greater than 0
+str_split(): Argument #2 ($length) must be greater than 0
 -- Iteration 2 --
 array(30) {
   [0]=>
@@ -114,7 +102,7 @@ array(30) {
   string(1) "."
 }
 -- Iteration 3 --
-str_split(): Argument #2 ($split_length) must be greater than 0
+str_split(): Argument #2 ($length) must be greater than 0
 -- Iteration 4 --
 array(1) {
   [0]=>
@@ -133,4 +121,4 @@ array(1) {
   string(30) "string with 123,escape char 	."
 }
 -- Iteration 7 --
-str_split(): Argument #2 ($split_length) must be greater than 0
+str_split(): Argument #2 ($length) must be greater than 0

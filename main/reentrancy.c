@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -29,7 +29,6 @@ enum {
 	CTIME_R,
 	ASCTIME_R,
 	GMTIME_R,
-	READDIR_R,
 	NUMBER_OF_LOCKS
 };
 
@@ -137,11 +136,14 @@ PHPAPI char *php_ctime_r(const time_t *clock, char *buf)
 	local_lock(CTIME_R);
 
 	tmp = ctime(clock);
-	strcpy(buf, tmp);
+	if (tmp) {
+		strcpy(buf, tmp);
+		tmp = buf;
+	}
 
 	local_unlock(CTIME_R);
 
-	return buf;
+	return tmp;
 }
 
 #endif
@@ -155,11 +157,14 @@ PHPAPI char *php_asctime_r(const struct tm *tm, char *buf)
 	local_lock(ASCTIME_R);
 
 	tmp = asctime(tm);
-	strcpy(buf, tmp);
+	if (tmp) {
+		strcpy(buf, tmp);
+		tmp = buf;
+	}
 
 	local_unlock(ASCTIME_R);
 
-	return buf;
+	return tmp;
 }
 
 #endif

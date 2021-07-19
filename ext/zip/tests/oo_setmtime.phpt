@@ -1,9 +1,10 @@
 --TEST--
 setMtime
+--EXTENSIONS--
+zip
 --SKIPIF--
 <?php
 /* $Id$ */
-if(!extension_loaded('zip')) die('skip');
 if (!method_exists('ZipArchive', 'setMtimeName')) die('skip libzip too old');
 ?>
 --INI--
@@ -63,7 +64,7 @@ $zip->close();
 @unlink($file);
 
 ?>
---EXPECTF--
+--EXPECT--
 Set 1
 bool(true)
 bool(true)

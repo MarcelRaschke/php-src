@@ -1,155 +1,157 @@
 <?php
 
+/** @generate-class-entries */
+
+class PharException extends Exception
+{
+}
+
 class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess
 {
     public function __construct(string $filename, int $flags = FilesystemIterator::SKIP_DOTS|FilesystemIterator::UNIX_PATHS, ?string $alias = null) {}
 
     public function __destruct() {}
 
-    /** @return void */
-    public function addEmptyDir(string $dirname) {}
+    /** @tentative-return-type */
+    public function addEmptyDir(string $directory): void {}
 
-    /** @return void */
-    public function addFile(string $filename, string $localname = UNKNOWN) {}
+    /** @tentative-return-type */
+    public function addFile(string $filename, ?string $localName = null): void {}
 
-    /** @return void */
-    public function addFromString(string $localname, string $contents) {}
+    /** @tentative-return-type */
+    public function addFromString(string $localName, string $contents): void {}
 
-    /** @return array|false */
-    public function buildFromDirectory(string $base_dir, string $regex = UNKNOWN) {}
+    /** @tentative-return-type */
+    public function buildFromDirectory(string $directory, string $pattern = ""): array {}
 
-    /** @return array|false */
-    public function buildFromIterator(Traversable $iterator, string $base_directory = UNKNOWN) {}
+    /** @tentative-return-type */
+    public function buildFromIterator(Traversable $iterator, ?string $baseDirectory = null): array {}
 
-    /** @return void */
-    public function compressFiles(int $compression_type) {}
-
-    /** @return bool */
-    public function decompressFiles() {}
-
-    /** @return ?Phar */
-    public function compress(int $compression_type, string $file_ext = UNKNOWN) {}
-
-    /** @return ?Phar */
-    public function decompress(string $file_ext = UNKNOWN) {}
-
-    /** @return ?Phar */
-    public function convertToExecutable(int $format = 9021976, int $compression_type = 9021976, string $file_ext = UNKNOWN) {}
-
-    /** @return ?Phar */
-    public function convertToData(int $format = 9021976, int $compression_type = 9021976, string $file_ext = UNKNOWN) {}
+    /** @tentative-return-type */
+    public function compressFiles(int $compression): void {}
 
     /** @return bool */
-    public function copy(string $newfile, string $oldfile) {}
+    public function decompressFiles() {} // TODO make return type void
 
-    /** @return int */
-    public function count(int $mode = UNKNOWN) {}
+    /** @tentative-return-type */
+    public function compress(int $compression, ?string $extension = null): ?Phar {}
 
-    /** @return bool */
-    public function delete(string $entry) {}
+    /** @tentative-return-type */
+    public function decompress(?string $extension = null): ?Phar {}
 
-    /** @return bool */
-    public function delMetadata() {}
+    /** @tentative-return-type */
+    public function convertToExecutable(?int $format = null, ?int $compression = null, ?string $extension = null): ?Phar {}
 
-    /** @return bool */
-    public function extractTo(string $pathto, $files = null, bool $overwrite = false) {}
-
-    /** @return ?string */
-    public function getAlias() {}
-
-    /** @return string */
-    public function getPath() {}
-
-    /** @return mixed */
-    public function getMetadata() {}
+    /** @tentative-return-type */
+    public function convertToData(?int $format = null, ?int $compression = null, ?string $extension = null): ?PharData {}
 
     /** @return bool */
-    public function getModified() {}
+    public function copy(string $to, string $from) {} // TODO make return type void
 
-    /** @return array|false */
-    public function getSignature() {}
-
-    /** @return string */
-    public function getStub() {}
-
-    /** @return string */
-    public function getVersion() {}
+    /** @tentative-return-type */
+    public function count(int $mode = COUNT_NORMAL): int {}
 
     /** @return bool */
-    public function hasMetadata() {}
+    public function delete(string $localName) {} // TODO make return type void
 
     /** @return bool */
-    public function isBuffering() {}
+    public function delMetadata() {} // TODO make return type void
 
-    /** @return int|false */
-    public function isCompressed() {}
+    /** @tentative-return-type */
+    public function extractTo(string $directory, array|string|null $files = null, bool $overwrite = false): bool {}
 
-    /** @return bool */
-    public function isFileFormat(int $fileformat) {}
+    /** @tentative-return-type */
+    public function getAlias(): ?string {}
 
-    /** @return bool */
-    public function isWritable() {}
+    /** @tentative-return-type */
+    public function getPath(): string {}
+
+    /** @tentative-return-type */
+    public function getMetadata(array $unserializeOptions = []): mixed {}
+
+    /** @tentative-return-type */
+    public function getModified(): bool {}
+
+    /** @tentative-return-type */
+    public function getSignature(): array|false {}
+
+    /** @tentative-return-type */
+    public function getStub(): string {}
+
+    /** @tentative-return-type */
+    public function getVersion(): string {}
+
+    /** @tentative-return-type */
+    public function hasMetadata(): bool {}
+
+    /** @tentative-return-type */
+    public function isBuffering(): bool {}
+
+    /** @tentative-return-type */
+    public function isCompressed(): int|false {}
+
+    /** @tentative-return-type */
+    public function isFileFormat(int $format): bool {}
+
+    /** @tentative-return-type */
+    public function isWritable(): bool {}
 
     /**
-     * @param string $entry
-     * @return bool
+     * @param string $localName
+     * @tentative-return-type
      */
-    public function offsetExists($entry) {}
+    public function offsetExists($localName): bool {}
 
     /**
-     * @param string $entry
-     * @return PharFileInfo
+     * @param string $localName
+     * @tentative-return-type
      */
-    public function offsetGet($entry) {}
+    public function offsetGet($localName): SplFileInfo {}
 
     /**
-     * @param string $entry
+     * @param string $localName
      * @param resource|string $value
-     * @return void
+     * @tentative-return-type
      */
-    public function offsetSet($entry, $value) {}
+    public function offsetSet($localName, $value): void {}
 
     /**
-     * @param string $entry
+     * @param string $localName
+     * @tentative-return-type
+     */
+    public function offsetUnset($localName): void {}
+
+    /** @tentative-return-type */
+    public function setAlias(string $alias): bool {}
+
+    /** @tentative-return-type */
+    public function setDefaultStub(?string $index = null, ?string $webIndex = null): bool {}
+
+    /** @tentative-return-type */
+    public function setMetadata(mixed $metadata): void {}
+
+    /** @tentative-return-type */
+    public function setSignatureAlgorithm(int $algo, ?string $privateKey = null): void {}
+
+    /**
+     * @param resource|string $stub
      * @return bool
      */
-    public function offsetUnset($entry) {}
+    public function setStub($stub, int $length = UNKNOWN) {} // TODO make return type void
 
-    /** @return bool */
-    public function setAlias(string $alias) {}
+    /** @tentative-return-type */
+    public function startBuffering(): void {}
 
-    /** @return bool */
-    public function setDefaultStub(?string $index = null, string $webindex = UNKNOWN) {}
-
-    /**
-     * @param mixed $metadata
-     * @return void
-     */
-    public function setMetadata($metadata) {}
-
-    /** @return void */
-    public function setSignatureAlgorithm(int $algorithm, string $privatekey = UNKNOWN) {}
-
-    /**
-     * @param resource $newstub
-     * @return bool
-     */
-    public function setStub($newstub, $maxlen = -1) {}
-
-    /** @return void */
-    public function startBuffering() {}
-
-    /** @return void */
-    public function stopBuffering() {}
+    /** @tentative-return-type */
+    public function stopBuffering(): void {}
 
     final public static function apiVersion(): string {}
 
-    final public static function canCompress(int $method = 0): bool {}
+    final public static function canCompress(int $compression = 0): bool {}
 
     final public static function canWrite(): bool {}
 
-    final public static function createDefaultStub(
-        string $index = UNKNOWN, string $webindex = UNKNOWN): string {}
+    final public static function createDefaultStub(?string $index = null, ?string $webIndex = null): string {}
 
     final public static function getSupportedCompression(): array {}
 
@@ -157,201 +159,324 @@ class Phar extends RecursiveDirectoryIterator implements Countable, ArrayAccess
 
     final public static function interceptFileFuncs(): void {}
 
-    final public static function isValidPharFilename(
-        string $filename, bool $executable = true): bool {}
+    final public static function isValidPharFilename(string $filename, bool $executable = true): bool {}
 
     final public static function loadPhar(string $filename, ?string $alias = null): bool {}
 
     final public static function mapPhar(?string $alias = null, int $offset = 0): bool {}
 
-    final public static function running(bool $retphar = true): string {}
+    final public static function running(bool $returnPhar = true): string {}
 
-    final public static function mount(string $inphar, string $externalfile): void {}
+    final public static function mount(string $pharPath, string $externalPath): void {}
 
-    final public static function mungServer(array $munglist): void {}
+    final public static function mungServer(array $variables): void {}
 
-    final public static function unlinkArchive(string $archive): bool {}
+    final public static function unlinkArchive(string $filename): bool {} // TODO make return type void
 
     final public static function webPhar(
-        ?string $alias = null, ?string $index = null, string $f404 = UNKNOWN,
-        array $mimetypes = [], $rewrites = UNKNOWN): void {}
+        ?string $alias = null, ?string $index = null, ?string $fileNotFoundScript = null,
+        array $mimeTypes = [], ?callable $rewrite = null): void {}
 }
 
 class PharData extends RecursiveDirectoryIterator implements Countable, ArrayAccess
 {
-    public function __construct(string $filename, int $flags = FilesystemIterator::SKIP_DOTS|FilesystemIterator::UNIX_PATHS, ?string $alias = null, $fileformat = 0) {}
+    /**
+     * @implementation-alias Phar::__construct
+     * @no-verify PharData constructor accepts extra $format argument
+     */
+    public function __construct(string $filename, int $flags = FilesystemIterator::SKIP_DOTS|FilesystemIterator::UNIX_PATHS, ?string $alias = null, int $format = 0) {}
 
+    /** @implementation-alias Phar::__destruct */
     public function __destruct() {}
 
-    /** @return void */
-    public function addEmptyDir(string $dirname) {}
-
-    /** @return void */
-    public function addFile(string $filename, string $localname = UNKNOWN) {}
-
-    /** @return void */
-    public function addFromString(string $localname, string $contents) {}
-
-    /** @return array|false */
-    public function buildFromDirectory(string $base_dir, string $regex = UNKNOWN) {}
-
-    /** @return array|false */
-    public function buildFromIterator(Traversable $iterator, string $base_directory = UNKNOWN) {}
-
-    /** @return void */
-    public function compressFiles(int $compression_type) {}
-
-    /** @return bool */
-    public function decompressFiles() {}
-
-    /** @return ?Phar */
-    public function compress(int $compression_type, string $file_ext = UNKNOWN) {}
-
-    /** @return ?Phar */
-    public function decompress(string $file_ext = UNKNOWN) {}
-
-    /** @return ?Phar */
-    public function convertToExecutable(int $format = 9021976, int $compression_type = 9021976, string $file_ext = UNKNOWN) {}
-
-    /** @return ?Phar */
-    public function convertToData(int $format = 9021976, int $compression_type = 9021976, string $file_ext = UNKNOWN) {}
-
-    /** @return bool */
-    public function copy(string $newfile, string $oldfile) {}
-
-    /** @return int */
-    public function count(int $mode = UNKNOWN) {}
-
-    /** @return bool */
-    public function delete(string $entry) {}
-
-    /** @return bool */
-    public function delMetadata() {}
-
-    /** @return bool */
-    public function extractTo(string $pathto, $files = null, bool $overwrite = false) {}
-
-    /** @return ?string */
-    public function getAlias() {}
-
-    /** @return string */
-    public function getPath() {}
-
-    /** @return mixed */
-    public function getMetadata() {}
-
-    /** @return bool */
-    public function getModified() {}
-
-    /** @return array|false */
-    public function getSignature() {}
-
-    /** @return string */
-    public function getStub() {}
-
-    /** @return string */
-    public function getVersion() {}
-
-    /** @return bool */
-    public function hasMetadata() {}
-
-    /** @return bool */
-    public function isBuffering() {}
-
-    /** @return int|false */
-    public function isCompressed() {}
-
-    /** @return bool */
-    public function isFileFormat(int $fileformat) {}
-
-    /** @return bool */
-    public function isWritable() {}
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::addEmptyDir
+     */
+    public function addEmptyDir(string $directory): void {}
 
     /**
-     * @param string $entry
+     * @tentative-return-type
+     * @implementation-alias Phar::addFile
+     */
+    public function addFile(string $filename, ?string $localName = null): void {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::addFromString
+     */
+    public function addFromString(string $localName, string $contents): void {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::buildFromDirectory
+     */
+    public function buildFromDirectory(string $directory, string $pattern = ""): array {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::buildFromIterator
+     */
+    public function buildFromIterator(Traversable $iterator, ?string $baseDirectory = null): array {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::compressFiles
+     */
+    public function compressFiles(int $compression): void {}
+
+    /**
      * @return bool
+     * @implementation-alias Phar::decompressFiles
      */
-    public function offsetExists($entry) {}
+    public function decompressFiles() {} // TODO make return type void
 
     /**
-     * @param string $entry
-     * @return PharFileInfo
+     * @tentative-return-type
+     * @implementation-alias Phar::compress
+     * @no-verify
      */
-    public function offsetGet($entry) {}
+    public function compress(int $compression, ?string $extension = null): ?PharData {}
 
     /**
-     * @param string $entry
+     * @tentative-return-type
+     * @implementation-alias Phar::decompress
+     * @no-verify
+     */
+    public function decompress(?string $extension = null): ?PharData {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::convertToExecutable
+     */
+    public function convertToExecutable(?int $format = null, ?int $compression = null, ?string $extension = null): ?Phar {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::convertToData
+     */
+    public function convertToData(?int $format = null, ?int $compression = null, ?string $extension = null): ?PharData {}
+
+    /**
+     * @return bool
+     * @implementation-alias Phar::copy
+     */
+    public function copy(string $to, string $from) {} // TODO make return type void
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::count
+     */
+    public function count(int $mode = COUNT_NORMAL): int {}
+
+    /**
+     * @return bool
+     * @implementation-alias Phar::delete
+     */
+    public function delete(string $localName) {} // TODO make return type void
+
+    /**
+     * @return bool
+     * @implementation-alias Phar::delMetadata
+     */
+    public function delMetadata() {} // TODO make return type void
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::extractTo
+     */
+    public function extractTo(string $directory, array|string|null $files = null, bool $overwrite = false): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getAlias
+     */
+    public function getAlias(): ?string {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getPath
+     */
+    public function getPath(): string {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getMetadata
+     */
+    public function getMetadata(array $unserializeOptions = []): mixed {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getModified
+     */
+    public function getModified(): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getSignature
+     */
+    public function getSignature(): array|false {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getStub
+     */
+    public function getStub(): string {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::getVersion
+     */
+    public function getVersion(): string {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::hasMetadata
+     */
+    public function hasMetadata(): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::isBuffering
+     */
+    public function isBuffering(): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::isCompressed
+     */
+    public function isCompressed(): int|false {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::isFileFormat
+     */
+    public function isFileFormat(int $format): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::isWritable
+     */
+    public function isWritable(): bool {}
+
+    /**
+     * @param string $localName
+     * @tentative-return-type
+     * @implementation-alias Phar::offsetExists
+     */
+    public function offsetExists($localName): bool {}
+
+    /**
+     * @param string $localName
+     * @tentative-return-type
+     * @implementation-alias Phar::offsetGet
+     */
+    public function offsetGet($localName): SplFileInfo {}
+
+    /**
+     * @param string $localName
      * @param resource|string $value
-     * @return void
+     * @tentative-return-type
+     * @implementation-alias Phar::offsetSet
      */
-    public function offsetSet($entry, $value) {}
+    public function offsetSet($localName, $value): void {}
 
     /**
-     * @param string $entry
+     * @param string $localName
+     * @tentative-return-type
+     * @implementation-alias Phar::offsetUnset
+     */
+    public function offsetUnset($localName): void {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::setAlias
+     */
+    public function setAlias(string $alias): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::setDefaultStub
+     */
+    public function setDefaultStub(?string $index = null, ?string $webIndex = null): bool {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::setMetadata
+     */
+    public function setMetadata(mixed $metadata): void {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Phar::setSignatureAlgorithm
+     */
+    public function setSignatureAlgorithm(int $algo, ?string $privateKey = null): void {}
+
+    /**
+     * @param resource|string $stub
      * @return bool
+     * @implementation-alias Phar::setStub
      */
-    public function offsetUnset($entry) {}
-
-    /** @return bool */
-    public function setAlias(string $alias) {}
-
-    /** @return bool */
-    public function setDefaultStub(?string $index = null, string $webindex = UNKNOWN) {}
+    public function setStub($stub, int $length = UNKNOWN) {} // TODO make return type void
 
     /**
-     * @param mixed $metadata
-     * @return void
+     * @tentative-return-type
+     * @implementation-alias Phar::startBuffering
      */
-    public function setMetadata($metadata) {}
-
-    /** @return void */
-    public function setSignatureAlgorithm(int $algorithm, string $privatekey = UNKNOWN) {}
+    public function startBuffering(): void {}
 
     /**
-     * @param resource $newstub
-     * @return bool
+     * @tentative-return-type
+     * @implementation-alias Phar::stopBuffering
      */
-    public function setStub($newstub, $maxlen = -1) {}
+    public function stopBuffering(): void {}
 
-    /** @return void */
-    public function startBuffering() {}
-
-    /** @return void */
-    public function stopBuffering() {}
-
+    /** @implementation-alias Phar::apiVersion */
     final public static function apiVersion(): string {}
 
-    final public static function canCompress(int $method = 0): bool {}
+    /** @implementation-alias Phar::canCompress */
+    final public static function canCompress(int $compression = 0): bool {}
 
+    /** @implementation-alias Phar::canWrite */
     final public static function canWrite(): bool {}
 
-    final public static function createDefaultStub(
-        string $index = UNKNOWN, string $webindex = UNKNOWN): string {}
+    /** @implementation-alias Phar::createDefaultStub */
+    final public static function createDefaultStub(?string $index = null, ?string $webIndex = null): string {}
 
+    /** @implementation-alias Phar::getSupportedCompression */
     final public static function getSupportedCompression(): array {}
 
+    /** @implementation-alias Phar::getSupportedSignatures */
     final public static function getSupportedSignatures(): array {}
 
+    /** @implementation-alias Phar::interceptFileFuncs */
     final public static function interceptFileFuncs(): void {}
 
-    final public static function isValidPharFilename(
-        string $filename, bool $executable = true): bool {}
+    /** @implementation-alias Phar::isValidPharFilename */
+    final public static function isValidPharFilename(string $filename, bool $executable = true): bool {}
 
+    /** @implementation-alias Phar::loadPhar */
     final public static function loadPhar(string $filename, ?string $alias = null): bool {}
 
+    /** @implementation-alias Phar::mapPhar */
     final public static function mapPhar(?string $alias = null, int $offset = 0): bool {}
 
-    final public static function running(bool $retphar = true): string {}
+    /** @implementation-alias Phar::running */
+    final public static function running(bool $returnPhar = true): string {}
 
-    final public static function mount(string $inphar, string $externalfile): void {}
+    /** @implementation-alias Phar::mount */
+    final public static function mount(string $pharPath, string $externalPath): void {}
 
-    final public static function mungServer(array $munglist): void {}
+    /** @implementation-alias Phar::mungServer */
+    final public static function mungServer(array $variables): void {}
 
-    final public static function unlinkArchive(string $archive): bool {}
+    /** @implementation-alias Phar::unlinkArchive */
+    final public static function unlinkArchive(string $filename): bool {} // TODO make return type void
 
+    /** @implementation-alias Phar::webPhar */
     final public static function webPhar(
-        ?string $alias = null, ?string $index = null, string $f404 = UNKNOWN,
-        array $mimetypes = [], $rewrites = UNKNOWN): void {}
+        ?string $alias = null, ?string $index = null, ?string $fileNotFoundScript = null,
+        array $mimeTypes = [], ?callable $rewrite = null): void {}
 }
 
 class PharFileInfo extends SplFileInfo
@@ -360,41 +485,42 @@ class PharFileInfo extends SplFileInfo
 
     public function __destruct() {}
 
-    /** @return void */
-    public function chmod(int $perms) {}
+    /** @tentative-return-type */
+    public function chmod(int $perms): void {}
 
     /** @return bool */
-    public function compress(int $compression_type) {}
+    public function compress(int $compression) {} // TODO make return type void
 
     /** @return bool */
-    public function decompress() {}
+    public function decompress() {} // TODO make return type void
 
     /** @return bool */
-    public function delMetadata() {}
+    public function delMetadata() {} // TODO make return type void
 
-    /** @return int */
-    public function getCompressedSize() {}
+    /** @tentative-return-type */
+    public function getCompressedSize(): int {}
 
-    /** @return int */
-    public function getCRC32() {}
+    /** @tentative-return-type */
+    public function getCRC32(): int {}
 
-    /** @return string */
-    public function getContent() {}
+    /** @tentative-return-type */
+    public function getContent(): string {}
 
-    public function getMetadata() {}
+    /** @tentative-return-type */
+    public function getMetadata(array $unserializeOptions = []): mixed {}
 
-    /** @return int */
-    public function getPharFlags() {}
+    /** @tentative-return-type */
+    public function getPharFlags(): int {}
 
-    /** @return bool */
-    public function hasMetadata() {}
+    /** @tentative-return-type */
+    public function hasMetadata(): bool {}
 
-    /** @return bool */
-    public function isCompressed($compression_type = 9021976) {}
+    /** @tentative-return-type */
+    public function isCompressed(?int $compression = null): bool {}
 
-    /** @return bool */
-    public function isCRCChecked() {}
+    /** @tentative-return-type */
+    public function isCRCChecked(): bool {}
 
-    /** @return void */
-    public function setMetadata($metadata) {}
+    /** @tentative-return-type */
+    public function setMetadata(mixed $metadata): void {}
 }

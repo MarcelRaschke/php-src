@@ -1,7 +1,11 @@
 --TEST--
 Bug #61367: open_basedir bypass in libxml RSHUTDOWN: read test
+--EXTENSIONS--
+dom
 --SKIPIF--
-<?php if(!extension_loaded('dom')) echo 'skip dom extension not available'; ?>
+<?php
+if (LIBXML_VERSION >= 20912) die('skip For libxml2 < 2.9.12 only');
+?>
 --INI--
 open_basedir=.
 --FILE--
@@ -58,6 +62,6 @@ Warning: DOMDocument::loadXML(): Failure to process entity file in Entity, line:
 
 Warning: DOMDocument::loadXML(): Entity 'file' not defined in Entity, line: 4 in %s on line %d
 
-Warning: Trying to get property 'firstChild' of non-object in %s on line %d
+Warning: Attempt to read property "firstChild" on null in %s on line %d
 
-Warning: Trying to get property 'nodeValue' of non-object in %s on line %d
+Warning: Attempt to read property "nodeValue" on null in %s on line %d

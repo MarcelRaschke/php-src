@@ -1,64 +1,158 @@
 <?php
 
+/** @generate-class-entries */
+
 interface Throwable extends Stringable
 {
-    /** @return string */
-    function getMessage();
+    public function getMessage(): string;
 
     /** @return int */
-    function getCode();
+    public function getCode();
 
-    /** @return string */
-    function getFile();
+    public function getFile(): string;
 
-    /** @return int */
-    function getLine();
+    public function getLine(): int;
 
-    /** @return array */
-    function getTrace();
+    public function getTrace(): array;
 
-    /** @return ?Throwable */
-    function getPrevious();
+    public function getPrevious(): ?Throwable;
 
-    /** @return string */
-    function getTraceAsString();
+    public function getTraceAsString(): string;
 }
 
 class Exception implements Throwable
 {
-    final private function __clone() {}
+    /** @var string Intentionally left untyped for BC reasons */
+    protected $message = "";
+    private string $string = "";
+    /** @var int Intentionally left untyped for BC reasons */
+    protected $code = 0;
+    protected string $file = "";
+    protected int $line = 0;
+    private array $trace = [];
+    private ?Throwable $previous = null;
 
-    function __construct(string $message = UNKNOWN, int $code = 0, ?Throwable $previous = null) {}
+    private function __clone(): void {}
 
-    function __wakeup() {}
+    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null) {}
 
-    /** @return string */
-    final function getMessage() {}
+    /** @tentative-return-type */
+    public function __wakeup(): void {}
+
+    final public function getMessage(): string {}
 
     /** @return int */
-    final function getCode() {}
+    final public function getCode() {}
 
-    /** @return string */
-    final function getFile() {}
+    final public function getFile(): string {}
 
-    /** @return int */
-    final function getLine() {}
+    final public function getLine(): int {}
 
-    /** @return array */
-    final function getTrace() {}
+    final public function getTrace(): array {}
 
-    /** @return ?Throwable */
-    final function getPrevious() {}
+    final public function getPrevious(): ?Throwable {}
 
-    /** @return string */
-    final function getTraceAsString() {}
+    final public function getTraceAsString(): string {}
 
-    function __toString(): string {}
+    public function __toString(): string {}
 }
 
 class ErrorException extends Exception
 {
-    function __construct(string $message = UNKNOWN, int $code = 0, int $severity = E_ERROR, string $filename = UNKNOWN, int $lineno = 0, ?Throwable $previous = null) {}
+    protected int $severity = E_ERROR;
 
-    final function getSeverity() {}
+    public function __construct(
+        string $message = "",
+        int $code = 0,
+        int $severity = E_ERROR,
+        ?string $filename = null,
+        ?int $line = null,
+        ?Throwable $previous = null
+    ) {}
+
+    final public function getSeverity(): int {}
+}
+
+class Error implements Throwable
+{
+    /** @var string Intentionally left untyped for BC reasons */
+    protected $message = "";
+    private string $string = "";
+    /** @var int Intentionally left untyped for BC reasons */
+    protected $code = 0;
+    protected string $file = "";
+    protected int $line;
+    private array $trace = [];
+    private ?Throwable $previous = null;
+
+    /** @implementation-alias Exception::__clone */
+    private function __clone(): void {}
+
+    /** @implementation-alias Exception::__construct */
+    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null) {}
+
+    /**
+     * @tentative-return-type
+     * @implementation-alias Exception::__wakeup
+     */
+    public function __wakeup(): void {}
+
+    /** @implementation-alias Exception::getMessage */
+    final public function getMessage(): string {}
+
+    /**
+     * @return int
+     * @implementation-alias Exception::getCode
+     */
+    final public function getCode() {}
+
+    /** @implementation-alias Exception::getFile */
+    final public function getFile(): string {}
+
+    /** @implementation-alias Exception::getLine */
+    final public function getLine(): int {}
+
+    /** @implementation-alias Exception::getTrace */
+    final public function getTrace(): array {}
+
+    /** @implementation-alias Exception::getPrevious */
+    final public function getPrevious(): ?Throwable {}
+
+    /** @implementation-alias Exception::getTraceAsString */
+    final public function getTraceAsString(): string {}
+
+    /** @implementation-alias Exception::__toString */
+    public function __toString(): string {}
+}
+
+class CompileError extends Error
+{
+}
+
+class ParseError extends CompileError
+{
+}
+
+class TypeError extends Error
+{
+}
+
+class ArgumentCountError extends TypeError
+{
+}
+
+class ValueError extends Error
+{
+}
+
+class ArithmeticError extends Error
+{
+}
+
+class DivisionByZeroError extends ArithmeticError
+{
+}
+
+class UnhandledMatchError extends Error
+{
 }

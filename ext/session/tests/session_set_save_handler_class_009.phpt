@@ -3,18 +3,14 @@ Test session_set_save_handler() : implicit shutdown
 --INI--
 session.save_handler=files
 session.name=PHPSESSID
+--EXTENSIONS--
+session
 --SKIPIF--
 <?php include('skipif.inc'); ?>
 --FILE--
 <?php
 
 ob_start();
-
-/*
- * Prototype : bool session_set_save_handler(SessionHandler $handler [, bool $register_shutdown_function = true])
- * Description : Sets user-level session storage functions
- * Source code : ext/session/session.c
- */
 
 echo "*** Testing session_set_save_handler() : implicit shutdown ***\n";
 
@@ -32,11 +28,11 @@ class MySession extends SessionHandler {
         echo "(#$this->num) finish called $id\n";
         $this->shutdown();
     }
-    public function write($id, $data) {
+    public function write($id, $data): bool {
         echo "(#$this->num) writing $id = $data\n";
         return parent::write($id, $data);
     }
-    public function close() {
+    public function close(): bool {
         $id = session_id();
         echo "(#$this->num) closing $id\n";
         return parent::close();

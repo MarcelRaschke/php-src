@@ -58,8 +58,9 @@ TODO:
 #include <string.h>
 #include <math.h>
 
-#include <gd.h>
+#include "gd.h"
 #include "gdhelpers.h"
+#include "gd_intern.h"
 
 #ifdef _MSC_VER
 # pragma optimize("t", on)
@@ -84,8 +85,6 @@ TODO:
 #define MAX(a,b) ((a)<(b)?(b):(a))
 #endif
 #define MAX3(a,b,c) ((a)<(b)?(MAX(b,c)):(MAX(a,c)))
-
-#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
 /* only used here, let do a generic fixed point integers later if required by other
    part of GD */
@@ -936,7 +935,7 @@ static inline void _gdScaleRow(gdImagePtr pSrc,  unsigned int src_width, gdImage
     int *p_dst_row = dst->tpixels[row];
 	unsigned int x;
 
-    for (x = 0; x < dst_width - 1; x++) {
+    for (x = 0; x < dst_width; x++) {
 		register unsigned char r = 0, g = 0, b = 0, a = 0;
         const int left = contrib->ContribRow[x].Left;
         const int right = contrib->ContribRow[x].Right;
@@ -972,7 +971,7 @@ static inline int _gdScaleHoriz(gdImagePtr pSrc, unsigned int src_width, unsigne
 		return 0;
 	}
 	/* Scale each row */
-	for (u = 0; u < dst_height - 1; u++) {
+	for (u = 0; u < dst_height; u++) {
 		_gdScaleRow(pSrc, src_width, pDst, dst_width, u, contrib);
 	}
 	_gdContributionsFree (contrib);
@@ -982,7 +981,7 @@ static inline int _gdScaleHoriz(gdImagePtr pSrc, unsigned int src_width, unsigne
 static inline void _gdScaleCol (gdImagePtr pSrc,  unsigned int src_width, gdImagePtr pRes, unsigned int dst_width, unsigned int dst_height, unsigned int uCol, LineContribType *contrib)
 {
 	unsigned int y;
-	for (y = 0; y < dst_height - 1; y++) {
+	for (y = 0; y < dst_height; y++) {
 		register unsigned char r = 0, g = 0, b = 0, a = 0;
 		const int iLeft = contrib->ContribRow[y].Left;
 		const int iRight = contrib->ContribRow[y].Right;
@@ -1019,7 +1018,7 @@ static inline int _gdScaleVert (const gdImagePtr pSrc, const unsigned int src_wi
 		return 0;
 	}
 	/* scale each column */
-	for (u = 0; u < dst_width - 1; u++) {
+	for (u = 0; u < dst_width; u++) {
 		_gdScaleCol(pSrc, src_width, pDst, dst_width, dst_height, u, contrib);
 	}
 	_gdContributionsFree(contrib);
@@ -2465,6 +2464,7 @@ int gdImageSetInterpolationMethod(gdImagePtr im, gdInterpolationMethod id)
 	switch (id) {
 		case GD_DEFAULT:
 			id = GD_BILINEAR_FIXED;
+			ZEND_FALLTHROUGH;
 		/* Optimized versions */
 		case GD_BILINEAR_FIXED:
 		case GD_BICUBIC_FIXED:

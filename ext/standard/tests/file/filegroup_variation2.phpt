@@ -6,10 +6,6 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 obscure_filename
 --FILE--
 <?php
-/* Prototype: int filegroup ( string $filename )
- * Description: Returns the group ID of the file, or FALSE in case of an error.
- */
-
 /* Testing filegroup() with invalid arguments -int, float, bool, NULL, resource */
 
 $file_path = __DIR__;
@@ -22,7 +18,6 @@ $filenames = array(
   "",
   TRUE,
   FALSE,
-  NULL,
 
   /* scalars */
   1234,
@@ -51,7 +46,6 @@ bool(false)
 bool(false)
 
 Warning: filegroup(): stat failed for 1 in %s on line %d
-bool(false)
 bool(false)
 bool(false)
 

@@ -1,9 +1,7 @@
 --TEST--
 Calling XMLReader::open() and ::XML() statically
---SKIPIF--
-<?php
-if (!extension_loaded("xmlreader")) die('skip xmlreader extension not available');
-?>
+--EXTENSIONS--
+xmlreader
 --FILE--
 <?php
 $filename = __DIR__ . '/static.xml';
@@ -22,7 +20,7 @@ while ($reader->read()) {
     echo $reader->name, "\n";
 }
 ?>
---EXPECTF--
+--EXPECT--
 books
 books
 books

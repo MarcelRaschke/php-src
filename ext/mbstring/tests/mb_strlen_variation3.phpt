@@ -1,17 +1,9 @@
 --TEST--
 Test mb_strlen() function : usage variations - Pass list of encodings
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_strlen') or die("skip mb_strlen() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
-/* Prototype  : int mb_strlen(string $str [, string $encoding])
- * Description: Get character numbers of a string
- * Source code: ext/mbstring/mbstring.c
- */
-
 /*
  * Pass all encodings listed on php.net to mb_strlen to test that function recognises them
  * NB: The strings passed are *NOT* necessarily encoded in the encoding passed to the function.

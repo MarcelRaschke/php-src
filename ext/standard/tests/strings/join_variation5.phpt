@@ -2,12 +2,6 @@
 Test join() function : usage variations - sub array as argument
 --FILE--
 <?php
-/* Prototype  : string join( string $glue, array $pieces )
- * Description: Join array elements with a string
- * Source code: ext/standard/string.c
- * Alias of function: implode()
-*/
-
 /*
  * test join() by passing pieces as array containing sub array(s)
 */
@@ -41,7 +35,7 @@ Warning: Array to string conversion in %s on line %d
 
 Warning: Array to string conversion in %s on line %d
 string(27) "ArrayTESTArrayTESTPHPTEST50"
-join(): Argument #1 ($glue) must be of type string, array given
+join(): Argument #1 ($separator) must be of type string, array given
 
 Warning: Array to string conversion in %s on line %d
 

@@ -2,8 +2,6 @@
 json_encode() Serialization tests
 --INI--
 serialize_precision=-1
---SKIPIF--
-<?php if (!extension_loaded("json")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -19,7 +17,7 @@ class NonSerializingTest
 
 class SerializingTest extends NonSerializingTest implements JsonSerializable
 {
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->data;
     }
@@ -27,7 +25,7 @@ class SerializingTest extends NonSerializingTest implements JsonSerializable
 
 class ValueSerializingTest extends SerializingTest
 {
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return array_values(is_array($this->data) ? $this->data : get_object_vars($this->data));
     }
@@ -35,7 +33,7 @@ class ValueSerializingTest extends SerializingTest
 
 class SelfSerializingTest extends SerializingTest
 {
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this;
     }
@@ -61,6 +59,7 @@ foreach(array('NonSerializingTest','SerializingTest','ValueSerializingTest','Sel
     echo json_encode(new $class($ndata)), "\n";
     echo json_encode(new $class($odata)), "\n";
 }
+?>
 --EXPECT--
 ==NonSerializingTest==
 {"data":{"str":"foo","int":1,"float":2.3,"bool":false,"nil":null,"arr":[1,2,3],"obj":{}}}

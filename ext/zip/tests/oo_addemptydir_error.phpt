@@ -1,9 +1,10 @@
 --TEST--
 ziparchive::addEmptyDir error
+--EXTENSIONS--
+zip
 --SKIPIF--
 <?php
 /* $Id$ */
-if(!extension_loaded('zip')) die('skip');
 ?>
 --FILE--
 <?php
@@ -25,6 +26,6 @@ if ($zip->status == ZipArchive::ER_RDONLY) {
 }
 $zip->close();
 ?>
---EXPECTF--
+--EXPECT--
 bool(false)
 OK

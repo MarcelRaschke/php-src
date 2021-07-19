@@ -1,164 +1,195 @@
 PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-?? ??? ????, PHP 8.0.0alpha1
+?? ??? ????, PHP 8.1.0beta1
 
 - Core:
-  . Removed the pdo_odbc.db2_instance_name php.ini directive. (Kalle)
-  . Fixed bug #77619 (Wrong reflection on MultipleIterator::__construct).
-    (Fabien Villepinte)
-  . Fixed bug #65274 (Enhance undefined class constant error with class name).
-    (Nikita)
-  . Fixed bug #49555 (Fatal error "Function must be a string" message should be
-    renamed). (Nikita)
-  . Fixed bug #70839 (Converting optional argument to variadic forbidden by LSP
-    checks). (Nikita)
-  . Fixed bug #69084 (Unclear error message when not implementing a renamed
-    abstract trait function). (Nikita)
-  . Fixed bug #62609 (Allow implementing Traversable on abstract classes).
-    (Nikita)
+ . Fixed bug #81238 (Fiber support missing for Solaris Sparc). (trowski)
+ . Fixed bug #81237 (Comparison of fake closures doesn't work). (krakjoe)
 
-- CURL:
-  . Bumped required libcurl version to 7.29.0. (cmb)
-
-- Date:
-  . Fixed bug #65547 (Default value for sunrise/sunset zenith still wrong).
-    (cmb)
-  . Fixed bug #69044 (discrepancy between time and microtime). (krakjoe)
-
-- DOM:
-  . Add property DOMXPath::$registerNodeNamespaces and constructor argument
-    that allow global flag to configure query() or evaluate() calls.
-
-- FPM:
-  . Fixed bug #64865 (Search for .user.ini files from script dir up to
-    CONTEXT_DOCUMENT_ROOT). (Will Bender)
-
-- GD:
-  . Fixed bug #55005 (imagepolygon num_points requirement). (cmb)
-  . Replaced gd resources with objects. (Mark Randall)
-  . Made the $num_points parameter of php_imagepolygon optional. (cmb)
-  . Removed deprecated image2wbmp(). (cmb)
-  . Removed deprecated png2wbmp() and jpeg2wbmp(). (cmb)
-  . Added imagegetinterpolation(). (cmb)
-
-- Iconv:
-  . Dropped support for iconv without proper errno setting. (cmb)
-
-- Intl:
-  . Removed deprecated INTL_IDNA_VARIANT_2003. (cmb)
-
-- JIT:
-  . Fixed bug #77857 (Wrong result if executed with JIT). (Laruence)
-  . Fixed bug #79255 (PHP cannot be compiled with enable JIT).
-    (Laruence, Dmitry)
-
-- LDAP:
-  . Removed deprecated ldap_sort. (mcmic)
-
-- MBString:
-  . Fixed bug #76999 (mb_regex_set_options() return current options). (cmb)
-  . Removed the unused $is_hex parameter from mb_decode_numericentity(). (cmb)
-
-- MySQLi:
-  . Fixed bug #76809 (SSL settings aren't respected when persistent connections
-    are used). (fabiomsouto)
-
-- mysqlnd:
-  . Fixed #60594 (mysqlnd exposes 160 lines of stats in phpinfo). (PeeHaa)
-
-- OpCache:
-  . Fixed bug #78654 (Incorrectly computed opcache checksum on files with
-    non-ascii characters). (mhagstrand)
-
-- PCRE:
-  . Don't ignore invalid escape sequences. (sjon)
-
-- PDO:
-  . Fixed bug #77849 (Disable cloning of PDO handle/connection objects).
-    (camporter)
-
-- PDO_OCI:
-  . Added support for setting and getting the oracle OCI 18c call timeout.
-    (camporter)
-
-- phpdbg:
-  . Fixed bug #76596 (phpdbg support for display_errors=stderr). (kabel)
-  . Fixed bug #76801 (too many open files). (alekitto)
-  . Fixed bug #77800 (phpdbg segfaults on listing some conditional breakpoints).
-    (krakjoe)
-  . Fixed bug #77805 (phpdbg build fails when readline is shared). (krakjoe)
+- Opcache:
+  . Fixed bug #81225 (Wrong result with pow operator with JIT enabled).
+    (Dmitry)
+  . Fixed bug #81249 (Intermittent property assignment failure with JIT
+    enabled). (Dmitry)
 
 - Reflection:
-  . Fixed bug #78697 (ReflectionClass::implementsInterface - inaccurate error
-    message with traits). (villfa)
-  . Implement ReflectionProperty::hasDefaultValue and
-    Reflection::getDefaultValue (beberlei)
-  . Fixed bug #64592 (ReflectionClass::getMethods() returns methods out of
-    scope). (Nikita)
-  . Fixed bug #77325 (ReflectionClassConstant::$class returns wrong class when
-    extending). (Nikita)
-  . Fixed bug #69180 (Reflection does not honor trait conflict resolution /
-    method aliasing). (Nikita)
-  . Fixed bug #74939 (Nested traits' aliased methods are lowercased). (Nikita)
-
-- Session:
-  . Fixed bug #78624 (session_gc return value for user defined session
-    handlers). (bshaffer)
-
-- SimpleXML:
-  . Fixed bug #75245 (Don't set content of elements with only whitespaces).
-    (eriklundin)
-
-- sodium:
-  . Fixed bug #77646 (sign_detached() strings not terminated). (Frank)
-
-- SQLite3:
-  . Added SQLite3::setAuthorizer() and respective class constants. (bohwaz)
+ . Fixed bug #80097 (ReflectionAttribute is not a Reflector). (beberlei)
 
 - Standard:
-  . Implemented FR #78638 (__PHP_Incomplete_Class should be final). (Laruence)
-  . Fixed bug #77204 (getimagesize(): Read error! should mention file path).
-    (peter279k)
-  . Fixed bug #76859 (stream_get_line skips data if used with data-generating
-    filter). (kkopachev)
-  . Fixed bug #78385 (parse_url() does not include 'query' when question mark
-    is the last char). (Islam Israfilov)
-  . Fixed bug #75902 (str_replace should warn when misused with nested arrays).
-    (Nikita)
-  . Fixed bug #47983 (mixed LF and CRLF line endings in mail()). (cmb)
-  . Made quoting of cmd execution functions consistent. (cmb)
+ . Fixed bug #81111 (Serialization is unexpectedly allowed on anonymous classes
+   with __serialize()). (Nikita)
 
-- tidy:
-  . Removed the unused $use_include_path parameter from tidy_repair_string().
-    (cmb)
+08 Jul 2021, PHP 8.1.0alpha3
 
-- XML:
-  . Fixed bug #76874 (xml_parser_free() should never leak memory). (Nikita)
+- Core:
+  . Fixed bug #81202 (powerpc64 build fails on fibers). (krakjoe)
+  . Fixed bug #80072 (Cyclic unserialize in TMPVAR operand may leak). (Nikita)
 
-- XMLWriter:
-  . Changed functions to accept/return XMLWriter objects instead of resources.
-    (cmb)
+- Curl:
+  . Fixed bug #81085 (Support CURLOPT_SSLCERT_BLOB for cert strings).
+    (camporter)
 
-- Zip:
-  . Fixed bug #72374 (remove_path strips first char of filename). (tyage, Remi)
-  . Add ZipArchive::setMtimeName and ZipArchive::setMtimeIndex methods. (Remi)
-  . Add ZipArchive::setProgressCallback method (since libzip 1.3.0). (Remi)
-  . Add ZipArchive::setCancelCallback method (since libzip 1.6.0). (Remi)
-  . Add optional "flags" parameter to ZipArchive::addEmptyDir, addFile and
-    addFromString methods. (Remi)
-  . Add "flags" options to ZipArchive::addGlob and addPattern methods
-    keeping previous behavior having FL_OVERWRITE by default. (Remi)
-  . Add ZipArchive::replaceFile() method. (Remi)
-  . Add lastId property to ZipArchive. (Remi)
-  . ZipArchive::status and ZipArchive::statusSys properties and
-    ZipArchive::getStatusString() method stay valid after the archive
-    is closed. (Remi)
-  . Fixed bug #50678 (files extracted by ZipArchive class lost their
-    original modified time). (Remi)
-  . Implemented FR #77960 (add compression / encryption options for
-    ZipArchive::addGlob and ZipArchive::addPattern). (Remi)
-  . Add ZipArchive::EM_UNKNOWN and ZipArchive::EM_TRAD_PKWARE constants. (Remi)
-  . Add ZipArchive::isCompressionMethodSupported() and
-    ZipArchive::isEncryptionMethodSupported() method (libzip 1.7.0). (Remi)
+- Reflection:
+  . Fixed bug #81200 (no way to determine if Closure is static). (krakjoe)
+
+24 Jun 2021, PHP 8.1.0alpha2
+
+- Core:
+  . Fixed bug #81163 (__sleep allowed to return non-array). (krakjoe)
+
+- Opcache:
+  . Fixed bug #81133 (building opcache with phpize fails). (krakjoe)
+  . Fixed bug #81136 (opcache header not installed). (krakjoe)
+
+- PDO OCI:
+  . Fixed bug #77120 (Support 'success with info' at connection).
+    (Sergei Morozov)
+    
+- phpdbg:
+  . Fixed bug #81135 (unknown help topic causes assertion failure). (krakjoe)
+
+- SPL:
+  . Fixed bug #81112 (Special json_encode behavior for SplFixedArray). (Nikita)
+  . Fixed bug #80945 ("Notice: Undefined index" on unset() ArrayObject
+    non-existing key). (Nikita)
+    
+- Standard:
+  . Fixed bug #81137 (hrtime breaks build on OSX before Sierra). (krakjoe)
+
+10 Jun 2021, PHP 8.1.0alpha1
+
+- Core:
+  . Fixed inclusion order for phpize builds on Windows. (cmb)
+  . Added missing hashtable insertion APIs for arr/obj/ref. (Sara)
+  . Fixed bug #75474 (function scope static variables are not bound to a unique
+    function). (Nikita)
+  . Fixed bug #53826 (__callStatic fired in base class through a parent call if
+    the method is private). (Nikita)
+  . Implemented FR #77372 (Relative file path is removed from uploaded file).
+    (Björn Tantau)
+  . Fixed bug #81076 (incorrect debug info on Closures with implicit binds).
+    (krakjoe)
+ 
+ - Standard:
+  . Fixed bug #77627 (method_exists on Closure::__invoke inconsistency).
+    (krakjoe)
+
+- Date:
+  . Fixed bug #52480 (Incorrect difference using DateInterval) (Derick)
+  . Fixed bug #62326 (date_diff() function returns false result) (Derick)
+  . Fixed bug #64992 (dst not handled past 2038) (Derick)
+  . Fixed bug #65003 (Wrong date diff) (Derick)
+  . Fixed bug #66545 (DateTime. diff returns negative values) (Derick)
+  . Fixed bug #68503 (date_diff on two dates with timezone set localised
+    returns wrong results) (Derick)
+  . Fixed bug #69806 (Incorrect date from timestamp) (Derick)
+  . Fixed bug #71700 (Extra day on diff between begin and end of march 2016)
+    (Derick)
+  . Fixed bug #71826 (DateTime::diff confuse on timezone 'Asia/Tokyo') (Derick)
+  . Fixed bug #73460 (Datetime add not realising it already applied DST
+    change) (Derick)
+  . Fixed bug #74173 (DateTimeImmutable::getTimestamp() triggers DST switch in
+    incorrect time) (Derick)
+  . Fixed bug #74274 (Handling DST transitions correctly) (Derick)
+  . Fixed bug #74524 (Date diff is bad calculated, in same time zone) (Derick)
+  . Fixed bug #75167 (DateTime::add does only care about backward DST
+    transition, not forward) (Derick)
+  . Fixed bug #76032 (DateTime->diff having issues with leap days for
+    timezones ahead of UTC) (Derick)
+  . Fixed bug #76374 (Date difference varies according day time) (Derick)
+  . Fixed bug #77571 (DateTime's diff DateInterval incorrect in timezones from
+    UTC+01:00 to UTC+12:00 (Derick)
+  . Fixed bug #78452 (diff makes wrong in hour for Asia/Tehran) (Derick)
+  . Fixed bug #79452 (DateTime::diff() generates months differently between
+    time zones) (Derick)
+  . Fixed bug #79698 (timelib mishandles future timestamps (triggered by 'zic
+    -b slim')) (Derick)
+  . Fixed bug #79716 (Invalid date time created (with day "00")) (Derick)
+  . Fixed bug #80610 (DateTime calculate wrong with DateInterval) (Derick)
+  . Fixed bug #80664 (DateTime objects behave incorrectly around DST
+    transition) (Derick)
+  . Fixed bug #80913 (DateTime(Immutable)::sub around DST yield incorrect
+    time) (Derick)
+
+- FPM:
+  . Added openmetrics status format. (Cees-Jan Kiewiet)
+  . Enable process renaming on macOS. (devnexen)
+  . Added pm.max_spawn_rate option to configure max spawn child processes rate.
+    (Paulius Sapragonas)
+  . Fixed bug #65800 (Events port mechanism). (psumbera)
+
+- FTP:
+  . Convert resource<ftp> to object \FTP\Connection. (Sara)
+
+- GD:
+  . Convert resource<gd font> to object \GdFont. (Sara)
+
+- hash:
+  . Implemented FR #68109 (Add MurmurHash V3). (Anatol, Michael)
+  . Implemented FR #73385 (Add xxHash support). (Anatol)
+
+- LDAP:
+  . Convert resource<ldap link> to object \LDAP\Connection. (Máté)
+  . Convert resource<ldap result> to object \LDAP\Result. (Máté)
+  . Convert resource<ldap result entry> to object \LDAP\ResultEntry. (Máté)
+
+- MySQLi:
+  . Fixed bug #70372 (Emulate mysqli_fetch_all() for libmysqlclient). (Nikita)
+  . Fixed bug #80330 (Replace language in APIs and source code/docs).
+    (Darek Ślusarczyk)
+  . Fixed bug #80329 (Add option to specify LOAD DATA LOCAL white list folder
+    (including libmysql)). (Darek Ślusarczyk)
+
+- MySQLnd:
+  . Fixed bug #80761 (PDO uses too much memory). (Nikita)
+
+- OPcache:
+  . Added inheritance cache. (Dmitry)
+
+- OpenSSL:
+  . Bump minimal OpenSSL version to 1.0.2. (Jakub Zelenka)
+
+- PCRE:
+  . Bundled PCRE2 is 10.37.
+
+- PDO:
+  . Fixed bug #40913 (PDO_MYSQL: PDO::PARAM_LOB does not bind to a stream for
+    fetching a BLOB). (Nikita)
+
+. PDO MySQL:
+  . Fixed bug #80908 (PDO::lastInsertId() return wrong). (matt)
+  . Fixed bug #81037 (PDO discards error message text from prepared
+    statement). (Kamil Tekiela)
+
+. PDO ODBC:
+  . Implement PDO_ATTR_SERVER_VERSION and PDO_ATTR_SERVER_INFO for
+    PDO::getAttribute(). (Calvin Buckley)
+
+. PDO SQLite:
+  . Fixed bug #38334 (Proper data-type support for PDO_SQLITE). (Nikita)
+
+- PgSQL:
+  . Convert resource<pgsql link> to object \PgSql\Connection. (Máté)
+  . Convert resource<pgsql result> to object \PgSql\Result. (Máté)
+  . Convert resource<pgsql large object> to object \PgSql\Lob. (Máté)
+
+- PSpell:
+  . Convert resource<pspell> to object \PSpell\Dictionary. (Sara)
+  . Convert resource<pspell config> to object \PSpell\Config. (Sara)
+
+- readline:
+  . Fixed bug #72998 (invalid read in readline completion). (krakjoe)
+
+- Reflection:
+  . Implement ReflectionFunctionAbstract::getClosureUsedVariables (krakjoe)
+
+- Sodium:
+  . Added the XChaCha20 stream cipher functions. (P.I.E. Security Team)
+  . Added the Ristretto255 functions, which are available in libsodium 1.0.18.
+    (P.I.E. Security Team)
+
+- SPL:
+  . Fixed bug #80724 (FilesystemIterator::FOLLOW_SYMLINKS remove KEY_AS_FILE
+    from bitmask). (Cameron Porter)
 
 <<< NOTE: Insert NEWS from last stable release here prior to actual release! >>>

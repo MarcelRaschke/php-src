@@ -1,25 +1,22 @@
 --TEST--
 Test imap_fetch_overview() function : usage variations - multipart message
+--EXTENSIONS--
+imap
 --SKIPIF--
 <?php
-require_once(__DIR__.'/skipif.inc');
+require_once(__DIR__.'/setup/skipif.inc');
 ?>
 --FILE--
 <?php
-/* Prototype  : array imap_fetch_overview(resource $stream_id, int $msg_no [, int $options])
- * Description: Read an overview of the information in the headers of the given message sequence
- * Source code: ext/imap/php_imap.c
- */
-
 /*
  * Pass a multipart message to imap_fetch_overview() to test the contents of returned array
  */
 
 echo "*** Testing imap_fetch_overview() : usage variations ***\n";
 
-require_once(__DIR__.'/imap_include.inc');
+require_once __DIR__.'/setup/imap_include.inc';
 
-$stream_id = setup_test_mailbox('', 0, $mailbox); // setup temp mailbox
+$stream_id = setup_test_mailbox('imapfetchoverviewvar6', 0, $mailbox); // setup temp mailbox
 create_multipart_message($stream_id, $mailbox);
 
 // refresh msg numbers
@@ -42,7 +39,7 @@ displayOverviewFields($a[0]);
 function create_multipart_message($imap_stream, $mailbox) {
     global $users, $domain;
     $envelope["from"]= "foo@anywhere.com";
-    $envelope["to"]  = "$users[0]@$domain";
+    $envelope["to"]  = IMAP_USERS[0] . '@' . IMAP_MAIL_DOMAIN;
     $envelope["subject"] = "Test msg 1";
 
     $part1["type"] = TYPEMULTIPART;
@@ -87,12 +84,13 @@ function create_multipart_message($imap_stream, $mailbox) {
 ?>
 --CLEAN--
 <?php
-require_once(__DIR__.'/clean.inc');
+$mailbox_suffix = 'imapfetchoverviewvar6';
+require_once(__DIR__.'/setup/clean.inc');
 ?>
 --EXPECTF--
 *** Testing imap_fetch_overview() : usage variations ***
 Create a temporary mailbox and add 0 msgs
-.. mailbox '{%s}%s' created
+New mailbox created
 
 --> Object #1
 size is %d

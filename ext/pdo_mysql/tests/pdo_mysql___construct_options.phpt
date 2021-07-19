@@ -1,8 +1,9 @@
 --TEST--
 MySQL PDO->__construct(), options
+--EXTENSIONS--
+pdo_mysql
 --SKIPIF--
 <?php
-require_once(__DIR__ . DIRECTORY_SEPARATOR . 'skipif.inc');
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'mysql_pdo_test.inc');
 MySQLPDOTest::skip();
 ?>
@@ -18,6 +19,7 @@ MySQLPDOTest::skip();
 
         try {
             $db = new PDO($dsn, $user, $pass, array($option => $value));
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
             if (!is_object($db) || ($value !== ($tmp = @$db->getAttribute($option))))
                 printf("[%03d] Expecting '%s'/%s got '%s'/%s' for options '%s'\n",
                     $offset,
@@ -81,6 +83,7 @@ MySQLPDOTest::skip();
             printf("[003] [TODO][CHANGEREQUEST] Please, lets not ignore invalid options and bail out!\n");
 
         $db = new PDO($dsn, $user, $pass);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
         foreach ($valid_options as $option => $name) {
             /* TODO getAttribute() is pretty poor in supporting the options, suppress errors */
             $tmp = @$db->getAttribute($option);
@@ -154,11 +157,17 @@ MySQLPDOTest::skip();
         set_option_and_check(33, PDO::MYSQL_ATTR_DIRECT_QUERY, 1, 'PDO::MYSQL_ATTR_DIRECT_QUERY');
         set_option_and_check(34, PDO::MYSQL_ATTR_DIRECT_QUERY, 0, 'PDO::MYSQL_ATTR_DIRECT_QUERY');
 
+        if (defined('PDO::MYSQL_ATTR_LOCAL_INFILE_DIRECTORY')) {
+            set_option_and_check(35, PDO::MYSQL_ATTR_LOCAL_INFILE_DIRECTORY, null, 'PDO::MYSQL_ATTR_LOCAL_INFILE_DIRECTORY');
+            // libmysqlclient returns the directory with a trailing slash.
+            // set_option_and_check(36, PDO::MYSQL_ATTR_LOCAL_INFILE_DIRECTORY, __DIR__, 'PDO::MYSQL_ATTR_LOCAL_INFILE_DIRECTORY');
+        }
     } catch (PDOException $e) {
-        printf("[001] %s, [%s] %s\n",
+        printf("[001] %s, [%s] %s Line: %s\n",
             $e->getMessage(),
             (is_object($db)) ? $db->errorCode() : 'n/a',
-            (is_object($db)) ? implode(' ', $db->errorInfo()) : 'n/a');
+            (is_object($db)) ? implode(' ', $db->errorInfo()) : 'n/a',
+            $e->getLine());
     }
 
     print "done!";

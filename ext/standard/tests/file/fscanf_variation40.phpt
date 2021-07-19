@@ -3,16 +3,11 @@ Test fscanf() function: usage variations - unsigned formats with float values
 --SKIPIF--
 <?php
 if (PHP_INT_SIZE != 4) {
-	die("skip this test is for 32bit platform only");
+    die("skip this test is for 32bit platform only");
 }
 ?>
 --FILE--
 <?php
-
-/*
-  Prototype: mixed fscanf ( resource $handle, string $format [, mixed &$...] );
-  Description: Parses input from a file according to a format
-*/
 
 /* Test fscanf() to scan float values using different unsigned format types */
 

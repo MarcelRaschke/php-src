@@ -3,15 +3,10 @@ Test curl_exec() function with basic functionality
 --CREDITS--
 Sebastian Deutsch <sebastian.deutsch@9elements.com>
 TestFest 2009 - AFUP - Jean-Marc Fontaine <jmf@durcommefaire.net>
---SKIPIF--
-<?php include 'skipif.inc'; ?>
+--EXTENSIONS--
+curl
 --FILE--
 <?php
-/* Prototype  : bool curl_exec(resource ch)
- * Description: Perform a cURL session
- * Source code: ext/curl/interface.c
- * Alias to functions:
- */
   include 'server.inc';
   $host = curl_cli_server_start();
 

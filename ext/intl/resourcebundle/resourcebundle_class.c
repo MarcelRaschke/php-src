@@ -3,7 +3,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -80,7 +80,7 @@ static int resourcebundle_ctor(INTERNAL_FUNCTION_PARAMETERS)
 	size_t		bundlename_len = 0;
 	const char *locale;
 	size_t		locale_len = 0;
-	zend_bool	fallback = 1;
+	bool	fallback = 1;
 
 	zval                  *object = return_value;
 	ResourceBundle_object *rb = Z_INTL_RESOURCEBUNDLE_P( object );
@@ -93,6 +93,11 @@ static int resourcebundle_ctor(INTERNAL_FUNCTION_PARAMETERS)
 		return FAILURE;
 	}
 
+	if (rb->me) {
+		zend_throw_error(NULL, "ResourceBundle object is already constructed");
+		return FAILURE;
+	}
+
 	INTL_CHECK_LOCALE_LEN_OR_FAILURE(locale_len);
 
 	if (locale == NULL) {
@@ -100,9 +105,7 @@ static int resourcebundle_ctor(INTERNAL_FUNCTION_PARAMETERS)
 	}
 
 	if (bundlename_len >= MAXPATHLEN) {
-		intl_error_set( NULL, U_ILLEGAL_ARGUMENT_ERROR,	"Bundle name too long", 0 );
-		zval_ptr_dtor(return_value);
-		ZVAL_NULL(return_value);
+		zend_argument_value_error(2, "is too long");
 		return FAILURE;
 	}
 
@@ -132,9 +135,7 @@ static int resourcebundle_ctor(INTERNAL_FUNCTION_PARAMETERS)
 }
 /* }}} */
 
-/* {{{ proto ResourceBundle::__construct( string $locale [, string $bundlename [, bool $fallback = true ]] )
- * ResourceBundle object constructor
- */
+/* {{{ ResourceBundle object constructor */
 PHP_METHOD( ResourceBundle, __construct )
 {
 	zend_error_handling error_handling;
@@ -150,9 +151,7 @@ PHP_METHOD( ResourceBundle, __construct )
 }
 /* }}} */
 
-/* {{{ proto ResourceBundle ResourceBundle::create( string $locale [, string $bundlename [, bool $fallback = true ]] )
-proto ResourceBundle resourcebundle_create( string $locale [, string $bundlename [, bool $fallback = true ]] )
-*/
+/* {{{ */
 PHP_FUNCTION( resourcebundle_create )
 {
 	object_init_ex( return_value, ResourceBundle_ce_ptr );
@@ -168,12 +167,13 @@ static void resourcebundle_array_fetch(zend_object *object, zval *offset, zval *
 {
 	int32_t     meindex = 0;
 	char *      mekey = NULL;
-    zend_bool    is_numeric = 0;
-	char         *pbuf;
+	bool        is_numeric = 0;
+	char        *pbuf;
 	ResourceBundle_object *rb;
 
-	intl_error_reset( NULL );
 	rb = php_intl_resourcebundle_fetch_object(object);
+	intl_error_reset(NULL);
+	intl_error_reset(INTL_DATA_ERROR_P(rb));
 
 	if(Z_TYPE_P(offset) == IS_LONG) {
 		is_numeric = 1;
@@ -229,13 +229,10 @@ zval *resourcebundle_array_get(zend_object *object, zval *offset, int type, zval
 }
 /* }}} */
 
-/* {{{ proto mixed ResourceBundle::get( int|string $resindex [, bool $fallback = true ] )
- * proto mixed resourcebundle_get( ResourceBundle $rb, int|string $resindex [, bool $fallback = true ] )
- * Get resource identified by numerical index or key name.
- */
+/* {{{ Get resource identified by numerical index or key name. */
 PHP_FUNCTION( resourcebundle_get )
 {
-	zend_bool   fallback = 1;
+	bool   fallback = 1;
 	zval *		offset;
 	zval *      object;
 
@@ -264,10 +261,7 @@ int resourcebundle_array_count(zend_object *object, zend_long *count)
 }
 /* }}} */
 
-/* {{{ proto int ResourceBundle::count()
- * proto int resourcebundle_count( ResourceBundle $bundle )
- * Get resources count
- */
+/* {{{ Get resources count */
 PHP_FUNCTION( resourcebundle_count )
 {
 	int32_t                len;
@@ -283,10 +277,7 @@ PHP_FUNCTION( resourcebundle_count )
 	RETURN_LONG( len );
 }
 
-/* {{{ proto array ResourceBundle::getLocales( string $bundlename )
- * proto array resourcebundle_locales( string $bundlename )
- * Get available locales from ResourceBundle name
- */
+/* {{{ Get available locales from ResourceBundle name */
 PHP_FUNCTION( resourcebundle_locales )
 {
 	char * bundlename;
@@ -304,8 +295,8 @@ PHP_FUNCTION( resourcebundle_locales )
 	}
 
 	if (bundlename_len >= MAXPATHLEN) {
-		intl_error_set( NULL, U_ILLEGAL_ARGUMENT_ERROR,	"resourcebundle_locales: bundle name too long", 0 );
-		RETURN_FALSE;
+		zend_argument_value_error(1, "is too long");
+		RETURN_THROWS();
 	}
 
 	if(bundlename_len == 0) {
@@ -327,10 +318,7 @@ PHP_FUNCTION( resourcebundle_locales )
 }
 /* }}} */
 
-/* {{{ proto string ResourceBundle::getErrorCode( )
- * proto string resourcebundle_get_error_code( ResourceBundle $bundle )
- * Get text description for ResourceBundle's last error code.
- */
+/* {{{ Get text description for ResourceBundle's last error code. */
 PHP_FUNCTION( resourcebundle_get_error_code )
 {
 	RESOURCEBUNDLE_METHOD_INIT_VARS;
@@ -347,10 +335,7 @@ PHP_FUNCTION( resourcebundle_get_error_code )
 }
 /* }}} */
 
-/* {{{ proto string ResourceBundle::getErrorMessage( )
- * proto string resourcebundle_get_error_message( ResourceBundle $bundle )
- * Get text description for ResourceBundle's last error.
- */
+/* {{{ Get text description for ResourceBundle's last error. */
 PHP_FUNCTION( resourcebundle_get_error_message )
 {
 	zend_string* message = NULL;
@@ -368,34 +353,22 @@ PHP_FUNCTION( resourcebundle_get_error_message )
 }
 /* }}} */
 
-/* {{{ ResourceBundle_class_functions
- * Every 'ResourceBundle' class method has an entry in this table
- */
-static const zend_function_entry ResourceBundle_class_functions[] = {
-	PHP_ME( ResourceBundle, __construct, arginfo_class_ResourceBundle___construct, ZEND_ACC_PUBLIC )
-	ZEND_NAMED_ME( create, ZEND_FN( resourcebundle_create ), arginfo_class_ResourceBundle_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC )
-	ZEND_NAMED_ME( get, ZEND_FN(resourcebundle_get), arginfo_class_ResourceBundle_get, ZEND_ACC_PUBLIC )
-	ZEND_NAMED_ME( count, ZEND_FN(resourcebundle_count), arginfo_class_ResourceBundle_count, ZEND_ACC_PUBLIC )
-	ZEND_NAMED_ME( getLocales, ZEND_FN(resourcebundle_locales), arginfo_class_ResourceBundle_getLocales, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC )
-	ZEND_NAMED_ME( getErrorCode, ZEND_FN(resourcebundle_get_error_code), arginfo_class_ResourceBundle_getErrorCode, ZEND_ACC_PUBLIC )
-	ZEND_NAMED_ME( getErrorMessage, ZEND_FN(resourcebundle_get_error_message), arginfo_class_ResourceBundle_getErrorMessage, ZEND_ACC_PUBLIC )
-	PHP_FE_END
-};
-/* }}} */
+PHP_METHOD(ResourceBundle, getIterator) {
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
 
 /* {{{ resourcebundle_register_class
  * Initialize 'ResourceBundle' class
  */
 void resourcebundle_register_class( void )
 {
-	zend_class_entry ce;
-
-	INIT_CLASS_ENTRY( ce, "ResourceBundle", ResourceBundle_class_functions );
-
-	ce.create_object = ResourceBundle_object_create;
-	ce.get_iterator = resourcebundle_get_iterator;
-
-	ResourceBundle_ce_ptr = zend_register_internal_class( &ce );
+	ResourceBundle_ce_ptr = register_class_ResourceBundle(zend_ce_aggregate, zend_ce_countable);
+	ResourceBundle_ce_ptr->create_object = ResourceBundle_object_create;
+	ResourceBundle_ce_ptr->get_iterator = resourcebundle_get_iterator;
 
 	ResourceBundle_object_handlers = std_object_handlers;
 	ResourceBundle_object_handlers.offset = XtOffsetOf(ResourceBundle_object, zend);
@@ -403,7 +376,5 @@ void resourcebundle_register_class( void )
 	ResourceBundle_object_handlers.free_obj = ResourceBundle_object_free;
 	ResourceBundle_object_handlers.read_dimension = resourcebundle_array_get;
 	ResourceBundle_object_handlers.count_elements = resourcebundle_array_count;
-
-	zend_class_implements(ResourceBundle_ce_ptr, 2, zend_ce_traversable, zend_ce_countable);
 }
 /* }}} */

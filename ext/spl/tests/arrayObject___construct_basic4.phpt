@@ -61,11 +61,9 @@ bool(true)
 bool(true)
   - Unset:
 
-Notice: Undefined index: prop in %s on line 39
+Warning: Undefined array key "prop" in %s on line %d
 
-Notice: Undefined index: prop in %s on line 40
-
-Notice: Undefined index: prop in %s on line 40
+Warning: Undefined array key "prop" in %s on line %d
 NULL
 NULL
   - After:
@@ -91,9 +89,9 @@ bool(true)
 bool(true)
   - Unset:
 
-Notice: Undefined index: prop in %s on line 40
+Warning: Undefined array key "prop" in %s on line %d
 
-Notice: Undefined index: prop in %s on line 40
+Warning: Undefined array key "prop" in %s on line %d
 NULL
 NULL
   - After:

@@ -3,7 +3,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -15,13 +15,8 @@
 
 #include "collator_class.h"
 #include "php_intl.h"
-#include "collator_attr.h"
-#include "collator_compare.h"
 #include "collator_sort.h"
 #include "collator_convert.h"
-#include "collator_locale.h"
-#include "collator_create.h"
-#include "collator_error.h"
 #include "collator_arginfo.h"
 #include "intl_error.h"
 
@@ -63,40 +58,14 @@ zend_object *Collator_object_create(zend_class_entry *ce )
  * 'Collator' class registration structures & functions
  */
 
-/* {{{ Collator_class_functions
- * Every 'Collator' class method has an entry in this table
- */
-
-static const zend_function_entry Collator_class_functions[] = {
-	PHP_ME( Collator, __construct, arginfo_class_Collator___construct, ZEND_ACC_PUBLIC )
-	ZEND_FENTRY( create, ZEND_FN( collator_create ), arginfo_class_Collator_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC )
-	PHP_NAMED_FE( compare, ZEND_FN( collator_compare ), arginfo_class_Collator_compare )
-	PHP_NAMED_FE( sort, ZEND_FN( collator_sort ), arginfo_class_Collator_sort )
-	PHP_NAMED_FE( sortWithSortKeys, ZEND_FN( collator_sort_with_sort_keys ), arginfo_class_Collator_sortWithSortKeys )
-	PHP_NAMED_FE( asort, ZEND_FN( collator_asort ), arginfo_class_Collator_asort )
-	PHP_NAMED_FE( getAttribute, ZEND_FN( collator_get_attribute ), arginfo_class_Collator_getAttribute )
-	PHP_NAMED_FE( setAttribute, ZEND_FN( collator_set_attribute ), arginfo_class_Collator_setAttribute )
-	PHP_NAMED_FE( getStrength, ZEND_FN( collator_get_strength ), arginfo_class_Collator_getStrength )
-	PHP_NAMED_FE( setStrength, ZEND_FN( collator_set_strength ), arginfo_class_Collator_setStrength )
-	PHP_NAMED_FE( getLocale, ZEND_FN( collator_get_locale ), arginfo_class_Collator_getLocale )
-	PHP_NAMED_FE( getErrorCode, ZEND_FN( collator_get_error_code ), arginfo_class_Collator_getErrorCode )
-	PHP_NAMED_FE( getErrorMessage, ZEND_FN( collator_get_error_message ), arginfo_class_Collator_getErrorMessage )
-	PHP_NAMED_FE( getSortKey, ZEND_FN( collator_get_sort_key ), arginfo_class_Collator_getSortKey )
-	PHP_FE_END
-};
-/* }}} */
-
 /* {{{ collator_register_Collator_class
  * Initialize 'Collator' class
  */
 void collator_register_Collator_class( void )
 {
-	zend_class_entry ce;
-
 	/* Create and register 'Collator' class. */
-	INIT_CLASS_ENTRY( ce, "Collator", Collator_class_functions );
-	ce.create_object = Collator_object_create;
-	Collator_ce_ptr = zend_register_internal_class( &ce );
+	Collator_ce_ptr = register_class_Collator();
+	Collator_ce_ptr->create_object = Collator_object_create;
 
 	memcpy(&Collator_handlers, &std_object_handlers,
 		sizeof Collator_handlers);

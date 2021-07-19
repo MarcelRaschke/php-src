@@ -2,8 +2,8 @@
 Test ReflectionZendExtension class
 --CREDITS--
 Gabriel Caruso (carusogabriel34@gmail.com)
---SKIPIF--
-<?php if(!extension_loaded('Zend OPcache')) die('skip Zend OPcache extension not loaded'); ?>
+--EXTENSIONS--
+opcache
 --FILE--
 <?php
 $reflection = new ReflectionZendExtension('Zend OPcache');
@@ -13,7 +13,7 @@ var_dump($reflection->getName());
 var_dump($reflection->getURL());
 var_dump($reflection->getVersion() === PHP_VERSION);
 ?>
---EXPECTF--
+--EXPECT--
 string(17) "Zend Technologies"
 string(13) "Copyright (c)"
 string(12) "Zend OPcache"

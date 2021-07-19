@@ -1,8 +1,9 @@
 --TEST--
 PDO Common: PDOStatement SPL iterator
+--EXTENSIONS--
+pdo
 --SKIPIF--
 <?php
-if (!extension_loaded('pdo')) die('skip');
 $dir = getenv('REDIR_TEST_DIR');
 if (false == $dir) die('skip no driver');
 require_once $dir . 'pdo_test.inc';
@@ -51,7 +52,7 @@ class PDOStatementAggregate extends PDOStatement implements IteratorAggregate
         /* default fetch mode is BOTH, so we see if the ctor can overwrite that */
     }
 
-    function getIterator()
+    function getIterator(): Iterator
     {
         echo __METHOD__ . "\n";
         $this->execute();

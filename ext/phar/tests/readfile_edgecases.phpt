@@ -1,7 +1,7 @@
 --TEST--
 Phar: test edge cases of readfile() function interception
---SKIPIF--
-<?php if (!extension_loaded("phar")) die("skip");?>
+--EXTENSIONS--
+phar
 --INI--
 phar.readonly=0
 --FILE--
@@ -30,7 +30,6 @@ include $pname . '/foo/hi';
 ?>
 --CLEAN--
 <?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
-<?php rmdir(__DIR__ . '/poo'); ?>
 <?php unlink(__DIR__ . '/readfile_edgecases.txt'); ?>
 --EXPECTF--
 blah

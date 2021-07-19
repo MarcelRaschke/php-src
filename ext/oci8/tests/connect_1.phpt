@@ -1,7 +1,7 @@
 --TEST--
 oci_pconnect() & oci_new_connect()
---SKIPIF--
-<?php if (!extension_loaded('oci8')) die("skip no oci8 extension"); ?>
+--EXTENSIONS--
+oci8
 --FILE--
 <?php
 
@@ -22,7 +22,7 @@ else {
 }
 
 var_dump(oci_close($c1));
-var_dump(ocilogoff($c2));
+var_dump(oci_close($c2));
 
 echo "Done\n";
 

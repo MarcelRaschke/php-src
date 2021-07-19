@@ -1,7 +1,7 @@
 --TEST--
 oci_server_version()
---SKIPIF--
-<?php if (!extension_loaded('oci8')) die("skip no oci8 extension"); ?>
+--EXTENSIONS--
+oci8
 --FILE--
 <?php
 
@@ -17,14 +17,10 @@ else {
 $v = oci_server_version($c);
 var_dump(str_replace("\n", "", $v));
 
-$v = ociserverversion($c);
-var_dump(str_replace("\n", "", $v));
-
 echo "Done\n";
 
 ?>
 --EXPECTF--
 resource(%d) of type (oci8 connection)
-string(%d) "Oracle %s"
 string(%d) "Oracle %s"
 Done

@@ -1,14 +1,9 @@
 --TEST--
 Test exif_imagetype() function : error conditions
---SKIPIF--
-<?php if (!extension_loaded('exif')) print 'skip exif extension not available';?>
+--EXTENSIONS--
+exif
 --FILE--
 <?php
-
-/* Prototype  : int exif_imagetype  ( string $filename  )
- * Description: Determine the type of an image
- * Source code: ext/exif/exif.c
-*/
 
 echo "*** Testing exif_imagetype() : error conditions ***\n";
 

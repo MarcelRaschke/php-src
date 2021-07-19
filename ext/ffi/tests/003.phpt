@@ -1,7 +1,7 @@
 --TEST--
 FFI 003: Forward tag/typedef declarations
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ffi
 --INI--
 ffi.enable=1
 --FILE--
@@ -58,6 +58,6 @@ object(FFI\CData:struct _d)#%d (1) {
   ["x"]=>
   int(0)
 }
-FFI\ParserException: Incomplete 'struct _e' at line 1
-FFI\ParserException: Incomplete 'struct _f' at line 1
+FFI\ParserException: Incomplete struct "_e" at line 1
+FFI\ParserException: Incomplete struct "_f" at line 1
 ok

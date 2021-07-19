@@ -1,7 +1,7 @@
 --TEST--
 mb_parse_str() test 2
---SKIPIF--
-<?php extension_loaded('mbstring') or die('skip mbstring not available'); ?>
+--EXTENSIONS--
+mbstring
 --INI--
 arg_separator.input=&#
 --FILE--
@@ -25,7 +25,7 @@ foreach ($queries as $query) {
     test($query);
 }
 ?>
---EXPECTF--
+--EXPECT--
 array(3) {
   ["foo"]=>
   string(3) "abc"

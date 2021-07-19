@@ -1,7 +1,7 @@
 --TEST--
 openssl_decrypt() tests dependent on openssl_encrypt
---SKIPIF--
-<?php if (!extension_loaded("openssl")) print "skip"; ?>
+--EXTENSIONS--
+openssl
 --FILE--
 <?php
 $data = "openssl_encrypt() and openssl_decrypt() tests";
@@ -10,7 +10,7 @@ $password = "openssl";
 
 $ivlen = openssl_cipher_iv_length($method);
 $iv    = '';
-srand(time() + ((microtime(true) * 1000000) % 1000000));
+srand(time() + ((int)(microtime(true) * 1000000) % 1000000));
 while(strlen($iv) < $ivlen) $iv .= chr(rand(0,255));
 
 $encrypted = openssl_encrypt($data, $method, $password, 0, $iv);
@@ -28,9 +28,16 @@ var_dump(rtrim($output));
 $encrypted = openssl_encrypt($data, "bf-ecb", $password, OPENSSL_DONT_ZERO_PAD_KEY);
 $output = openssl_decrypt($encrypted, "bf-ecb", $password, OPENSSL_DONT_ZERO_PAD_KEY);
 var_dump($output);
+
+// It's okay to pass $tag for a non-authenticated cipher.
+// It will be populated with null in that case.
+openssl_encrypt($data, $method, $password, 0, $iv, $tag);
+var_dump($tag);
+
 ?>
 --EXPECT--
 string(45) "openssl_encrypt() and openssl_decrypt() tests"
 string(45) "openssl_encrypt() and openssl_decrypt() tests"
 string(45) "openssl_encrypt() and openssl_decrypt() tests"
 string(45) "openssl_encrypt() and openssl_decrypt() tests"
+NULL

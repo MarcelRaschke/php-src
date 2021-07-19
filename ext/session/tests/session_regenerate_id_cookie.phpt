@@ -1,5 +1,7 @@
 --TEST--
 Test session_regenerate_id() function : basic functionality
+--EXTENSIONS--
+session
 --SKIPIF--
 <?php
 
@@ -12,12 +14,6 @@ get_cgi_path() or die('skip no cgi');
 ?>
 --FILE--
 <?php
-
-/*
- * Prototype : bool session_regenerate_id([bool $delete_old_session])
- * Description : Update the current session id with a newly generated one
- * Source code : ext/session/session.c
- */
 
 echo "*** Testing session_regenerate_id() : basic functionality for cookie ***\n";
 

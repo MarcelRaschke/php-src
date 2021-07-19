@@ -2,11 +2,6 @@
 Test is_dir() function: usage variations - diff. path notations
 --FILE--
 <?php
-/* Prototype: bool is_dir ( string $dirname );
-   Description: Tells whether the dirname is a directory
-     Returns TRUE if the dirname exists and is a directory, FALSE  otherwise.
-*/
-
 /* Passing dir names with different notations, using slashes, wild-card chars */
 
 $file_path = __DIR__;
@@ -40,7 +35,7 @@ foreach($dirs_arr as $dir) {
   echo "\n-- Iteration $count --\n";
   try {
     var_dump( is_dir($file_path."/".$dir ) );
-  } catch (TypeError $e) {
+  } catch (Error $e) {
     echo $e->getMessage(), "\n";
   }
   $count++;
@@ -81,9 +76,9 @@ bool(true)
 bool(false)
 
 -- Iteration 9 --
-is_dir(): Argument #1 ($filename) must be a valid path, string given
+bool(false)
 
 -- Iteration 10 --
-is_dir(): Argument #1 ($filename) must be a valid path, string given
+bool(false)
 
 *** Done ***

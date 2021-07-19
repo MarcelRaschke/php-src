@@ -1,7 +1,7 @@
 --TEST--
 jdtomonthname() test
---SKIPIF--
-<?php if (!extension_loaded("calendar")) print "skip"; ?>
+--EXTENSIONS--
+calendar
 --FILE--
 <?php
 
@@ -26,7 +26,7 @@ foreach ($jd_days as $jd_day) {
 echo "Done\n";
 
 ?>
---EXPECTF--
+--EXPECT--
 === 2453396
 string(3) "Jan"
 string(7) "January"

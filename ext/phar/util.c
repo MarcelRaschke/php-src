@@ -8,7 +8,7 @@
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_01.txt.                                 |
+  | https://www.php.net/license/3_01.txt                                 |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
@@ -253,7 +253,7 @@ zend_string *phar_find_in_include_path(char *filename, size_t filename_len, phar
 	}
 
 	if (!zend_is_executing() || !PHAR_G(cwd)) {
-		return phar_save_resolve_path(filename, filename_len);
+		return NULL;
 	}
 
 	fname = (char*)zend_get_executed_filename();
@@ -267,7 +267,7 @@ zend_string *phar_find_in_include_path(char *filename, size_t filename_len, phar
 	}
 
 	if (fname_len < 7 || memcmp(fname, "phar://", 7) || SUCCESS != phar_split_fname(fname, strlen(fname), &arch, &arch_len, &entry, &entry_len, 1, 0)) {
-		return phar_save_resolve_path(filename, filename_len);
+		return NULL;
 	}
 
 	efree(entry);
@@ -277,7 +277,7 @@ zend_string *phar_find_in_include_path(char *filename, size_t filename_len, phar
 
 		if (FAILURE == phar_get_archive(&phar, arch, arch_len, NULL, 0, NULL)) {
 			efree(arch);
-			return phar_save_resolve_path(filename, filename_len);
+			return NULL;
 		}
 splitted:
 		if (pphar) {
@@ -567,7 +567,7 @@ phar_entry_data *phar_get_or_create_entry_data(char *fname, size_t fname_len, ch
 	} else {
 		etemp.flags = etemp.old_flags = PHAR_ENT_PERM_DEF_FILE;
 	}
-	if (is_dir) {
+	if (is_dir && path_len) {
 		etemp.filename_len--; /* strip trailing / */
 		path_len--;
 	}
@@ -1319,7 +1319,7 @@ phar_entry_info *phar_get_entry_info_dir(phar_archive_data *phar, char *path, si
 					return NULL;
 				}
 
-				if (ssb.sb.st_mode & S_IFDIR && !dir) {
+				if ((ssb.sb.st_mode & S_IFDIR) && !dir) {
 					efree(test);
 					if (error) {
 						spprintf(error, 4096, "phar error: path \"%s\" is a directory", path);
@@ -1389,7 +1389,11 @@ static int phar_call_openssl_signverify(int is_sign, php_stream *fp, zend_off_t 
 	zend_string *str;
 
 	ZVAL_STRINGL(&openssl, is_sign ? "openssl_sign" : "openssl_verify", is_sign ? sizeof("openssl_sign")-1 : sizeof("openssl_verify")-1);
-	ZVAL_STRINGL(&zp[1], *signature, *signature_len);
+	if (*signature_len) {
+		ZVAL_STRINGL(&zp[1], *signature, *signature_len);
+	} else {
+		ZVAL_EMPTY_STRING(&zp[1]);
+	}
 	ZVAL_STRINGL(&zp[2], key, key_len);
 	php_stream_rewind(fp);
 	str = php_stream_copy_to_mem(fp, (size_t) end, 0);
@@ -1892,6 +1896,7 @@ int phar_create_signature(phar_archive_data *phar, php_stream *fp, char **signat
 		break;
 		default:
 			phar->sig_flags = PHAR_SIG_SHA1;
+			ZEND_FALLTHROUGH;
 		case PHAR_SIG_SHA1: {
 			unsigned char digest[20];
 			PHP_SHA1_CTX  context;
@@ -1968,21 +1973,11 @@ static int phar_update_cached_entry(zval *data, void *argument) /* {{{ */
 		entry->tmp = estrdup(entry->tmp);
 	}
 
-	entry->metadata_str.s = NULL;
 	entry->filename = estrndup(entry->filename, entry->filename_len);
 	entry->is_persistent = 0;
 
-	if (Z_TYPE(entry->metadata) != IS_UNDEF) {
-		if (entry->metadata_len) {
-			char *buf = estrndup((char *) Z_PTR(entry->metadata), entry->metadata_len);
-			/* assume success, we would have failed before */
-			phar_parse_metadata((char **) &buf, &entry->metadata, entry->metadata_len);
-			efree(buf);
-		} else {
-			zval_copy_ctor(&entry->metadata);
-			entry->metadata_str.s = NULL;
-		}
-	}
+	/* Replace metadata with non-persistent clones of the metadata. */
+	phar_metadata_tracker_clone(&entry->metadata_tracker);
 	return ZEND_HASH_APPLY_KEEP;
 }
 /* }}} */
@@ -2017,16 +2012,7 @@ static void phar_copy_cached_phar(phar_archive_data **pphar) /* {{{ */
 		phar->signature = estrdup(phar->signature);
 	}
 
-	if (Z_TYPE(phar->metadata) != IS_UNDEF) {
-		/* assume success, we would have failed before */
-		if (phar->metadata_len) {
-			char *buf = estrndup((char *) Z_PTR(phar->metadata), phar->metadata_len);
-			phar_parse_metadata(&buf, &phar->metadata, phar->metadata_len);
-			efree(buf);
-		} else {
-			zval_copy_ctor(&phar->metadata);
-		}
-	}
+	phar_metadata_tracker_clone(&phar->metadata_tracker);
 
 	zend_hash_init(&newmanifest, sizeof(phar_entry_info),
 		zend_get_hash_value, destroy_phar_manifest_entry, 0);

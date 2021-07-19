@@ -1,14 +1,21 @@
 <?php
 
+/** @generate-class-entries */
+
 class IntlIterator implements Iterator
 {
-    public function current() {}
+    /** @tentative-return-type */
+    public function current(): mixed {}
 
-    public function key() {}
+    /** @tentative-return-type */
+    public function key(): mixed {}
 
-    public function next() {}
+    /** @tentative-return-type */
+    public function next(): void {}
 
-    public function rewind() {}
+    /** @tentative-return-type */
+    public function rewind(): void {}
 
-    public function valid() {}
+    /** @tentative-return-type */
+    public function valid(): bool {}
 }

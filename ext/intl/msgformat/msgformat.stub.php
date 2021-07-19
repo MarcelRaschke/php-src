@@ -1,36 +1,68 @@
 <?php
 
+/** @generate-class-entries */
+
 class MessageFormatter
 {
     public function __construct(string $locale, string $pattern) {}
 
-    /** @return MessageFormatter|null */
-    public static function create(string $locale, string $pattern) {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_create
+     */
+    public static function create(string $locale, string $pattern): ?MessageFormatter {}
 
-    /** @return string|false */
-    public function format(array $args) {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_format
+     */
+    public function format(array $values): string|false {}
 
-    /** @return string|false */
-    public static function formatMessage(string $locale, string $pattern, array $args) {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_format_message
+     */
+    public static function formatMessage(string $locale, string $pattern, array $values): string|false {}
 
-    /** @return array|false */
-    public function parse(string $value) {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_parse
+     */
+    public function parse(string $string): array|false {}
 
-    /** @return array|false */
-    public static function parseMessage(string $locale, string $pattern, string $source) {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_parse_message
+     */
+    public static function parseMessage(string $locale, string $pattern, string $message): array|false {}
 
-    /** @return bool */
-    public function setPattern(string $pattern) {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_set_pattern
+     */
+    public function setPattern(string $pattern): bool {}
 
-    /** @return string|false */
-    public function getPattern() {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_get_pattern
+     */
+    public function getPattern(): string|false {}
 
-    /** @return string */
-    public function getLocale() {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_get_locale
+     */
+    public function getLocale(): string {}
 
-    /** @return int */
-    public function getErrorCode() {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_get_error_code
+     */
+    public function getErrorCode(): int {}
 
-    /** @return string */
-    public function getErrorMessage() {}
+    /**
+     * @tentative-return-type
+     * @alias msgfmt_get_error_message
+     */
+    public function getErrorMessage(): string {}
 }

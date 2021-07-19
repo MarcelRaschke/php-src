@@ -4,11 +4,6 @@ Test abs() function : basic functionality
 precision = 14
 --FILE--
 <?php
-/* Prototype  : number abs  ( mixed $number  )
- * Description: Returns the absolute value of number.
- * Source code: ext/standard/math.c
- */
-
 echo "*** Testing abs() : basic functionality ***\n";
 
 $values = array(23,
@@ -31,7 +26,7 @@ for ($i = 0; $i < count($values); $i++) {
     var_dump($res);
 }
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing abs() : basic functionality ***
 int(23)
 int(23)
@@ -44,6 +39,8 @@ int(23)
 float(23.45)
 float(23.45)
 float(23.45)
+
+Deprecated: abs(): Passing null to parameter #1 ($num) of type int|float is deprecated in %s on line %d
 int(0)
 int(1)
 int(0)

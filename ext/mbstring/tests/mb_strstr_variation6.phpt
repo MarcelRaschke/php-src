@@ -1,18 +1,9 @@
 --TEST--
 Test mb_strstr() function : variation - case sensitivity
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_strstr') or die("skip mb_strstr() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
-/* Prototype  : string mb_strstr(string haystack, string needle[, bool part[, string encoding]])
- * Description: Finds first occurrence of a string within another
- * Source code: ext/mbstring/mbstring.c
- * Alias to functions:
- */
-
 echo "*** Testing mb_strstr() : variation ***\n";
 
 mb_internal_encoding('UTF-8');

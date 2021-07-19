@@ -1,22 +1,24 @@
 <?php
 
+/** @generate-class-entries */
+
 class Directory
 {
     /**
-     * @param resource $dir_handle
-     * @return void
+     * @tentative-return-type
+     * @implementation-alias closedir
      */
-    public function close($dir_handle = UNKNOWN) {}
+    public function close(): void {}
 
     /**
-     * @param resource $dir_handle
-     * @return void
+     * @tentative-return-type
+     * @implementation-alias rewinddir
      */
-    public function rewind($dir_handle = UNKNOWN) {}
+    public function rewind(): void {}
 
     /**
-     * @param resource $dir_handle
-     * @return string|false
+     * @tentative-return-type
+     * @implementation-alias readdir
      */
-    public function read($dir_handle = UNKNOWN) {}
+    public function read(): string|false {}
 }

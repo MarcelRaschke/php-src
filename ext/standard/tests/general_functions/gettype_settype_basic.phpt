@@ -4,13 +4,6 @@ Test gettype() & settype() functions : basic functionalities
 precision=14
 --FILE--
 <?php
-/* Prototype: string gettype ( mixed $var );
-   Description: Returns the type of the PHP variable var
-
-   Prototype: bool settype ( mixed &$var, string $type );
-   Description: Set the type of variable var to type
-*/
-
 /* Test the basic functionalities of settype() & gettype() functions.
    Use the gettype() to get the type of regular data and use settype()
    to change its type to other types */
@@ -244,7 +237,7 @@ bool(true)
 int(%d)
 string(7) "integer"
 -- Iteration 14 --
-8: Object of class point could not be converted to int
+2: Object of class point could not be converted to int
 bool(true)
 int(1)
 string(7) "integer"
@@ -303,7 +296,7 @@ bool(true)
 int(%d)
 string(7) "integer"
 -- Iteration 14 --
-8: Object of class point could not be converted to int
+2: Object of class point could not be converted to int
 bool(true)
 int(1)
 string(7) "integer"
@@ -355,14 +348,14 @@ float(0)
 string(6) "double"
 -- Iteration 12 --
 bool(true)
-float(%d)
+float(%f)
 string(6) "double"
 -- Iteration 13 --
 bool(true)
-float(%d)
+float(%f)
 string(6) "double"
 -- Iteration 14 --
-8: Object of class point could not be converted to float
+2: Object of class point could not be converted to float
 bool(true)
 float(1)
 string(6) "double"
@@ -414,14 +407,14 @@ float(0)
 string(6) "double"
 -- Iteration 12 --
 bool(true)
-float(%d)
+float(%f)
 string(6) "double"
 -- Iteration 13 --
 bool(true)
-float(%d)
+float(%f)
 string(6) "double"
 -- Iteration 14 --
-8: Object of class point could not be converted to float
+2: Object of class point could not be converted to float
 bool(true)
 float(1)
 string(6) "double"

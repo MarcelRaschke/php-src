@@ -4,11 +4,6 @@ Test ceil() - basic function test for ceil()
 precision=14
 --FILE--
 <?php
-/* Prototype  : float ceil  ( float $value  )
- * Description: Round fractions up.
- * Source code: ext/standard/math.c
- */
-
 echo "*** Testing ceil() : basic functionality ***\n";
 $values = array(0,
                 -0,
@@ -38,7 +33,7 @@ for ($i = 0; $i < count($values); $i++) {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing ceil() : basic functionality ***
 float(0)
 float(0)
@@ -59,4 +54,6 @@ float(-3950)
 float(39)
 float(1)
 float(0)
+
+Deprecated: ceil(): Passing null to parameter #1 ($num) of type int|float is deprecated in %s on line %d
 float(0)

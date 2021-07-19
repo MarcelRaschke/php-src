@@ -6,10 +6,6 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 obscure_filename
 --FILE--
 <?php
-/* Prototype: int fileowner ( string $filename )
- * Description: Returns the user ID of the owner of the file, or
- *              FALSE in case of an error.
- */
 
 /* Testing fileowner() with invalid arguments -int, float, bool, NULL, resource */
 
@@ -23,7 +19,6 @@ $filenames = array(
   "",
   TRUE,
   FALSE,
-  NULL,
 
   /* scalars */
   1234,
@@ -52,7 +47,6 @@ bool(false)
 bool(false)
 
 Warning: fileowner(): stat failed for 1 in %s on line %d
-bool(false)
 bool(false)
 bool(false)
 

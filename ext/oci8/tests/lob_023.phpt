@@ -1,5 +1,7 @@
 --TEST--
 oci_lob_import()/read()
+--EXTENSIONS--
+oci8
 --SKIPIF--
 <?php
 $target_dbs = array('oracledb' => true, 'timesten' => false);  // test runs on these DBs
@@ -26,8 +28,6 @@ oci_execute($statement, OCI_DEFAULT);
 var_dump($blob);
 var_dump($blob->seek(10, OCI_SEEK_CUR));
 var_dump($blob->import(__DIR__."/lob_009.txt"));
-var_dump($blob->import());
-var_dump(oci_lob_import($blob));
 var_dump(oci_lob_import($blob, __DIR__."/lob_009.txt"));
 unset($blob->descriptor);
 var_dump(oci_lob_import($blob, __DIR__."/lob_009.txt"));
@@ -49,30 +49,24 @@ echo "Done\n";
 
 ?>
 --EXPECTF--
-object(OCI-Lob)#%d (1) {
+object(OCILob)#%d (1) {
   ["descriptor"]=>
   resource(%d) of type (oci8 descriptor)
 }
 bool(true)
 bool(true)
-
-Warning: OCI-Lob::import() expects exactly 1 parameter, 0 given in %s on line %d
-NULL
-
-Warning: oci_lob_import() expects exactly 2 parameters, 1 given in %s on line %d
-NULL
 bool(true)
 
 Warning: oci_lob_import(): Unable to find descriptor property in %s on line %d
 bool(false)
 array(2) {
   [0]=>
-  object(OCI-Lob)#%d (1) {
+  object(OCILob)#%d (1) {
     ["descriptor"]=>
     resource(%d) of type (oci8 descriptor)
   }
   ["BLOB"]=>
-  object(OCI-Lob)#%d (1) {
+  object(OCILob)#%d (1) {
     ["descriptor"]=>
     resource(%d) of type (oci8 descriptor)
   }

@@ -1,8 +1,10 @@
 --TEST--
 Basic XMLType test
+--EXTENSIONS--
+simplexml
+oci8
 --SKIPIF--
 <?php
-if (!extension_loaded("simplexml")) die("skip no simplexml extension");
 $target_dbs = array('oracledb' => true, 'timesten' => false);  // test runs on these DBs
 require(__DIR__.'/skipif.inc');
 ?>
@@ -83,30 +85,30 @@ echo "Done\n";
 ?>
 --EXPECT--
 Initial Data
-string(250) "<?xml version="1.0"?>
-		<Xt>
-		  <XtId>1</XtId>
-		  <Size>Big</Size>
-		  <Area>12345</Area>
-		  <Hardness>20</Hardness>
-		  <Lip>Curved</Lip>
-		  <Color>Red</Color>
-		  <Nice>N</Nice>
-		  <Compact>Tiny</Compact>
-		  <Material>Steel</Material>
-		</Xt>"
+string(316) "<?xml version="1.0"?>
+        <Xt>
+          <XtId>1</XtId>
+          <Size>Big</Size>
+          <Area>12345</Area>
+          <Hardness>20</Hardness>
+          <Lip>Curved</Lip>
+          <Color>Red</Color>
+          <Nice>N</Nice>
+          <Compact>Tiny</Compact>
+          <Material>Steel</Material>
+        </Xt>"
 Verify
-string(249) "<?xml version="1.0"?>
+string(309) "<?xml version="1.0"?>
 <Xt>
-		  <XtId>1</XtId>
-		  <Size>Big</Size>
-		  <Area>12345</Area>
-		  <Hardness>19</Hardness>
-		  <Lip>Curved</Lip>
-		  <Color>Red</Color>
-		  <Nice>Y</Nice>
-		  <Compact>Tiny</Compact>
-		  <Material>Steel</Material>
-		</Xt>
+          <XtId>1</XtId>
+          <Size>Big</Size>
+          <Area>12345</Area>
+          <Hardness>19</Hardness>
+          <Lip>Curved</Lip>
+          <Color>Red</Color>
+          <Nice>Y</Nice>
+          <Compact>Tiny</Compact>
+          <Material>Steel</Material>
+        </Xt>
 "
 Done

@@ -2,12 +2,6 @@
 Test parse_url() function: Parse a load of URLs without specifying the component
 --FILE--
 <?php
-/* Prototype  : proto mixed parse_url(string url, [int url_component])
- * Description: Parse a and return its components
- * Source code: ext/standard/url.c
- * Alias to functions:
- */
-
 /*
  * Parse a load of URLs without specifying the component
  */
@@ -872,6 +866,22 @@ echo "Done";
   string(11) "/rest/Users"
   ["query"]=>
   string(19) "filter={"id":"123"}"
+}
+
+--> %:x: array(1) {
+  ["path"]=>
+  string(3) "%:x"
+}
+
+--> https://example.com:0/: array(4) {
+  ["scheme"]=>
+  string(5) "https"
+  ["host"]=>
+  string(11) "example.com"
+  ["port"]=>
+  int(0)
+  ["path"]=>
+  string(1) "/"
 }
 
 --> http:///blah.com: bool(false)

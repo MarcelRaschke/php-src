@@ -1,18 +1,9 @@
 --TEST--
 Test mb_strrchr() function : variation - multiple needles
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_strrchr') or die("skip mb_strrchr() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
-/* Prototype  : string mb_strrchr(string haystack, string needle[, bool part[, string encoding]])
- * Description: Finds the last occurrence of a character in a string within another
- * Source code: ext/mbstring/mbstring.c
- * Alias to functions:
- */
-
 echo "*** Testing mb_strrchr() : variation ***\n";
 
 mb_internal_encoding('UTF-8');

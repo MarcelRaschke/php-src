@@ -3,17 +3,12 @@ Test opendir() function : usage variations - directories with restricted permiss
 --SKIPIF--
 <?php
 if( substr(PHP_OS, 0, 3) == 'WIN') {
-	die('skip Not for Windows');
+    die('skip Not for Windows');
 }
 require __DIR__ . '/../skipif_root.inc';
 ?>
 --FILE--
 <?php
-/* Prototype  : mixed opendir(string $path[, resource $context])
- * Description: Open a directory and return a dir_handle
- * Source code: ext/standard/dir.c
- */
-
 /*
  * remove the execute permission from the parent dir and test opendir() on child dir
  *   1) remove write & execute permission from the 1st parent and test opendir()

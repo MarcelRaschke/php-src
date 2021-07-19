@@ -2,8 +2,9 @@
 Phar front controller with mounted external file
 --INI--
 default_charset=UTF-8
---SKIPIF--
-<?php if (!extension_loaded("phar")) die("skip"); ?>
+opcache.validate_timestamps=1
+--EXTENSIONS--
+phar
 --ENV--
 SCRIPT_NAME=/front.phar.php
 REQUEST_URI=/front.phar.php/index.php

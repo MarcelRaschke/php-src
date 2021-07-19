@@ -6,8 +6,8 @@ opcache.enable_cli=1
 opcache.file_update_protection=0
 opcache.jit_buffer_size=64
 opcache.jit=1205
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+opcache
 --FILE--
 <?php
 function test() {
@@ -22,6 +22,6 @@ function test() {
 }
 var_dump(test());
 ?>
---EXPECTF--
+--EXPECT--
 float(1)
 float(1)

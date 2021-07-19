@@ -7,7 +7,7 @@
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_01.txt                                  |
+  | https://www.php.net/license/3_01.txt                                 |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
@@ -47,10 +47,6 @@ int json_yydebug = 1;
 
 %union {
 	zval value;
-	struct {
-		zend_string *key;
-		zval val;
-	} pair;
 }
 
 
@@ -66,10 +62,8 @@ int json_yydebug = 1;
 
 %type <value> start object key value array
 %type <value> members member elements element
-%type <pair> pair
 
 %destructor { zval_ptr_dtor_nogc(&$$); } <value>
-%destructor { zend_string_release_ex($$.key, 0); zval_ptr_dtor_nogc(&$$.val); } <pair>
 
 %code {
 static int php_json_yylex(union YYSTYPE *value, php_json_parser *parser);
@@ -130,27 +124,19 @@ members:
 ;
 
 member:
-		pair
+		key ':' value
 			{
 				parser->methods.object_create(parser, &$$);
-				if (parser->methods.object_update(parser, &$$, $1.key, &$1.val) == FAILURE) {
+				if (parser->methods.object_update(parser, &$$, Z_STR($1), &$3) == FAILURE) {
 					YYERROR;
 				}
 			}
-	|	member ',' pair
+	|	member ',' key ':' value
 			{
-				if (parser->methods.object_update(parser, &$1, $3.key, &$3.val) == FAILURE) {
+				if (parser->methods.object_update(parser, &$1, Z_STR($3), &$5) == FAILURE) {
 					YYERROR;
 				}
 				ZVAL_COPY_VALUE(&$$, &$1);
-			}
-;
-
-pair:
-		key ':' value
-			{
-				$$.key = Z_STR($1);
-				ZVAL_COPY_VALUE(&$$.val, &$3);
 			}
 ;
 
@@ -241,10 +227,10 @@ static int php_json_parser_object_create(php_json_parser *parser, zval *object)
 {
 	if (parser->scanner.options & PHP_JSON_OBJECT_AS_ARRAY) {
 		array_init(object);
-		return SUCCESS;
 	} else {
-		return object_init(object);
+		object_init(object);
 	}
+	return SUCCESS;
 }
 
 static int php_json_parser_object_update(php_json_parser *parser, zval *object, zend_string *key, zval *zvalue)
@@ -301,7 +287,7 @@ static const php_json_parser_methods default_parser_methods =
 
 PHP_JSON_API void php_json_parser_init_ex(php_json_parser *parser,
 		zval *return_value,
-		char *str,
+		const char *str,
 		size_t str_len,
 		int options,
 		int max_depth,
@@ -317,7 +303,7 @@ PHP_JSON_API void php_json_parser_init_ex(php_json_parser *parser,
 
 PHP_JSON_API void php_json_parser_init(php_json_parser *parser,
 		zval *return_value,
-		char *str,
+		const char *str,
 		size_t str_len,
 		int options,
 		int max_depth)

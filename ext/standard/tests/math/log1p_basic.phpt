@@ -4,12 +4,6 @@ Test log1p() - basic function test log1p()
 precision=14
 --FILE--
 <?php
-/* Prototype  : float log1p  ( float $arg  )
- * Description: Returns log(1 + number), computed in a way that is accurate even
- *				when the value of number is close to zero
- * Source code: ext/standard/math.c
- */
-
 echo "*** Testing log1p() : basic functionality ***\n";
 
 $values = array(23,
@@ -21,7 +15,6 @@ $values = array(23,
                 "23",
                 "23.45",
                 "2.345e1",
-                null,
                 true,
                 false);
 
@@ -65,9 +58,6 @@ float(3.196630215920881)
 
 -- log1p 2.345e1 --
 float(3.196630215920881)
-
--- log1p  --
-float(0)
 
 -- log1p 1 --
 float(0.6931471805599453)

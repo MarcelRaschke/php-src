@@ -3,18 +3,14 @@ Test session_set_save_handler() : shutdown failure
 --INI--
 session.save_handler=files
 session.name=PHPSESSID
+--EXTENSIONS--
+session
 --SKIPIF--
 <?php include('skipif.inc'); ?>
 --FILE--
 <?php
 
 ob_start();
-
-/*
- * Prototype : bool session_set_save_handler(SessionHandler $handler [, bool $register_shutdown_function = true])
- * Description : Sets user-level session storage functions
- * Source code : ext/session/session.c
- */
 
 echo "*** Testing session_set_save_handler() : shutdown failure ***\n";
 
@@ -29,7 +25,7 @@ class MySession extends SessionHandler {
         echo "(#$this->num) destructor called\n";
         $this->destroyed = true;
     }
-    public function write($id, $data) {
+    public function write($id, $data): bool {
         if ($this->destroyed) {
             echo "(#$this->num) destroyed, cannot write\n";
         } else {
@@ -37,7 +33,7 @@ class MySession extends SessionHandler {
         }
         return parent::write($id, $data);
     }
-    public function close() {
+    public function close(): bool {
         $id = session_id();
         if ($this->destroyed) {
             echo "(#$this->num) destroyed, cannot write\n";

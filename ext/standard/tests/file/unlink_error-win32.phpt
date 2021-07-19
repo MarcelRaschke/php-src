@@ -8,9 +8,6 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 ?>
 --FILE--
 <?php
-/* Prototype : bool unlink ( string $filename [, resource $context] );
-   Description : Deletes filename
-*/
 
 $file_path = __DIR__;
 
@@ -27,9 +24,6 @@ echo "\n-- Testing unlink() on invalid arguments --\n";
 // invalid arguments
 var_dump( unlink('') );  // $filename as empty string
 var_dump( file_exists('') );  // confirm file doesn't exist
-
-var_dump( unlink(NULL) );  // $filename as NULL
-var_dump( file_exists(NULL) );  // confirm file doesn't exist
 
 var_dump( unlink(false) );  // $filename as boolean false
 var_dump( file_exists(false) );  // confirm file doesn't exist
@@ -57,10 +51,6 @@ rmdir(__DIR__."/unlink_error");
 *** Testing unlink() : error conditions ***
 
 -- Testing unlink() on invalid arguments --
-
-Warning: unlink(): %s in %s on line %d
-bool(false)
-bool(false)
 
 Warning: unlink(): %s in %s on line %d
 bool(false)

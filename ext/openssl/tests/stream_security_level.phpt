@@ -1,8 +1,9 @@
 --TEST--
 security_level setting to prohibit cert
+--EXTENSIONS--
+openssl
 --SKIPIF--
 <?php
-if (!extension_loaded("openssl")) die("skip openssl not loaded");
 if (OPENSSL_VERSION_NUMBER < 0x10100000) die("skip OpenSSL >= v1.1.0 required");
 if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
@@ -21,7 +22,10 @@ $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:64322";
     $serverFlags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN;
     $serverCtx = stream_context_create(['ssl' => [
-        'local_cert' => '%s'
+        'local_cert' => '%s',
+        // Make sure the server side starts up successfully if the default security level is
+        // higher. We want to test the error at the client side.
+        'security_level' => 1,
     ]]);
 
     $server = stream_socket_server($serverUri, $errno, $errstr, $serverFlags, $serverCtx);

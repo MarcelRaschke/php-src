@@ -2,12 +2,13 @@
 Test curl_init() function with basic functionality
 --CREDITS--
 Jean-Marc Fontaine <jmf@durcommefaire.net>
---SKIPIF--
-<?php if (!extension_loaded("curl")) exit("skip curl extension not loaded"); ?>
+--EXTENSIONS--
+curl
 --FILE--
 <?php
   $ch = curl_init();
   var_dump($ch);
 ?>
---EXPECTF--
-resource(%d) of type (curl)
+--EXPECT--
+object(CurlHandle)#1 (0) {
+}

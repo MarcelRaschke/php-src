@@ -1,27 +1,52 @@
 <?php
 
+/** @generate-class-entries */
+
 class Transliterator
 {
+    public string $id;
+
     final private function __construct() {}
 
-    /** @return Transliterator|null */
-    public static function create(string $id, int $direction = Transliterator::FORWARD) {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_create
+     */
+    public static function create(string $id, int $direction = Transliterator::FORWARD): ?Transliterator {}
 
-    /** @return Transliterator|null */
-    public static function createFromRules(string $rules, int $direction = Transliterator::FORWARD) {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_create_from_rules
+     */
+    public static function createFromRules(string $rules, int $direction = Transliterator::FORWARD): ?Transliterator {}
 
-    /** @return Transliterator|null */
-    public function createInverse() {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_create_inverse
+     */
+    public function createInverse(): ?Transliterator {}
 
-    /** @return array|false */
-    public static function listIDs() {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_list_ids
+     */
+    public static function listIDs(): array|false {}
 
-    /** @return string|false */
-    public function transliterate(string $subject, int $start = 0, int $end = -1) {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_transliterate
+     */
+    public function transliterate(string $string, int $start = 0, int $end = -1): string|false {}
 
-    /** @return int|false */
-    public function getErrorCode() {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_get_error_code
+     */
+    public function getErrorCode(): int|false {}
 
-    /** @return string|false */
-    public function getErrorMessage() {}
+    /**
+     * @tentative-return-type
+     * @alias transliterator_get_error_message
+     */
+    public function getErrorMessage(): string|false {}
 }

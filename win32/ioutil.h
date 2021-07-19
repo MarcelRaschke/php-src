@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -786,12 +786,14 @@ __forceinline static ssize_t php_win32_ioutil_readlink(const char *path, char *b
 
 	ret_buf = php_win32_ioutil_conv_w_to_any(retw, ret, &ret_buf_len);
 	if (!ret_buf || ret_buf_len >= buf_len || ret_buf_len >= MAXPATHLEN) {
+		free(ret_buf);
 		free(pathw);
 		SET_ERRNO_FROM_WIN32_CODE(ERROR_BAD_PATHNAME);
 		return -1;
 	}
 	memcpy(buf, ret_buf, ret_buf_len + 1);
 
+	free(ret_buf);
 	free(pathw);
 
 	return ret_buf_len;

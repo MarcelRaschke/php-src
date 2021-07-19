@@ -1,5 +1,7 @@
 --TEST--
 Test gzencode() function : variation - verify header contents with all encoding modes
+--EXTENSIONS--
+zlib
 --SKIPIF--
 <?php
 
@@ -7,23 +9,15 @@ if( substr(PHP_OS, 0, 3) != "WIN" ) {
   die("skip.. only for Windows");
 }
 
-if (!extension_loaded("zlib")) {
-	print "skip - ZLIB extension not loaded";
-}
+
 
 include 'func.inc';
 if (version_compare(get_zlib_version(), "1.2.11") < 0) {
-	die("skip - at least zlib 1.2.11 required, got " . get_zlib_version());
+    die("skip - at least zlib 1.2.11 required, got " . get_zlib_version());
 }
 ?>
 --FILE--
 <?php
-/* Prototype  : string gzencode  ( string $data  [, int $level  [, int $encoding_mode  ]] )
- * Description: Gzip-compress a string
- * Source code: ext/zlib/zlib.c
- * Alias to functions:
- */
-
 echo "*** Testing gzencode() : variation ***\n";
 
 $data = "A small string to encode\n";

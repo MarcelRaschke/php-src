@@ -1,14 +1,9 @@
 --TEST--
 Test ctype_print() function : usage variations - different strings
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ctype
 --FILE--
 <?php
-/* Prototype  : bool ctype_print(mixed $c)
- * Description: Checks for printable character(s)
- * Source code: ext/ctype/ctype.c
- */
-
 /*
  * Pass strings containing different character types to ctype_print() to test
  * which are considered valid printable character only strings

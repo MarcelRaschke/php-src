@@ -11,4 +11,4 @@ try {
 }
 ?>
 --EXPECT--
-Invalid tick callback 'a' passed
+register_tick_function(): Argument #1 ($callback) must be a valid callback, function "a" not found or invalid function name

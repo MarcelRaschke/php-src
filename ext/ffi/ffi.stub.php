@@ -1,47 +1,50 @@
 <?php
 
+/** @generate-class-entries */
+
+namespace {
+
 final class FFI
 {
-    static function cdef(string $code = UNKNOWN, string $lib = UNKNOWN): ?FFI {}
+    public static function cdef(string $code = "", ?string $lib = null): FFI {}
 
-    static function load(string $filename): ?FFI {}
+    public static function load(string $filename): ?FFI {}
 
-    static function scope(string $scope_name): ?FFI {}
+    public static function scope(string $name): FFI {}
 
-    /** @param FFI\CType|string $type */
-    static function new($type, bool $owned = true, bool $persistent = false): ?FFI\CData {}
+    public static function new(FFI\CType|string $type, bool $owned = true, bool $persistent = false): ?FFI\CData {}
 
     /** @prefer-ref $ptr */
-    static function free(FFI\CData $ptr): void {}
+    public static function free(FFI\CData $ptr): void {}
 
     /**
-     * @param FFI\CType|string $type
+     * @param FFI\CData|int|float|bool|null $ptr
      * @prefer-ref $ptr
      */
-    static function cast($type, $ptr): ?FFI\CData {}
+    public static function cast(FFI\CType|string $type, $ptr): ?FFI\CData {}
 
-    static function type(string $type): ?FFI\CType {}
-
-    /** @prefer-ref $ptr */
-    static function typeof(FFI\CData $ptr): ?FFI\CType {}
-
-    static function arrayType(FFI\CType $type, array $dims): ?FFI\CType {}
+    public static function type(string $type): ?FFI\CType {}
 
     /** @prefer-ref $ptr */
-    static function addr(FFI\CData $ptr): FFI\CData {}
+    public static function typeof(FFI\CData $ptr): FFI\CType {}
+
+    public static function arrayType(FFI\CType $type, array $dimensions): FFI\CType {}
 
     /** @prefer-ref $ptr */
-    static function sizeof(object $ptr): ?int {}
+    public static function addr(FFI\CData $ptr): FFI\CData {}
 
     /** @prefer-ref $ptr */
-    static function alignof(object $ptr): ?int {}
+    public static function sizeof(FFI\CData|FFI\CType $ptr): int {}
+
+    /** @prefer-ref $ptr */
+    public static function alignof(FFI\CData|FFI\CType $ptr): int {}
 
     /**
-     * @prefer-ref $dst
-     * @prefer-ref $src
-     * @param string|FFI\CData $dst
+     * @param FFI\CData|string $from
+     * @prefer-ref $to
+     * @prefer-ref $from
      */
-    static function memcpy(FFI\CData $dst, $src, int $size): void {}
+    public static function memcpy(FFI\CData $to, $from, int $size): void {}
 
     /**
      * @prefer-ref $ptr1
@@ -49,14 +52,54 @@ final class FFI
      * @prefer-ref $ptr2
      * @param string|FFI\CData $ptr2
      */
-    static function memcmp($ptr1, $ptr2, int $size): ?int {}
+    public static function memcmp($ptr1, $ptr2, int $size): int {}
 
     /** @prefer-ref $ptr */
-    static function memset(FFI\CData $ptr, int $ch, int $size): void {}
+    public static function memset(FFI\CData $ptr, int $value, int $size): void {}
 
     /** @prefer-ref $ptr */
-    static function string(FFI\CData $ptr, int $size = UNKNOWN): ?string {}
+    public static function string(FFI\CData $ptr, ?int $size = null): string {}
 
     /** @prefer-ref $ptr */
-    static function isNull(FFI\CData $ptr): bool {}
+    public static function isNull(FFI\CData $ptr): bool {}
+}
+
+}
+
+namespace FFI {
+
+final class CData {
+}
+
+final class CType {
+    public function getName(): string {}
+
+    public function getKind(): int {}
+    public function getSize(): int {}
+    public function getAlignment(): int {}
+    public function getAttributes(): int {}
+
+    public function getEnumKind(): int {}
+
+    public function getArrayElementType(): CType {}
+    public function getArrayLength(): int {}
+
+    public function getPointerType(): CType {}
+
+    public function getStructFieldNames(): array {}
+    public function getStructFieldOffset(string $name): int {}
+    public function getStructFieldType(string $name): CType {}
+
+    public function getFuncABI(): int {}
+    public function getFuncReturnType(): CType {}
+    public function getFuncParameterCount(): int {}
+    public function getFuncParameterType(int $index): CType {}
+}
+
+class Exception extends \Error {
+}
+
+final class ParserException extends Exception {
+}
+
 }

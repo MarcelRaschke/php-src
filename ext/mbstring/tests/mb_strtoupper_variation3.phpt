@@ -1,17 +1,9 @@
 --TEST--
 Test mb_strtoupper() function : usage varitations - pass mixed ASCII and non-ASCII strings
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_strtoupper') or die("skip mb_strtoupper() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
-/* Prototype  : string mb_strtoupper(string $sourcestring [, string $encoding]
- * Description: Returns a uppercased version of $sourcestring
- * Source code: ext/mbstring/mbstring.c
- */
-
 /*
  * Pass a Japanese string and a mixed Japanese and ASCII string to mb_strtolower
  * to check correct conversion is occurring (Japanese characters should not be converted).

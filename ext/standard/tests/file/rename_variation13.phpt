@@ -11,12 +11,6 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 obscure_filename
 --FILE--
 <?php
-/* Prototype  : bool rename(string old_name, string new_name[, resource context])
- * Description: Rename a file
- * Source code: ext/standard/file.c
- * Alias to functions:
- */
-
 echo "*** Testing rename() with obscure files ***\n";
 $file_path = __DIR__."/renameVar13";
 $aFile = $file_path.'/afile.tmp';
@@ -29,7 +23,6 @@ $names_arr = array(
   -1,
   TRUE,
   FALSE,
-  NULL,
   "",
   " ",
 
@@ -69,13 +62,6 @@ bool(false)
 bool(true)
 
 Warning: rename(1,%s/renameVar13/afile.tmp): No such file or directory in %s on line %d
-bool(false)
--- testing '' --
-
-Warning: rename(%s/renameVar13/afile.tmp,): %s in %s on line %d
-bool(false)
-
-Warning: rename(,%s/renameVar13/afile.tmp): %s in %s on line %d
 bool(false)
 -- testing '' --
 

@@ -1,7 +1,5 @@
 --TEST--
 Bug #70557 (Memleak on return type verifying failed).
---INI--
-opcache.enable=0
 --FILE--
 <?php
 
@@ -16,4 +14,4 @@ try {
 }
 ?>
 --EXPECT--
-string(64) "Return value of getNumber() must be of type int, string returned"
+string(62) "getNumber(): Return value must be of type int, string returned"

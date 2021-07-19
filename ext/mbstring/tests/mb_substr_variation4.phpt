@@ -1,17 +1,9 @@
 --TEST--
 Test mb_substr() function : usage variations - pass different integers to $start arg
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_substr') or die("skip mb_substr() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
-/* Prototype  : string mb_substr(string $str, int $start [, int $length [, string $encoding]])
- * Description: Returns part of a string
- * Source code: ext/mbstring/mbstring.c
- */
-
 /*
  * Test how mb_substr() behaves when passed a range of integers as $start argument
  */

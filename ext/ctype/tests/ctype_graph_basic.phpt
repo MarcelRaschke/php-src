@@ -1,14 +1,9 @@
 --TEST--
 Test ctype_graph() function : basic functionality
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ctype
 --FILE--
 <?php
-/* Prototype  : bool ctype_graph(mixed $c)
- * Description: Checks for any printable character(s) except space
- * Source code: ext/ctype/ctype.c
- */
-
 echo "*** Testing ctype_graph() : basic functionality ***\n";
 
 $orig = setlocale(LC_CTYPE, "C");

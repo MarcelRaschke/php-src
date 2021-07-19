@@ -2,12 +2,6 @@
 Test number_format() - basic function test number_format()
 --FILE--
 <?php
-/* Prototype  :  string number_format  ( float $number  [, int $decimals  ] )
- *               string number_format ( float $number , int $decimals , string $dec_point , string $thousands_sep )
- * Description: Format a number with grouped thousands
- * Source code: ext/standard/string.c
- */
-
 echo "*** Testing number_format() : basic functionality ***\n";
 
 $values = array(1234.5678,
@@ -19,7 +13,6 @@ $values = array(1234.5678,
                 "123456789",
                 "123.456789",
                 "12.3456789e1",
-                null,
                 true,
                 false);
 
@@ -60,7 +53,6 @@ string(11) "402,653,183"
 string(11) "123,456,789"
 string(3) "123"
 string(3) "123"
-string(1) "0"
 string(1) "1"
 string(1) "0"
 
@@ -74,7 +66,6 @@ string(14) "402,653,183.00"
 string(14) "123,456,789.00"
 string(6) "123.46"
 string(6) "123.46"
-string(4) "0.00"
 string(4) "1.00"
 string(4) "0.00"
 
@@ -88,7 +79,6 @@ string(14) "402 653 183.00"
 string(14) "123 456 789.00"
 string(6) "123.46"
 string(6) "123.46"
-string(4) "0.00"
 string(4) "1.00"
 string(4) "0.00"
 
@@ -102,6 +92,5 @@ string(14) "402 653 183,00"
 string(14) "123 456 789,00"
 string(6) "123,46"
 string(6) "123,46"
-string(4) "0,00"
 string(4) "1,00"
 string(4) "0,00"

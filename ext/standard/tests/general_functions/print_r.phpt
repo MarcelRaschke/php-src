@@ -4,12 +4,7 @@ Test print_r() function
 precision=14
 --FILE--
 <?php
-/* Prototype: bool print_r ( mixed $expression [, bool $return] );
-   Description: Prints human-readable information about a variable
-*/
 
-/* Prototype: void check_printr( $variables )
-   Description: use print_r() to print variables */
 function check_printr( $variables ) {
   $counter = 1;
   foreach( $variables as $variable ) {
@@ -570,9 +565,9 @@ Array
 0
 0
 -- Iteration 6 --
- 
- 
- 
+%0
+%0
+%0
 -- Iteration 7 --
 \0
 \0
@@ -594,13 +589,13 @@ PHP
 PHP
 PHP
 -- Iteration 12 --
-abcd n1234 05678 00efgh\xijkl
-abcd n1234 05678 00efgh\xijkl
-abcd n1234 05678 00efgh\xijkl
+abcd%0n1234%005678%000efgh\xijkl
+abcd%0n1234%005678%000efgh\xijkl
+abcd%0n1234%005678%000efgh\xijkl
 -- Iteration 13 --
-abcd efgh ijkl mnop 0qrst uvwx 0yz
-abcd efgh ijkl mnop 0qrst uvwx 0yz
-abcd efgh ijkl mnop 0qrst uvwx 0yz
+abcd%0efgh%0ijkl%0mnop%00qrst%0uvwx%00yz
+abcd%0efgh%0ijkl%0mnop%00qrst%0uvwx%00yz
+abcd%0efgh%0ijkl%0mnop%00qrst%0uvwx%00yz
 -- Iteration 14 --
 1234	
 5678

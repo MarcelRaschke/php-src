@@ -2,21 +2,11 @@
 Test strtr() function : usage variations - unexpected inputs for 'from' argument
 --FILE--
 <?php
-/* Prototype  : string strtr(string $str, string $from[, string $to]);
-                string strtr(string $str, array $replace_pairs);
- * Description: Translates characters in str using given translation tables
- * Source code: ext/standard/string.c
-*/
-
 /* Test strtr() function: with unexpected inputs for 'from'
  *  and expected type for 'str' & 'to' arguments
 */
 
 echo "*** Testing strtr() function: with unexpected inputs for 'from' ***\n";
-
-//get an unset variable
-$unset_var = 'string_val';
-unset($unset_var);
 
 //defining a class
 class sample  {
@@ -64,12 +54,6 @@ $from_arr =  array (
 
           // resource
 /*17*/	  $file_handle,
-
-          // undefined variable
-/*18*/	  @$undefined_var,
-
-          // unset variable
-/*19*/	  @$unset_var
 );
 
 //defining 'to' argument
@@ -90,7 +74,7 @@ for($index = 0; $index < count($from_arr); $index++) {
 
 fclose($file_handle);  //closing the file handle
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing strtr() function: with unexpected inputs for 'from' ***
 -- Iteration 1 --
 string(6) "a12atm"
@@ -119,14 +103,14 @@ string(6) "0a2atm"
 -- Iteration 13 --
 string(6) "012atm"
 -- Iteration 14 --
+
+Deprecated: strtr(): Passing null to parameter #2 ($from) of type array|string is deprecated in %s on line %d
 string(6) "012atm"
 -- Iteration 15 --
+
+Deprecated: strtr(): Passing null to parameter #2 ($from) of type array|string is deprecated in %s on line %d
 string(6) "012atm"
 -- Iteration 16 --
 string(6) "012ttm"
 -- Iteration 17 --
-strtr(): Argument #2 ($from) must be of type string|array, resource given
--- Iteration 18 --
-string(6) "012atm"
--- Iteration 19 --
-string(6) "012atm"
+strtr(): Argument #2 ($from) must be of type array|string, resource given

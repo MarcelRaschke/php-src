@@ -1,21 +1,24 @@
 <?php
 
-final class COMPersistHelper {
-    public function __construct(?VARIANT $com_object);
+/** @generate-class-entries */
 
-    public function GetCurFileName(): string|false;
+final class COMPersistHelper
+{
+    public function __construct(?variant $variant = null) {}
 
-    public function SaveToFile(?string $filename, bool $remember = true): bool;
+    public function GetCurFileName(): string|false {}
 
-    public function LoadFromFile(string $path, int $flags = 0): bool;
+    public function SaveToFile(?string $filename, bool $remember = true): bool {}
 
-    public function GetMaxStreamSize(): int;
+    public function LoadFromFile(string $filename, int $flags = 0): bool {}
 
-    public function InitNew(): bool;
+    public function GetMaxStreamSize(): int {}
+
+    public function InitNew(): bool {}
 
     /** @param resource $stream */
-    public function LoadFromStream($stream): bool;
+    public function LoadFromStream($stream): bool {}
 
     /** @param resource $stream */
-    public function SaveToStream($stream): bool;
+    public function SaveToStream($stream): bool {}
 }

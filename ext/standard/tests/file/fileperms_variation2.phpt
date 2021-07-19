@@ -6,10 +6,6 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 obscure_filename
 --FILE--
 <?php
-/* Prototype: int fileperms ( string $filename )
- * Description: Returns the group ID of the file, or FALSE in case of an error.
- */
-
 /* Testing fileperms() with invalid arguments -int, float, bool, NULL, resource */
 
 $file_path = __DIR__;
@@ -22,7 +18,6 @@ $filenames = array(
   "",
   TRUE,
   FALSE,
-  NULL,
 
   /* scalars */
   1234,
@@ -51,7 +46,6 @@ bool(false)
 bool(false)
 
 Warning: fileperms(): stat failed for 1 in %s on line %d
-bool(false)
 bool(false)
 bool(false)
 

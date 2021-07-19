@@ -5,7 +5,7 @@
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_01.txt                                  |
+  | https://www.php.net/license/3_01.txt                                 |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
@@ -146,8 +146,8 @@ MYSQLND_CLASS_METHODS_END;
 
 
 /* {{{ mysqlnd_error_info_init */
-PHPAPI enum_func_status
-mysqlnd_error_info_init(MYSQLND_ERROR_INFO * const info, const zend_bool persistent)
+PHPAPI void
+mysqlnd_error_info_init(MYSQLND_ERROR_INFO * const info, const bool persistent)
 {
 	DBG_ENTER("mysqlnd_error_info_init");
 	info->m = mysqlnd_error_info_get_methods();
@@ -155,7 +155,7 @@ mysqlnd_error_info_init(MYSQLND_ERROR_INFO * const info, const zend_bool persist
 
 	zend_llist_init(&info->error_list, sizeof(MYSQLND_ERROR_LIST_ELEMENT), (llist_dtor_func_t) mysqlnd_error_list_pdtor, persistent);
 	info->persistent = persistent;
-	DBG_RETURN(PASS);
+	DBG_VOID_RETURN;
 }
 /* }}} */
 
@@ -219,7 +219,7 @@ mysqlnd_connection_state_init(struct st_mysqlnd_connection_state * const state)
 static void
 MYSQLND_METHOD(mysqlnd_conn_data, free_options)(MYSQLND_CONN_DATA * conn)
 {
-	zend_bool pers = conn->persistent;
+	bool pers = conn->persistent;
 
 	if (conn->options->charset_name) {
 		mnd_pefree(conn->options->charset_name, pers);
@@ -251,6 +251,10 @@ MYSQLND_METHOD(mysqlnd_conn_data, free_options)(MYSQLND_CONN_DATA * conn)
 		mnd_pefree(conn->options->connect_attr, pers);
 		conn->options->connect_attr = NULL;
 	}
+	if (conn->options->local_infile_directory) {
+		mnd_pefree(conn->options->local_infile_directory, pers);
+		conn->options->local_infile_directory = NULL;
+	}
 }
 /* }}} */
 
@@ -259,7 +263,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, free_options)(MYSQLND_CONN_DATA * conn)
 static void
 MYSQLND_METHOD(mysqlnd_conn_data, free_contents)(MYSQLND_CONN_DATA * conn)
 {
-	zend_bool pers = conn->persistent;
+	bool pers = conn->persistent;
 
 	DBG_ENTER("mysqlnd_conn_data::free_contents");
 
@@ -333,7 +337,7 @@ static void
 MYSQLND_METHOD_PRIVATE(mysqlnd_conn_data, dtor)(MYSQLND_CONN_DATA * conn)
 {
 	DBG_ENTER("mysqlnd_conn_data::dtor");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	conn->m->free_contents(conn);
 	conn->m->free_options(conn);
@@ -454,12 +458,14 @@ MYSQLND_METHOD(mysqlnd_conn_data, execute_init_commands)(MYSQLND_CONN_DATA * con
 					ret = FAIL;
 					break;
 				}
-				if (conn->last_query_type == QUERY_SELECT) {
-					MYSQLND_RES * result = conn->m->use_result(conn, 0);
-					if (result) {
-						result->m.free_result(result, TRUE);
+				do {
+					if (conn->last_query_type == QUERY_SELECT) {
+						MYSQLND_RES * result = conn->m->use_result(conn);
+						if (result) {
+							result->m.free_result(result, TRUE);
+						}
 					}
-				}
+				} while (conn->m->next_result(conn) != FAIL);
 			}
 		}
 	}
@@ -508,7 +514,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_updated_connect_flags)(MYSQLND_CONN_DATA *
 	}
 #endif
 
-    if (conn->options->connect_attr && zend_hash_num_elements(conn->options->connect_attr)) {
+	if (conn->options->connect_attr && zend_hash_num_elements(conn->options->connect_attr)) {
 		mysql_flags |= CLIENT_CONNECT_ATTRS;
 	}
 
@@ -542,7 +548,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect_handshake)(MYSQLND_CONN_DATA * conn,
 
 /* {{{ mysqlnd_conn_data::get_scheme */
 static MYSQLND_STRING
-MYSQLND_METHOD(mysqlnd_conn_data, get_scheme)(MYSQLND_CONN_DATA * conn, MYSQLND_CSTRING hostname, MYSQLND_CSTRING *socket_or_pipe, unsigned int port, zend_bool * unix_socket, zend_bool * named_pipe)
+MYSQLND_METHOD(mysqlnd_conn_data, get_scheme)(MYSQLND_CONN_DATA * conn, MYSQLND_CSTRING hostname, MYSQLND_CSTRING *socket_or_pipe, unsigned int port, bool * unix_socket, bool * named_pipe)
 {
 	MYSQLND_STRING transport;
 	DBG_ENTER("mysqlnd_conn_data::get_scheme");
@@ -590,11 +596,11 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect)(MYSQLND_CONN_DATA * conn,
 					)
 {
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), connect);
-	zend_bool unix_socket = FALSE;
-	zend_bool named_pipe = FALSE;
-	zend_bool reconnect = FALSE;
-	zend_bool saved_compression = FALSE;
-	zend_bool local_tx_started = FALSE;
+	bool unix_socket = FALSE;
+	bool named_pipe = FALSE;
+	bool reconnect = FALSE;
+	bool saved_compression = FALSE;
+	bool local_tx_started = FALSE;
 	MYSQLND_PFC * pfc = conn->protocol_frame_codec;
 	MYSQLND_STRING transport = { NULL, 0 };
 
@@ -707,17 +713,8 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect)(MYSQLND_CONN_DATA * conn,
 		conn->connect_or_select_db.l = database.l;
 		conn->connect_or_select_db.s = mnd_pestrndup(database.s, conn->connect_or_select_db.l, conn->persistent);
 
-		if (!conn->username.s || !conn->password.s|| !conn->connect_or_select_db.s) {
-			SET_OOM_ERROR(conn->error_info);
-			goto err; /* OOM */
-		}
-
 		if (!unix_socket && !named_pipe) {
 			conn->hostname.s = mnd_pestrndup(hostname.s, hostname.l, conn->persistent);
-			if (!conn->hostname.s) {
-				SET_OOM_ERROR(conn->error_info);
-				goto err; /* OOM */
-			}
 			conn->hostname.l = hostname.l;
 			{
 				char *p;
@@ -728,10 +725,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect)(MYSQLND_CONN_DATA * conn,
 				}
 				conn->host_info = mnd_pestrdup(p, conn->persistent);
 				mnd_sprintf_free(p);
-				if (!conn->host_info) {
-					SET_OOM_ERROR(conn->error_info);
-					goto err; /* OOM */
-				}
 			}
 		} else {
 			conn->unix_socket.s = mnd_pestrdup(socket_or_pipe.s, conn->persistent);
@@ -744,12 +737,8 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect)(MYSQLND_CONN_DATA * conn,
 					SET_OOM_ERROR(conn->error_info);
 					goto err; /* OOM */
 				}
-				conn->host_info =  mnd_pestrdup(p, conn->persistent);
+				conn->host_info = mnd_pestrdup(p, conn->persistent);
 				mnd_sprintf_free(p);
-				if (!conn->host_info) {
-					SET_OOM_ERROR(conn->error_info);
-					goto err; /* OOM */
-				}
 			} else {
 				php_error_docref(NULL, E_WARNING, "Impossible. Should be either socket or a pipe. Report a bug!");
 			}
@@ -776,7 +765,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, connect)(MYSQLND_CONN_DATA * conn,
 			MYSQLND_INC_CONN_STATISTIC_W_VALUE2(conn->stats, STAT_PCONNECT_SUCCESS, 1, STAT_OPENED_PERSISTENT_CONNECTIONS, 1);
 		}
 
-		DBG_INF_FMT("connection_id=%llu", conn->thread_id);
+		DBG_INF_FMT("connection_id=%" PRIu64, conn->thread_id);
 
 		conn->m->local_tx_end(conn, this_func, PASS);
 		DBG_RETURN(PASS);
@@ -789,8 +778,10 @@ err:
 
 	DBG_ERR_FMT("[%u] %.128s (trying to connect via %s)", conn->error_info->error_no, conn->error_info->error, conn->scheme.s);
 	if (!conn->error_info->error_no) {
-		SET_CLIENT_ERROR(conn->error_info, CR_CONNECTION_ERROR, UNKNOWN_SQLSTATE, conn->error_info->error);
-		php_error_docref(NULL, E_WARNING, "[%u] %.128s (trying to connect via %s)", conn->error_info->error_no, conn->error_info->error, conn->scheme.s);
+		char * msg;
+		mnd_sprintf(&msg, 0, "%s (trying to connect via %s)",conn->error_info->error, conn->scheme.s);
+		SET_CLIENT_ERROR(conn->error_info, CR_CONNECTION_ERROR, UNKNOWN_SQLSTATE, msg);
+		mnd_sprintf_free(msg);
 	}
 
 	conn->m->free_contents(conn);
@@ -823,9 +814,9 @@ MYSQLND_METHOD(mysqlnd_conn, connect)(MYSQLND * conn_handle,
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		mysqlnd_options4(conn_handle, MYSQL_OPT_CONNECT_ATTR_ADD, "_client_name", "mysqlnd");
-        if (hostname.l > 0) {
-            mysqlnd_options4(conn_handle, MYSQL_OPT_CONNECT_ATTR_ADD, "_server_host", hostname.s);
-        }
+		if (hostname.l > 0) {
+			mysqlnd_options4(conn_handle, MYSQL_OPT_CONNECT_ATTR_ADD, "_server_host", hostname.s);
+		}
 		ret = conn->m->connect(conn, hostname, username, password, database, port, socket_or_pipe, mysql_flags);
 
 		conn->m->local_tx_end(conn, this_func, FAIL);
@@ -846,7 +837,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, query)(MYSQLND_CONN_DATA * conn, const char * 
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), query);
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::query");
-	DBG_INF_FMT("conn=%p conn=%llu query=%s", conn, conn->thread_id, query);
+	DBG_INF_FMT("conn=%p conn=%" PRIu64 " query=%s", conn, conn->thread_id, query);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		if (PASS == conn->m->send_query(conn, query, query_len, MYSQLND_SEND_QUERY_IMPLICIT, NULL, NULL) &&
@@ -872,7 +863,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, send_query)(MYSQLND_CONN_DATA * conn, const ch
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), send_query);
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::send_query");
-	DBG_INF_FMT("conn=%llu query=%s", conn->thread_id, query);
+	DBG_INF_FMT("conn=%" PRIu64 " query=%s", conn->thread_id, query);
 	DBG_INF_FMT("conn->server_status=%u", UPSERT_STATUS_GET_SERVER_STATUS(conn->upsert_status));
 
 	if (type == MYSQLND_SEND_QUERY_IMPLICIT || PASS == conn->m->local_tx_start(conn, this_func))
@@ -898,7 +889,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, reap_query)(MYSQLND_CONN_DATA * conn, enum_mys
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), reap_query);
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::reap_query");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	DBG_INF_FMT("conn->server_status=%u", UPSERT_STATUS_GET_SERVER_STATUS(conn->upsert_status));
 	if (type == MYSQLND_REAP_RESULT_IMPLICIT || PASS == conn->m->local_tx_start(conn, this_func))
@@ -925,7 +916,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, list_method)(MYSQLND_CONN_DATA * conn, const c
 	MYSQLND_RES * result = NULL;
 
 	DBG_ENTER("mysqlnd_conn_data::list_method");
-	DBG_INF_FMT("conn=%llu query=%s wild=%u", conn->thread_id, query, achtung_wild);
+	DBG_INF_FMT("conn=%" PRIu64 " query=%s wild=%p", conn->thread_id, query, achtung_wild);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		if (par1) {
@@ -943,7 +934,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, list_method)(MYSQLND_CONN_DATA * conn, const c
 		}
 
 		if (PASS == conn->m->query(conn, show_query, show_query_len)) {
-			result = conn->m->store_result(conn, MYSQLND_STORE_NO_COPY);
+			result = conn->m->store_result(conn);
 		}
 		if (show_query != query) {
 			mnd_sprintf_free(show_query);
@@ -1023,7 +1014,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, escape_string)(MYSQLND_CONN_DATA * const conn,
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), escape_string);
 	zend_ulong ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::escape_string");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		DBG_INF_FMT("server_status=%u", UPSERT_STATUS_GET_SERVER_STATUS(conn->upsert_status));
@@ -1046,7 +1037,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, dump_debug_info)(MYSQLND_CONN_DATA * const con
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), server_dump_debug_information);
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::dump_debug_info");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		ret = conn->command->debug(conn);
 		conn->m->local_tx_end(conn, this_func, ret);
@@ -1065,7 +1056,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, select_db)(MYSQLND_CONN_DATA * const conn, con
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn_data::select_db");
-	DBG_INF_FMT("conn=%llu db=%s", conn->thread_id, db);
+	DBG_INF_FMT("conn=%" PRIu64 " db=%s", conn->thread_id, db);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		const MYSQLND_CSTRING database = {db, db_len};
@@ -1086,7 +1077,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, ping)(MYSQLND_CONN_DATA * const conn)
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn_data::ping");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		ret = conn->command->ping(conn);
@@ -1106,7 +1097,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, statistic)(MYSQLND_CONN_DATA * conn, zend_stri
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn_data::statistic");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		ret = conn->command->statistics(conn, message);
@@ -1125,7 +1116,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, kill)(MYSQLND_CONN_DATA * conn, unsigned int p
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn_data::kill");
-	DBG_INF_FMT("conn=%llu pid=%u", conn->thread_id, pid);
+	DBG_INF_FMT("conn=%" PRIu64 " pid=%u", conn->thread_id, pid);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		const unsigned int process_id = pid;
@@ -1149,11 +1140,10 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_charset)(MYSQLND_CONN_DATA * const conn, c
 	const MYSQLND_CHARSET * const charset = mysqlnd_find_charset_name(csname);
 
 	DBG_ENTER("mysqlnd_conn_data::set_charset");
-	DBG_INF_FMT("conn=%llu cs=%s", conn->thread_id, csname);
+	DBG_INF_FMT("conn=%" PRIu64 " cs=%s", conn->thread_id, csname);
 
 	if (!charset) {
-		SET_CLIENT_ERROR(conn->error_info, CR_CANT_FIND_CHARSET, UNKNOWN_SQLSTATE,
-						 "Invalid characterset or character set not supported");
+		SET_CLIENT_ERROR(conn->error_info, CR_CANT_FIND_CHARSET, UNKNOWN_SQLSTATE, "Invalid character set was provided");
 		DBG_RETURN(ret);
 	}
 
@@ -1161,9 +1151,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_charset)(MYSQLND_CONN_DATA * const conn, c
 		char * query;
 		size_t query_len = mnd_sprintf(&query, 0, "SET NAMES %s", csname);
 
-		if (FAIL == (ret = conn->m->query(conn, query, query_len))) {
-			php_error_docref(NULL, E_WARNING, "Error executing query");
-		} else if (conn->error_info->error_no) {
+		if (FAIL == (ret = conn->m->query(conn, query, query_len)) || conn->error_info->error_no) {
 			ret = FAIL;
 		} else {
 			conn->charset = charset;
@@ -1186,7 +1174,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, refresh)(MYSQLND_CONN_DATA * const conn, uint8
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), refresh_server);
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::refresh");
-	DBG_INF_FMT("conn=%llu options=%lu", conn->thread_id, options);
+	DBG_INF_FMT("conn=%" PRIu64 " options=%u", conn->thread_id, options);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		ret = conn->command->refresh(conn, options);
@@ -1204,7 +1192,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, shutdown)(MYSQLND_CONN_DATA * const conn, uint
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), shutdown_server);
 	enum_func_status ret = FAIL;
 	DBG_ENTER("mysqlnd_conn_data::shutdown");
-	DBG_INF_FMT("conn=%llu level=%lu", conn->thread_id, level);
+	DBG_INF_FMT("conn=%" PRIu64 " level=%u", conn->thread_id, level);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		ret = conn->command->shutdown(conn, level);
@@ -1225,7 +1213,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, send_close)(MYSQLND_CONN_DATA * const conn)
 	enum mysqlnd_connection_state state = GET_CONNECTION_STATE(&conn->state);
 
 	DBG_ENTER("mysqlnd_send_close");
-	DBG_INF_FMT("conn=%llu vio->data->stream->abstract=%p", conn->thread_id, net_stream? net_stream->abstract:NULL);
+	DBG_INF_FMT("conn=%" PRIu64 " vio->data->stream->abstract=%p", conn->thread_id, net_stream? net_stream->abstract:NULL);
 	DBG_INF_FMT("state=%u", state);
 
 	if (state >= CONN_READY) {
@@ -1257,7 +1245,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, send_close)(MYSQLND_CONN_DATA * const conn)
 			  Do nothing, the connection will be brutally closed
 			  and the server will catch it and free close from its side.
 			*/
-			/* Fall-through */
+			ZEND_FALLTHROUGH;
 		case CONN_ALLOCED:
 			/*
 			  Allocated but not connected or there was failure when trying
@@ -1266,7 +1254,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, send_close)(MYSQLND_CONN_DATA * const conn)
 			  Fall-through
 			*/
 			SET_CONNECTION_STATE(&conn->state, CONN_QUIT_SENT);
-			/* Fall-through */
+			ZEND_FALLTHROUGH;
 		case CONN_QUIT_SENT:
 			/* The user has killed its own connection */
 			vio->data->m.close_stream(vio, conn->stats, conn->error_info);
@@ -1284,7 +1272,7 @@ MYSQLND_METHOD_PRIVATE(mysqlnd_conn_data, get_reference)(MYSQLND_CONN_DATA * con
 {
 	DBG_ENTER("mysqlnd_conn_data::get_reference");
 	++conn->refcount;
-	DBG_INF_FMT("conn=%llu new_refcount=%u", conn->thread_id, conn->refcount);
+	DBG_INF_FMT("conn=%" PRIu64 " new_refcount=%u", conn->thread_id, conn->refcount);
 	DBG_RETURN(conn);
 }
 /* }}} */
@@ -1296,7 +1284,7 @@ MYSQLND_METHOD_PRIVATE(mysqlnd_conn_data, free_reference)(MYSQLND_CONN_DATA * co
 {
 	enum_func_status ret = PASS;
 	DBG_ENTER("mysqlnd_conn_data::free_reference");
-	DBG_INF_FMT("conn=%llu old_refcount=%u", conn->thread_id, conn->refcount);
+	DBG_INF_FMT("conn=%" PRIu64 " old_refcount=%u", conn->thread_id, conn->refcount);
 	if (!(--conn->refcount)) {
 		/*
 		  No multithreading issues as we don't share the connection :)
@@ -1366,7 +1354,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, info)(const MYSQLND_CONN_DATA * const conn)
 
 
 /* {{{ mysqlnd_get_client_info */
-PHPAPI const char * mysqlnd_get_client_info()
+PHPAPI const char * mysqlnd_get_client_info(void)
 {
 	return PHP_MYSQLND_VERSION;
 }
@@ -1374,7 +1362,7 @@ PHPAPI const char * mysqlnd_get_client_info()
 
 
 /* {{{ mysqlnd_get_client_version */
-PHPAPI unsigned long mysqlnd_get_client_version()
+PHPAPI unsigned long mysqlnd_get_client_version(void)
 {
 	return MYSQLND_VERSION_ID;
 }
@@ -1439,7 +1427,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_server_version)(const MYSQLND_CONN_DATA * 
 
 #define MARIA_DB_VERSION_HACK_PREFIX "5.5.5-"
 
-	if (conn->server_capabilities & CLIENT_PLUGIN_AUTH
+	if ((conn->server_capabilities & CLIENT_PLUGIN_AUTH)
 		&& !strncmp(p, MARIA_DB_VERSION_HACK_PREFIX, sizeof(MARIA_DB_VERSION_HACK_PREFIX)-1))
 	{
 		p += sizeof(MARIA_DB_VERSION_HACK_PREFIX)-1;
@@ -1457,7 +1445,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_server_version)(const MYSQLND_CONN_DATA * 
 
 
 /* {{{ mysqlnd_conn_data::more_results */
-static zend_bool
+static bool
 MYSQLND_METHOD(mysqlnd_conn_data, more_results)(const MYSQLND_CONN_DATA * const conn)
 {
 	DBG_ENTER("mysqlnd_conn_data::more_results");
@@ -1475,7 +1463,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, next_result)(MYSQLND_CONN_DATA * const conn)
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn_data::next_result");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64 "", conn->thread_id);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		do {
@@ -1575,7 +1563,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, change_user)(MYSQLND_CONN_DATA * const conn,
 											   const char * user,
 											   const char * passwd,
 											   const char * db,
-											   zend_bool silent,
+											   bool silent,
 											   size_t passwd_len
 			)
 {
@@ -1583,7 +1571,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, change_user)(MYSQLND_CONN_DATA * const conn,
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn_data::change_user");
-	DBG_INF_FMT("conn=%llu user=%s passwd=%s db=%s silent=%u",
+	DBG_INF_FMT("conn=%" PRIu64 " user=%s passwd=%s db=%s silent=%u",
 				conn->thread_id, user?user:"", passwd?"***":"null", db?db:"", silent == TRUE);
 
 	if (PASS != conn->m->local_tx_start(conn, this_func)) {
@@ -1631,7 +1619,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), set_client_option);
 	enum_func_status ret = PASS;
 	DBG_ENTER("mysqlnd_conn_data::set_client_option");
-	DBG_INF_FMT("conn=%llu option=%u", conn->thread_id, option);
+	DBG_INF_FMT("conn=%" PRIu64 " option=%u", conn->thread_id, option);
 
 	if (PASS != conn->m->local_tx_start(conn, this_func)) {
 		goto end;
@@ -1654,11 +1642,9 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 		case MYSQL_SERVER_PUBLIC_KEY:
 			ret = conn->protocol_frame_codec->data->m.set_client_option(conn->protocol_frame_codec, option, value);
 			break;
-#ifdef MYSQLND_STRING_TO_INT_CONVERSION
 		case MYSQLND_OPT_INT_AND_FLOAT_NATIVE:
 			conn->options->int_and_float_native = *(unsigned int*) value;
 			break;
-#endif
 		case MYSQL_OPT_LOCAL_INFILE:
 			if (value && (*(unsigned int*) value) ? 1 : 0) {
 				conn->options->flags |= CLIENT_LOCAL_FILES;
@@ -1666,6 +1652,19 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 				conn->options->flags &= ~CLIENT_LOCAL_FILES;
 			}
 			break;
+		case MYSQL_OPT_LOAD_DATA_LOCAL_DIR:
+		{
+			if (conn->options->local_infile_directory) {
+				mnd_pefree(conn->options->local_infile_directory, conn->persistent);
+			}
+
+			if (!value || (*value == '\0')) {
+				conn->options->local_infile_directory = NULL;
+			} else {
+				conn->options->local_infile_directory = mnd_pestrdup(value, conn->persistent);
+			}
+			break;
+		}
 		case MYSQL_INIT_COMMAND:
 		{
 			char ** new_init_commands;
@@ -1673,14 +1672,8 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 			/* when num_commands is 0, then realloc will be effectively a malloc call, internally */
 			/* Don't assign to conn->options->init_commands because in case of OOM we will lose the pointer and leak */
 			new_init_commands = mnd_perealloc(conn->options->init_commands, sizeof(char *) * (conn->options->num_commands + 1), conn->persistent);
-			if (!new_init_commands) {
-				goto oom;
-			}
 			conn->options->init_commands = new_init_commands;
 			new_command = mnd_pestrdup(value, conn->persistent);
-			if (!new_command) {
-				goto oom;
-			}
 			conn->options->init_commands[conn->options->num_commands] = new_command;
 			++conn->options->num_commands;
 			break;
@@ -1703,9 +1696,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 			}
 
 			new_charset_name = mnd_pestrdup(value, conn->persistent);
-			if (!new_charset_name) {
-				goto oom;
-			}
 			if (conn->options->charset_name) {
 				mnd_pefree(conn->options->charset_name, conn->persistent);
 			}
@@ -1741,9 +1731,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 		case MYSQLND_OPT_AUTH_PROTOCOL:
 		{
 			char * new_auth_protocol = value? mnd_pestrdup(value, conn->persistent) : NULL;
-			if (value && !new_auth_protocol) {
-				goto oom;
-			}
 			if (conn->options->auth_protocol) {
 				mnd_pefree(conn->options->auth_protocol, conn->persistent);
 			}
@@ -1782,9 +1769,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option)(MYSQLND_CONN_DATA * const c
 	}
 	conn->m->local_tx_end(conn, this_func, ret);
 	DBG_RETURN(ret);
-oom:
-	SET_OOM_ERROR(conn->error_info);
-	conn->m->local_tx_end(conn, this_func, FAIL);
 end:
 	DBG_RETURN(FAIL);
 }
@@ -1802,7 +1786,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option_2d)(MYSQLND_CONN_DATA * cons
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), set_client_option_2d);
 	enum_func_status ret = PASS;
 	DBG_ENTER("mysqlnd_conn_data::set_client_option_2d");
-	DBG_INF_FMT("conn=%llu option=%u", conn->thread_id, option);
+	DBG_INF_FMT("conn=%" PRIu64 " option=%u", conn->thread_id, option);
 
 	if (PASS != conn->m->local_tx_start(conn, this_func)) {
 		goto end;
@@ -1812,9 +1796,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option_2d)(MYSQLND_CONN_DATA * cons
 			if (!conn->options->connect_attr) {
 				DBG_INF("Initializing connect_attr hash");
 				conn->options->connect_attr = mnd_pemalloc(sizeof(HashTable), conn->persistent);
-				if (!conn->options->connect_attr) {
-					goto oom;
-				}
 				zend_hash_init(conn->options->connect_attr, 0, NULL, conn->persistent ? ZVAL_INTERNAL_PTR_DTOR : ZVAL_PTR_DTOR, conn->persistent);
 			}
 			DBG_INF_FMT("Adding [%s][%s]", key, value);
@@ -1840,9 +1821,6 @@ MYSQLND_METHOD(mysqlnd_conn_data, set_client_option_2d)(MYSQLND_CONN_DATA * cons
 	}
 	conn->m->local_tx_end(conn, this_func, ret);
 	DBG_RETURN(ret);
-oom:
-	SET_OOM_ERROR(conn->error_info);
-	conn->m->local_tx_end(conn, this_func, FAIL);
 end:
 	DBG_RETURN(FAIL);
 }
@@ -1851,13 +1829,13 @@ end:
 
 /* {{{ mysqlnd_conn_data::use_result */
 static MYSQLND_RES *
-MYSQLND_METHOD(mysqlnd_conn_data, use_result)(MYSQLND_CONN_DATA * const conn, const unsigned int flags)
+MYSQLND_METHOD(mysqlnd_conn_data, use_result)(MYSQLND_CONN_DATA * const conn)
 {
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), use_result);
 	MYSQLND_RES * result = NULL;
 
 	DBG_ENTER("mysqlnd_conn_data::use_result");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		do {
@@ -1893,17 +1871,16 @@ MYSQLND_METHOD(mysqlnd_conn_data, use_result)(MYSQLND_CONN_DATA * const conn, co
 
 /* {{{ mysqlnd_conn_data::store_result */
 static MYSQLND_RES *
-MYSQLND_METHOD(mysqlnd_conn_data, store_result)(MYSQLND_CONN_DATA * const conn, const unsigned int flags)
+MYSQLND_METHOD(mysqlnd_conn_data, store_result)(MYSQLND_CONN_DATA * const conn)
 {
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), store_result);
 	MYSQLND_RES * result = NULL;
 
 	DBG_ENTER("mysqlnd_conn_data::store_result");
-	DBG_INF_FMT("conn=%llu conn=%p", conn->thread_id, conn);
+	DBG_INF_FMT("conn=%" PRIu64 " conn=%p", conn->thread_id, conn);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		do {
-			unsigned int f = flags;
 			if (!conn->current_result) {
 				break;
 			}
@@ -1916,25 +1893,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, store_result)(MYSQLND_CONN_DATA * const conn, 
 			}
 
 			MYSQLND_INC_CONN_STATISTIC(conn->stats, STAT_BUFFERED_SETS);
-
-			/* overwrite */
-			if ((conn->m->get_client_api_capabilities(conn) & MYSQLND_CLIENT_KNOWS_RSET_COPY_DATA)) {
-				if (MYSQLND_G(fetch_data_copy)) {
-					f &= ~MYSQLND_STORE_NO_COPY;
-					f |= MYSQLND_STORE_COPY;
-				}
-			} else {
-				/* if for some reason PDO borks something */
-				if (!(f & (MYSQLND_STORE_NO_COPY | MYSQLND_STORE_COPY))) {
-					f |= MYSQLND_STORE_COPY;
-				}
-			}
-			if (!(f & (MYSQLND_STORE_NO_COPY | MYSQLND_STORE_COPY))) {
-				SET_CLIENT_ERROR(conn->error_info, CR_UNKNOWN_ERROR, UNKNOWN_SQLSTATE, "Unknown fetch mode");
-				DBG_ERR("Unknown fetch mode");
-				break;
-			}
-			result = conn->current_result->m.store_result(conn->current_result, conn, f);
+			result = conn->current_result->m.store_result(conn->current_result, conn, NULL);
 			if (!result) {
 				conn->current_result->m.free_result(conn->current_result, TRUE);
 			}
@@ -2000,24 +1959,24 @@ MYSQLND_METHOD(mysqlnd_conn_data, tx_rollback)(MYSQLND_CONN_DATA * conn)
 static void
 MYSQLND_METHOD(mysqlnd_conn_data, tx_cor_options_to_string)(const MYSQLND_CONN_DATA * const conn, smart_str * str, const unsigned int mode)
 {
-	if (mode & TRANS_COR_AND_CHAIN && !(mode & TRANS_COR_AND_NO_CHAIN)) {
+	if ((mode & TRANS_COR_AND_CHAIN) && !(mode & TRANS_COR_AND_NO_CHAIN)) {
 		if (str->s && ZSTR_LEN(str->s)) {
 			smart_str_appendl(str, " ", sizeof(" ") - 1);
 		}
 		smart_str_appendl(str, "AND CHAIN", sizeof("AND CHAIN") - 1);
-	} else if (mode & TRANS_COR_AND_NO_CHAIN && !(mode & TRANS_COR_AND_CHAIN)) {
+	} else if ((mode & TRANS_COR_AND_NO_CHAIN) && !(mode & TRANS_COR_AND_CHAIN)) {
 		if (str->s && ZSTR_LEN(str->s)) {
 			smart_str_appendl(str, " ", sizeof(" ") - 1);
 		}
 		smart_str_appendl(str, "AND NO CHAIN", sizeof("AND NO CHAIN") - 1);
 	}
 
-	if (mode & TRANS_COR_RELEASE && !(mode & TRANS_COR_NO_RELEASE)) {
+	if ((mode & TRANS_COR_RELEASE) && !(mode & TRANS_COR_NO_RELEASE)) {
 		if (str->s && ZSTR_LEN(str->s)) {
 			smart_str_appendl(str, " ", sizeof(" ") - 1);
 		}
 		smart_str_appendl(str, "RELEASE", sizeof("RELEASE") - 1);
-	} else if (mode & TRANS_COR_NO_RELEASE && !(mode & TRANS_COR_RELEASE)) {
+	} else if ((mode & TRANS_COR_NO_RELEASE) && !(mode & TRANS_COR_RELEASE)) {
 		if (str->s && ZSTR_LEN(str->s)) {
 			smart_str_appendl(str, " ", sizeof(" ") - 1);
 		}
@@ -2035,7 +1994,7 @@ mysqlnd_escape_string_for_tx_name_in_comment(const char * const name)
 	char * ret = NULL;
 	DBG_ENTER("mysqlnd_escape_string_for_tx_name_in_comment");
 	if (name) {
-		zend_bool warned = FALSE;
+		bool warned = FALSE;
 		const char * p_orig = name;
 		char * p_copy;
 		p_copy = ret = mnd_emalloc(strlen(name) + 1 + 2 + 2 + 1); /* space, open, close, NullS */
@@ -2057,7 +2016,7 @@ mysqlnd_escape_string_for_tx_name_in_comment(const char * const name)
 			{
 				*p_copy++ = v;
 			} else if (warned == FALSE) {
-				php_error_docref(NULL, E_WARNING, "Transaction name truncated. Must be only [0-9A-Za-z\\-_=]+");
+				php_error_docref(NULL, E_WARNING, "Transaction name has been truncated, since it can only contain the A-Z, a-z, 0-9, \"\\\", \"-\", \"_\", and \"=\" characters");
 				warned = TRUE;
 			}
 			++p_orig;
@@ -2073,7 +2032,7 @@ mysqlnd_escape_string_for_tx_name_in_comment(const char * const name)
 
 /* {{{ mysqlnd_conn_data::tx_commit_ex */
 static enum_func_status
-MYSQLND_METHOD(mysqlnd_conn_data, tx_commit_or_rollback)(MYSQLND_CONN_DATA * conn, const zend_bool commit, const unsigned int flags, const char * const name)
+MYSQLND_METHOD(mysqlnd_conn_data, tx_commit_or_rollback)(MYSQLND_CONN_DATA * conn, const bool commit, const unsigned int flags, const char * const name)
 {
 	const size_t this_func = STRUCT_OFFSET(MYSQLND_CLASS_METHODS_TYPE(mysqlnd_conn_data), tx_commit_or_rollback);
 	enum_func_status ret = FAIL;
@@ -2132,23 +2091,16 @@ MYSQLND_METHOD(mysqlnd_conn_data, tx_begin)(MYSQLND_CONN_DATA * conn, const unsi
 				}
 				smart_str_appendl(&tmp_str, "WITH CONSISTENT SNAPSHOT", sizeof("WITH CONSISTENT SNAPSHOT") - 1);
 			}
-			if (mode & (TRANS_START_READ_WRITE | TRANS_START_READ_ONLY)) {
-				zend_ulong server_version = conn->m->get_server_version(conn);
-				if (server_version < 50605L) {
-					php_error_docref(NULL, E_WARNING, "This server version doesn't support 'READ WRITE' and 'READ ONLY'. Minimum 5.6.5 is required");
-					smart_str_free(&tmp_str);
-					break;
-				} else if (mode & TRANS_START_READ_WRITE) {
-					if (tmp_str.s && ZSTR_LEN(tmp_str.s)) {
-						smart_str_appendl(&tmp_str, ", ", sizeof(", ") - 1);
-					}
-					smart_str_appendl(&tmp_str, "READ WRITE", sizeof("READ WRITE") - 1);
-				} else if (mode & TRANS_START_READ_ONLY) {
-					if (tmp_str.s && ZSTR_LEN(tmp_str.s)) {
-						smart_str_appendl(&tmp_str, ", ", sizeof(", ") - 1);
-					}
-					smart_str_appendl(&tmp_str, "READ ONLY", sizeof("READ ONLY") - 1);
+			if (mode & TRANS_START_READ_WRITE) {
+				if (tmp_str.s && ZSTR_LEN(tmp_str.s)) {
+					smart_str_appendl(&tmp_str, ", ", sizeof(", ") - 1);
 				}
+				smart_str_appendl(&tmp_str, "READ WRITE", sizeof("READ WRITE") - 1);
+			} else if (mode & TRANS_START_READ_ONLY) {
+				if (tmp_str.s && ZSTR_LEN(tmp_str.s)) {
+					smart_str_appendl(&tmp_str, ", ", sizeof(", ") - 1);
+				}
+				smart_str_appendl(&tmp_str, "READ ONLY", sizeof("READ ONLY") - 1);
 			}
 			smart_str_0(&tmp_str);
 
@@ -2167,6 +2119,11 @@ MYSQLND_METHOD(mysqlnd_conn_data, tx_begin)(MYSQLND_CONN_DATA * conn, const unsi
 				}
 				ret = conn->m->query(conn, query, query_len);
 				mnd_sprintf_free(query);
+				if (ret && mode & (TRANS_START_READ_WRITE | TRANS_START_READ_ONLY) && mysqlnd_stmt_errno(conn) == 1064) {
+					SET_CLIENT_ERROR(conn->error_info, CR_NOT_IMPLEMENTED, UNKNOWN_SQLSTATE,
+						"This server version doesn't support 'READ WRITE' and 'READ ONLY'. Minimum 5.6.5 is required");
+					break;
+				}
 			}
 		} while (0);
 		conn->m->local_tx_end(conn, this_func, ret);
@@ -2406,7 +2363,7 @@ static void
 MYSQLND_METHOD_PRIVATE(mysqlnd_conn, dtor)(MYSQLND * conn)
 {
 	DBG_ENTER("mysqlnd_conn::dtor");
-	DBG_INF_FMT("conn=%llu", conn->data->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->data->thread_id);
 
 	conn->data->m->free_reference(conn->data);
 
@@ -2426,7 +2383,7 @@ MYSQLND_METHOD(mysqlnd_conn, close)(MYSQLND * conn_handle, const enum_connection
 	enum_func_status ret = FAIL;
 
 	DBG_ENTER("mysqlnd_conn::close");
-	DBG_INF_FMT("conn=%llu", conn->thread_id);
+	DBG_INF_FMT("conn=%" PRIu64, conn->thread_id);
 
 	if (PASS == conn->m->local_tx_start(conn, this_func)) {
 		if (GET_CONNECTION_STATE(&conn->state) >= CONN_READY) {
@@ -2518,7 +2475,7 @@ mysqlnd_stream_array_to_fd_set(MYSQLND ** conn_array, fd_set * fds, php_socket_t
 		 * is not displayed.
 		 * */
 		stream = (*p)->data->vio->data->m.get_stream((*p)->data->vio);
-		DBG_INF_FMT("conn=%llu stream=%p", (*p)->data->thread_id, stream);
+		DBG_INF_FMT("conn=%" PRIu64 " stream=%p", (*p)->data->thread_id, stream);
 		if (stream != NULL &&
 			SUCCESS == php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL, (void*)&this_fd, 1) &&
 			ZEND_VALID_SOCKET(this_fd))
@@ -2545,13 +2502,13 @@ mysqlnd_stream_array_from_fd_set(MYSQLND ** conn_array, fd_set * fds)
 	php_socket_t this_fd;
 	php_stream *stream = NULL;
 	unsigned int ret = 0;
-	zend_bool disproportion = FALSE;
+	bool disproportion = FALSE;
 	MYSQLND **fwd = conn_array, **bckwd = conn_array;
 	DBG_ENTER("mysqlnd_stream_array_from_fd_set");
 
 	while (*fwd) {
 		stream = (*fwd)->data->vio->data->m.get_stream((*fwd)->data->vio);
-		DBG_INF_FMT("conn=%llu stream=%p", (*fwd)->data->thread_id, stream);
+		DBG_INF_FMT("conn=%" PRIu64 " stream=%p", (*fwd)->data->thread_id, stream);
 		if (stream != NULL && SUCCESS == php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL,
 										(void*)&this_fd, 1) && ZEND_VALID_SOCKET(this_fd)) {
 			if (PHP_SAFE_FD_ISSET(this_fd, fds)) {
@@ -2672,7 +2629,7 @@ PHPAPI MYSQLND * mysqlnd_connection_connect(MYSQLND * conn_handle,
 						)
 {
 	enum_func_status ret = FAIL;
-	zend_bool self_alloced = FALSE;
+	bool self_alloced = FALSE;
 	MYSQLND_CSTRING hostname = { host, host? strlen(host) : 0 };
 	MYSQLND_CSTRING username = { user, user? strlen(user) : 0 };
 	MYSQLND_CSTRING password = { passwd, passwd_len };
@@ -2709,7 +2666,7 @@ PHPAPI MYSQLND * mysqlnd_connection_connect(MYSQLND * conn_handle,
 
 /* {{{ mysqlnd_connection_init */
 PHPAPI MYSQLND *
-mysqlnd_connection_init(const size_t client_flags, const zend_bool persistent, MYSQLND_CLASS_METHODS_TYPE(mysqlnd_object_factory) *object_factory)
+mysqlnd_connection_init(const size_t client_flags, const bool persistent, MYSQLND_CLASS_METHODS_TYPE(mysqlnd_object_factory) *object_factory)
 {
 	MYSQLND_CLASS_METHODS_TYPE(mysqlnd_object_factory) *factory = object_factory? object_factory : &MYSQLND_CLASS_METHOD_TABLE_NAME(mysqlnd_object_factory);
 	MYSQLND * ret;

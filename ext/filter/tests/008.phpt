@@ -1,7 +1,7 @@
 --TEST--
 filter_list()
---SKIPIF--
-<?php if (!extension_loaded("filter")) die("skip"); ?>
+--EXTENSIONS--
+filter
 --FILE--
 <?php
 
@@ -9,7 +9,7 @@ var_dump(filter_list());
 
 echo "Done\n";
 ?>
---EXPECTF--
+--EXPECT--
 array(21) {
   [0]=>
   string(3) "int"

@@ -4,10 +4,6 @@ Test file_get_contents() function : error conditions
 Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
-/* Prototype: string file_get_contents( string $filename{, bool $use_include_path[,
- *                                      resource $context[, int $offset[, int $maxlen]]]] )
- * Description: Reads entire file into a string
- */
 
 echo "*** Testing error conditions ***\n";
 
@@ -51,6 +47,6 @@ if(file_exists($file_path."/file_put_contents1.tmp")) {
 Warning: file_get_contents(/no/such/file/or/dir): Failed to open stream: No such file or directory in %s on line %d
 
 -- Testing for invalid negative maxlen values --
-file_get_contents(): Argument #5 ($maxlen) must be greater than or equal to 0
+file_get_contents(): Argument #5 ($length) must be greater than or equal to 0
 
 *** Done ***

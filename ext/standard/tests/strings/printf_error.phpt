@@ -2,11 +2,6 @@
 Test printf() function : error conditions
 --FILE--
 <?php
-/* Prototype  : int printf  ( string $format  [, mixed $args  [, mixed $...  ]] )
- * Description: Produces output according to format .
- * Source code: ext/standard/formatted_print.c
- */
-
 echo "*** Testing printf() : error conditions ***\n";
 
 // Zero arguments
@@ -61,22 +56,22 @@ try {
 }
 
 ?>
---EXPECTF--
+--EXPECT--
 *** Testing printf() : error conditions ***
 
 -- Testing printf() function with Zero arguments --
-printf() expects at least 1 parameter, 0 given
+printf() expects at least 1 argument, 0 given
 
 -- Testing printf() function with less than expected no. of arguments --
 
 -- Call printf with one argument less than expected --
-2 parameters are required, 1 given
-3 parameters are required, 2 given
-4 parameters are required, 3 given
+2 arguments are required, 1 given
+3 arguments are required, 2 given
+4 arguments are required, 3 given
 
 -- Call printf with two argument less than expected --
-3 parameters are required, 1 given
-4 parameters are required, 2 given
+3 arguments are required, 1 given
+4 arguments are required, 2 given
 
 -- Call printf with three argument less than expected --
-4 parameters are required, 1 given
+4 arguments are required, 1 given

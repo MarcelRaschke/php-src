@@ -3,7 +3,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -89,7 +89,7 @@ U_CFUNC PHP_FUNCTION(intltz_from_date_time_zone)
 		RETURN_NULL();
 	}
 
-	tz = timezone_convert_datetimezone(tzobj->type, tzobj, FALSE, NULL,
+	tz = timezone_convert_datetimezone(tzobj->type, tzobj, false, NULL,
 		"intltz_from_date_time_zone");
 	if (tz == NULL) {
 		RETURN_NULL();
@@ -158,7 +158,7 @@ int_offset:
 		}
 	} else if (Z_TYPE_P(arg) == IS_DOUBLE) {
 double_offset:
-		convert_to_long_ex(arg);
+		convert_to_long(arg);
 		goto int_offset;
 	} else if (Z_TYPE_P(arg) == IS_OBJECT || Z_TYPE_P(arg) == IS_STRING) {
 		zend_long lval;
@@ -224,7 +224,7 @@ U_CFUNC PHP_FUNCTION(intltz_create_time_zone_id_enumeration)
 	size_t	  region_len	= 0;
 	int32_t	  offset,
 			 *offsetp	= NULL;
-	zend_bool arg3isnull = 1;
+	bool arg3isnull = 1;
 
 	intl_error_reset(NULL);
 
@@ -411,7 +411,7 @@ U_CFUNC PHP_FUNCTION(intltz_use_daylight_time)
 U_CFUNC PHP_FUNCTION(intltz_get_offset)
 {
 	double		date;
-	zend_bool	local;
+	bool	local;
 	zval		*rawOffsetArg,
 				*dstOffsetArg;
 	int32_t		rawOffset,
@@ -484,7 +484,7 @@ static const TimeZone::EDisplayType display_types[] = {
 
 U_CFUNC PHP_FUNCTION(intltz_get_display_name)
 {
-	zend_bool	daylight		= 0;
+	bool	daylight		= 0;
 	zend_long	display_type	= TimeZone::LONG;
 	const char *locale_str		= NULL;
 	size_t		dummy			= 0;
@@ -599,9 +599,7 @@ U_CFUNC PHP_FUNCTION(intltz_get_error_message)
 }
 
 #if U_ICU_VERSION_MAJOR_NUM >= 52
-/* {{{ proto string IntlTimeZone::getWindowsID(string $timezone)
-       proto string intltz_get_windows_id(string $timezone)
-Translate a system timezone (e.g. "America/Los_Angeles" into a
+/* {{{ Translate a system timezone (e.g. "America/Los_Angeles" into a
 Windows Timezone (e.g. "Pacific Standard Time")
  */
 U_CFUNC PHP_FUNCTION(intltz_get_windows_id)
@@ -637,9 +635,7 @@ U_CFUNC PHP_FUNCTION(intltz_get_windows_id)
 }
 /* }}} */
 
-/* {{{ proto string IntlTimeZone::getIDForWindowsID(string $timezone[, string $region = NULL])
-       proto string intltz_get_id_for_windows_id(string $timezone[, string $region = NULL])
-Translate a windows timezone (e.g. "Pacific Time Zone" into a
+/* {{{ Translate a windows timezone (e.g. "Pacific Time Zone" into a
 System Timezone (e.g. "America/Los_Angeles")
  */
 U_CFUNC PHP_FUNCTION(intltz_get_id_for_windows_id)
@@ -648,7 +644,7 @@ U_CFUNC PHP_FUNCTION(intltz_get_id_for_windows_id)
 	UnicodeString uWinID, uID;
 	UErrorCode error;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "S|S", &winID, &region) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "S|S!", &winID, &region) == FAILURE) {
 		RETURN_THROWS();
 	}
 

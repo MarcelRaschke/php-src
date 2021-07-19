@@ -50,11 +50,6 @@ try {
 echo "\n*** Output for scalar argument ***\n";
 printf(3);
 
-/* NULL argument */
-echo "\n*** Output for NULL as argument ***\n";
-printf(NULL);
-
-
 /* Float type variations */
 
 $counter = 1;
@@ -207,7 +202,11 @@ echo"\n\n*** Output for precision value more than maximum ***\n";
 printf("%.988f",1.23456789e10);
 
 echo"\n\n*** Output for invalid width(-15) specifier ***\n";
-printf("%030.-15s", $tempstring);
+try {
+    printf("%030.-15s", $tempstring);
+} catch (ValueError $e) {
+    echo $e->getMessage();
+}
 
 echo"\n\n*** Output for '%F' as the format parameter ***\n";
 printf("%F",1.23456789e10);
@@ -234,14 +233,12 @@ printf("%d", $tempstring);
 ?>
 --EXPECTF--
 *** Output for zero argument ***
-printf() expects at least 1 parameter, 0 given
+printf() expects at least 1 argument, 0 given
 
 *** Output for insufficient number of arguments ***
-Error found: 5 parameters are required, 3 given
+Error found: 5 arguments are required, 3 given
 *** Output for scalar argument ***
 3
-*** Output for NULL as argument ***
-
 
 *** Output for float type ***
 
@@ -489,8 +486,8 @@ Array
     [4] => 99
 )
 
- 
- 
+%0
+%0
 C
 ½
 c
@@ -598,7 +595,7 @@ Array
 (
     [0] => %5s
     [1] => %-5s
-    [2] => %05s
+    [2] => %r%%r05s
     [3] => %'#5s
 )
 
@@ -679,7 +676,7 @@ Notice: printf(): Requested precision of 988 digits was truncated to PHP maximum
 12345678900.0000000000%d
 
 *** Output for invalid width(-15) specifier ***
-15s
+Unknown format specifier "-"
 
 *** Output for '%F' as the format parameter ***
 12345678900.000000

@@ -1,7 +1,7 @@
 --TEST--
 FFI 013: Declaration priorities and constrains
---SKIPIF--
-<?php require_once('skipif.inc'); ?>
+--EXTENSIONS--
+ffi
 --INI--
 ffi.enable=1
 --FILE--
@@ -57,8 +57,8 @@ try {
 int(1)
 int(2)
 int(3)
-FFI\ParserException: 'void' type is not allowed at line 1
-FFI\ParserException: 'void' type is not allowed at line 1
+FFI\ParserException: void type is not allowed at line 1
+FFI\ParserException: void type is not allowed at line 1
 FFI\ParserException: Function returning array is not allowed at line 1
 FFI\ParserException: Array of functions is not allowed at line 1
 FFI\ParserException: Function returning function is not allowed at line 1

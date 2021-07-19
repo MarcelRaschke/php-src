@@ -2,11 +2,6 @@
 Test sprintf() function : usage variations - unexpected values for format argument
 --FILE--
 <?php
-/* Prototype  : string sprintf(string $format [, mixed $arg1 [, mixed ...]])
- * Description: Return a formatted string
- * Source code: ext/standard/formatted_print.c
-*/
-
 /*
 * Testing sprintf() : with different unexpected values for format argument other than the strings
 */
@@ -16,10 +11,6 @@ echo "*** Testing sprintf() : with unexpected values for format argument ***\n";
 // initialing required variables
 $arg1 = "second arg";
 $arg2 = "third arg";
-
-//get an unset variable
-$unset_var = 10;
-unset ($unset_var);
 
 // declaring class
 class sample
@@ -55,10 +46,6 @@ $values = array(
       array(1, 2),
       array('color' => 'red', 'item' => 'pen'),
 
-      // null data
-      NULL,
-      null,
-
       // boolean data
       true,
       false,
@@ -71,12 +58,6 @@ $values = array(
 
       // object data
       new sample(),
-
-      // undefined data
-      @$undefined_var,
-
-      // unset data
-      @$unset_var,
 
       // resource data
       $file_handle
@@ -191,9 +172,9 @@ sprintf(): Argument #1 ($format) must be of type string, array given
 sprintf(): Argument #1 ($format) must be of type string, array given
 
 -- Iteration 15 --
-string(0) ""
-string(0) ""
-string(0) ""
+string(1) "1"
+string(1) "1"
+string(1) "1"
 
 -- Iteration 16 --
 string(0) ""
@@ -211,9 +192,9 @@ string(0) ""
 string(0) ""
 
 -- Iteration 19 --
-string(1) "1"
-string(1) "1"
-string(1) "1"
+string(0) ""
+string(0) ""
+string(0) ""
 
 -- Iteration 20 --
 string(0) ""
@@ -221,31 +202,11 @@ string(0) ""
 string(0) ""
 
 -- Iteration 21 --
-string(0) ""
-string(0) ""
-string(0) ""
+string(6) "Object"
+string(6) "Object"
+string(6) "Object"
 
 -- Iteration 22 --
-string(0) ""
-string(0) ""
-string(0) ""
-
--- Iteration 23 --
-string(6) "Object"
-string(6) "Object"
-string(6) "Object"
-
--- Iteration 24 --
-string(0) ""
-string(0) ""
-string(0) ""
-
--- Iteration 25 --
-string(0) ""
-string(0) ""
-string(0) ""
-
--- Iteration 26 --
 sprintf(): Argument #1 ($format) must be of type string, resource given
 sprintf(): Argument #1 ($format) must be of type string, resource given
 sprintf(): Argument #1 ($format) must be of type string, resource given

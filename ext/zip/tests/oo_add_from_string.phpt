@@ -1,9 +1,10 @@
 --TEST--
 ziparchive::addFromString and FL_OVERWRITE
+--EXTENSIONS--
+zip
 --SKIPIF--
 <?php
 /* $Id$ */
-if(!extension_loaded('zip')) die('skip');
 ?>
 --FILE--
 <?php
@@ -31,10 +32,10 @@ var_dump($zip->addFromString('entry1.txt', __FILE__, ZipArchive::FL_OVERWRITE));
 var_dump($zip->status == ZipArchive::ER_OK);
 
 if ($zip->status == ZipArchive::ER_OK) {
-	dump_entries_name($zip);
-	$zip->close();
+    dump_entries_name($zip);
+    $zip->close();
 } else {
-	echo "failed\n";
+    echo "failed\n";
 }
 ?>
 Done
@@ -44,7 +45,7 @@ $dirname = __DIR__ . '/oo_add_from_string_dir/';
 unlink($dirname . 'tmp.zip');
 rmdir($dirname);
 ?>
---EXPECTF--
+--EXPECT--
 bool(true)
 bool(true)
 bool(false)

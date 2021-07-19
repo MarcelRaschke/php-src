@@ -49,13 +49,9 @@ function showInfo($name) {
         echo $e->getMessage() . "\n";
         return;
     }
-    try {
-        var_dump($rp);
-        var_dump($rp->getValue($myC));
-    } catch (Exception $e) {
-        echo $e->getMessage() . "\n";
-        return;
-    }
+
+    var_dump($rp);
+    var_dump($rp->getValue($myC));
 }
 
 
@@ -110,9 +106,9 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "A"
 }
-Cannot access non-public member C::$protA
+string(10) "protA in A"
 --- (Reflecting on privA) ---
-Property privA does not exist
+Property C::$privA does not exist
 --- (Reflecting on pubB) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -128,9 +124,9 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "B"
 }
-Cannot access non-public member C::$protB
+string(10) "protB in B"
 --- (Reflecting on privB) ---
-Property privB does not exist
+Property C::$privB does not exist
 --- (Reflecting on pubC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -146,7 +142,7 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "C"
 }
-Cannot access non-public member C::$protC
+string(10) "protC in C"
 --- (Reflecting on privC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -154,9 +150,9 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "C"
 }
-Cannot access non-public member C::$privC
+string(10) "privC in C"
 --- (Reflecting on doesNotExist) ---
-Property doesNotExist does not exist
+Property C::$doesNotExist does not exist
 --- (Reflecting on A::pubC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -172,7 +168,7 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "A"
 }
-Cannot access non-public member A::$protC
+string(10) "protC in A"
 --- (Reflecting on A::privC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -180,7 +176,7 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "A"
 }
-Cannot access non-public member A::$privC
+string(10) "privC in A"
 --- (Reflecting on B::pubC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -196,7 +192,7 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "B"
 }
-Cannot access non-public member B::$protC
+string(10) "protC in B"
 --- (Reflecting on B::privC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -204,7 +200,7 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "B"
 }
-Cannot access non-public member B::$privC
+string(10) "privC in B"
 --- (Reflecting on c::pubC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -214,7 +210,7 @@ object(ReflectionProperty)#%d (2) {
 }
 string(9) "pubC in C"
 --- (Reflecting on c::PUBC) ---
-Property PUBC does not exist
+Property C::$PUBC does not exist
 --- (Reflecting on C::pubC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -230,7 +226,7 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "C"
 }
-Cannot access non-public member C::$protC
+string(10) "protC in C"
 --- (Reflecting on C::privC) ---
 object(ReflectionProperty)#%d (2) {
   ["name"]=>
@@ -238,14 +234,14 @@ object(ReflectionProperty)#%d (2) {
   ["class"]=>
   string(1) "C"
 }
-Cannot access non-public member C::$privC
+string(10) "privC in C"
 --- (Reflecting on X::pubC) ---
-Fully qualified property name X::pubC does not specify a base class of C
+Fully qualified property name X::$pubC does not specify a base class of C
 --- (Reflecting on X::protC) ---
-Fully qualified property name X::protC does not specify a base class of C
+Fully qualified property name X::$protC does not specify a base class of C
 --- (Reflecting on X::privC) ---
-Fully qualified property name X::privC does not specify a base class of C
+Fully qualified property name X::$privC does not specify a base class of C
 --- (Reflecting on X::doesNotExist) ---
-Fully qualified property name X::doesNotExist does not specify a base class of C
+Fully qualified property name X::$doesNotExist does not specify a base class of C
 --- (Reflecting on doesNotexist::doesNotExist) ---
-Class doesnotexist does not exist
+Class "doesnotexist" does not exist

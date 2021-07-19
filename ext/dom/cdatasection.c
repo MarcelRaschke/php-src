@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -20,9 +20,8 @@
 #endif
 
 #include "php.h"
-#if HAVE_LIBXML && HAVE_DOM
+#if defined(HAVE_LIBXML) && defined(HAVE_DOM)
 #include "php_dom.h"
-#include "cdatasection_arginfo.h"
 
 /*
 * class DOMCdataSection extends DOMText
@@ -31,13 +30,8 @@
 * Since:
 */
 
-const zend_function_entry php_dom_cdatasection_class_functions[] = {
-	PHP_ME(domcdatasection, __construct, arginfo_class_DOMCdataSection___construct, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
-/* {{{ proto DOMCdataSection::__construct(string value); */
-PHP_METHOD(domcdatasection, __construct)
+/* {{{ */
+PHP_METHOD(DOMCdataSection, __construct)
 {
 	xmlNodePtr nodep = NULL, oldnode = NULL;
 	dom_object *intern;
@@ -52,7 +46,7 @@ PHP_METHOD(domcdatasection, __construct)
 
 	if (!nodep) {
 		php_dom_throw_error(INVALID_STATE_ERR, 1);
-		return;
+		RETURN_THROWS();
 	}
 
 	intern = Z_DOMOBJ_P(ZEND_THIS);

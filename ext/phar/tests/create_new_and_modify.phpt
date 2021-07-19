@@ -1,10 +1,11 @@
 --TEST--
 Phar: create and modify phar
---SKIPIF--
-<?php if (!extension_loaded("phar")) die("skip"); ?>
+--EXTENSIONS--
+phar
 --INI--
 phar.readonly=0
 phar.require_hash=1
+opcache.validate_timestamps=1
 --FILE--
 <?php
 

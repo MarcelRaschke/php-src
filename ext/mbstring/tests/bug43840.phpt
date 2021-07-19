@@ -1,17 +1,9 @@
 --TEST--
 Test mb_strpos() function : mb_strpos bounds check is byte count rather than a character count
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_strpos') or die("skip mb_strpos() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
-/* Prototype  : int mb_strpos(string $haystack, string $needle [, int $offset [, string $encoding]])
- * Description: Find position of first occurrence of a string within another
- * Source code: ext/mbstring/mbstring.c
- */
-
 /*
  * mb_strpos bounds check is byte count rather than a character count:
  * The multibyte string should be returning the same results as the ASCII string.
@@ -54,18 +46,18 @@ bool(false)
 
 -- Offset is 22 --
 --Multibyte String:--
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 --ASCII String:--
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 
 -- Offset is 53 --
 --Multibyte String:--
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 --ASCII String:--
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 
 -- Offset is 54 --
 --Multibyte String:--
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 --ASCII String:--
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)

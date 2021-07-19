@@ -2,9 +2,7 @@
 SPL: Test ArrayObject::ksort() function : basic functionality with array based store
 --FILE--
 <?php
-/* Prototype  : int ArrayObject::ksort()
- * Description: proto int ArrayIterator::ksort()
- * Sort the entries by key.
+/* Sort the entries by key.
  * Source code: ext/spl/spl_array.c
  * Alias to functions:
  */
@@ -37,7 +35,7 @@ object(ArrayObject)#%d (1) {
     int(3)
   }
 }
-ksort(): Argument #2 ($sort_flags) must be of type int, string given
+ArrayObject::ksort(): Argument #1 ($flags) must be of type int, string given
 object(ArrayObject)#2 (1) {
   ["storage":"ArrayObject":private]=>
   array(4) {

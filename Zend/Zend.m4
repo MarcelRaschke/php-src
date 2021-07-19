@@ -146,7 +146,7 @@ _LT_AC_TRY_DLOPEN_SELF([
 ])
 
 dnl Checks for library functions.
-AC_CHECK_FUNCS(getpid kill finite sigsetjmp)
+AC_CHECK_FUNCS(getpid kill sigsetjmp)
 
 ZEND_CHECK_FLOAT_PRECISION
 
@@ -163,16 +163,16 @@ int main()
 		double d = (double) LONG_MIN * LONG_MIN + 2e9;
 
 		if ((long) d == 2e9 && (long) -d == -2e9) {
-			exit(0);
+			return 0;
 		}
 	} else if (sizeof(long) == 8) {
 		double correct = 18e18 - ((double) LONG_MIN * -2); /* Subtract ULONG_MAX + 1 */
 
 		if ((long) 18e18 == correct) { /* On 64-bit, only check between LONG_MAX and ULONG_MAX */
-			exit(0);
+			return 0;
 		}
 	}
-	exit(1);
+	return 1;
 }
 ]])], [
   AC_DEFINE([ZEND_DVAL_TO_LVAL_CAST_OK], 1, [Define if double cast to long preserves least significant bits])
@@ -190,23 +190,8 @@ dnl LIBZEND_OTHER_CHECKS
 dnl
 AC_DEFUN([LIBZEND_OTHER_CHECKS],[
 
-AC_ARG_ENABLE([zts],
-  [AS_HELP_STRING([--enable-zts],
-    [Enable thread safety])],
-  [ZEND_ZTS=$enableval],
-  [ZEND_ZTS=no])
-
-AC_ARG_ENABLE([inline-optimization],
-  [AS_HELP_STRING([--disable-inline-optimization],
-    [If building zend_execute.lo fails, try this switch])],
-  [ZEND_INLINE_OPTIMIZATION=$enableval],
-  [ZEND_INLINE_OPTIMIZATION=yes])
-
 AC_MSG_CHECKING(whether to enable thread-safety)
 AC_MSG_RESULT($ZEND_ZTS)
-
-AC_MSG_CHECKING(whether to enable inline optimization for GCC)
-AC_MSG_RESULT($ZEND_INLINE_OPTIMIZATION)
 
 AC_MSG_CHECKING(whether to enable Zend debugging)
 AC_MSG_RESULT($ZEND_DEBUG)
@@ -221,7 +206,17 @@ else
   AC_DEFINE(ZEND_DEBUG,0,[ ])
 fi
 
-test -n "$GCC" && CFLAGS="$CFLAGS -Wall -Wno-strict-aliasing"
+test -n "$GCC" && CFLAGS="-Wall -Wextra -Wno-strict-aliasing -Wno-unused-parameter -Wno-sign-compare $CFLAGS"
+dnl Check if compiler supports -Wno-clobbered (only GCC)
+AX_CHECK_COMPILE_FLAG([-Wno-clobbered], CFLAGS="-Wno-clobbered $CFLAGS", , [-Werror])
+dnl Check for support for implicit fallthrough level 1, also add after previous CFLAGS as level 3 is enabled in -Wextra
+AX_CHECK_COMPILE_FLAG([-Wimplicit-fallthrough=1], CFLAGS="$CFLAGS -Wimplicit-fallthrough=1", , [-Werror])
+AX_CHECK_COMPILE_FLAG([-Wduplicated-cond], CFLAGS="-Wduplicated-cond $CFLAGS", , [-Werror])
+AX_CHECK_COMPILE_FLAG([-Wlogical-op], CFLAGS="-Wlogical-op $CFLAGS", , [-Werror])
+AX_CHECK_COMPILE_FLAG([-Wformat-truncation], CFLAGS="-Wformat-truncation $CFLAGS", , [-Werror])
+AX_CHECK_COMPILE_FLAG([-Wstrict-prototypes], CFLAGS="-Wstrict-prototypes $CFLAGS", , [-Werror])
+AX_CHECK_COMPILE_FLAG([-fno-common], CFLAGS="-fno-common $CFLAGS", , [-Werror])
+
 test -n "$DEBUG_CFLAGS" && CFLAGS="$CFLAGS $DEBUG_CFLAGS"
 
 if test "$ZEND_ZTS" = "yes"; then
@@ -229,17 +224,7 @@ if test "$ZEND_ZTS" = "yes"; then
   CFLAGS="$CFLAGS -DZTS"
 fi
 
-changequote({,})
-if test -n "$GCC" && test "$ZEND_INLINE_OPTIMIZATION" != "yes"; then
-  INLINE_CFLAGS=`echo $ac_n "$CFLAGS $ac_c" | sed s/-O[0-9s]*//`
-else
-  INLINE_CFLAGS="$CFLAGS"
-fi
-changequote([,])
-
 AC_C_INLINE
-
-AC_SUBST(INLINE_CFLAGS)
 
 AC_MSG_CHECKING(target system is Darwin)
 if echo "$target" | grep "darwin" > /dev/null; then
@@ -284,7 +269,7 @@ int main()
   fprintf(fp, "%d %d\n", ZEND_MM_ALIGNMENT, zeros);
   fclose(fp);
 
-  exit(0);
+  return 0;
 }
 ]])], [
   LIBZEND_MM_ALIGN=`cat conftest.zend | cut -d ' ' -f 1`
@@ -293,7 +278,8 @@ int main()
   AC_DEFINE_UNQUOTED(ZEND_MM_ALIGNMENT_LOG2, $LIBZEND_MM_ALIGN_LOG2, [ ])
 ], [], [
   dnl Cross compilation needs something here.
-  LIBZEND_MM_ALIGN=8
+  AC_DEFINE_UNQUOTED(ZEND_MM_ALIGNMENT, 8, [ ])
+  AC_DEFINE_UNQUOTED(ZEND_MM_ALIGNMENT_LOG2, 3, [ ])
 ])
 
 AC_MSG_RESULT(done)

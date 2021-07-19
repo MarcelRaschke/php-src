@@ -1,7 +1,7 @@
 --TEST--
 EUC-JP to ISO-2022-JP
---SKIPIF--
-<?php include('skipif.inc'); ?>
+--EXTENSIONS--
+iconv
 --INI--
 error_reporting=2039
 --FILE--
@@ -11,7 +11,7 @@ error_reporting=2039
 function hexdump($str) {
     $len = strlen($str);
     for ($i = 0; $i < $len; ++$i) {
-        printf("%02x", ord($str{$i}));
+        printf("%02x", ord($str[$i]));
     }
     print "\n";
 }

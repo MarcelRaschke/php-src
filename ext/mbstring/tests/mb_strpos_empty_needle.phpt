@@ -1,10 +1,7 @@
 --TEST--
 Test mb_strpos() function : with empty needle
---SKIPIF--
-<?php
-extension_loaded('mbstring') or die('skip');
-function_exists('mb_strpos') or die("skip mb_strpos() is not available in this build");
-?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
 
@@ -72,10 +69,10 @@ int(2)
 int(5)
 
 -- ASCII string with out of bound positive offset --
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 
 -- ASCII string with out of bound negative offset --
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 
 -- Multi-byte string without offset --
 int(0)
@@ -87,7 +84,7 @@ int(2)
 int(19)
 
 -- Multi-byte string with out of bound positive offset --
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
 
 -- Multi-byte string with out of bound negative offset --
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)

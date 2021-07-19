@@ -1,14 +1,14 @@
 --TEST--
 mysqli_poll() & INSERT SELECT
+--EXTENSIONS--
+mysqli
 --SKIPIF--
 <?php
-require_once('skipif.inc');
-require_once('skipifemb.inc');
 require_once('connect.inc');
 require_once('skipifconnectfailure.inc');
 
 if (!$IS_MYSQLND)
-	die("skip mysqlnd only feature, compile PHP using --with-mysqli=mysqlnd");
+    die("skip mysqlnd only feature, compile PHP using --with-mysqli=mysqlnd");
 ?>
 --FILE--
 <?php
@@ -106,7 +106,6 @@ if (!$IS_MYSQLND)
                 // either there is no result (no SELECT) or there is an error
                 if (mysqli_errno($link) > 0) {
                     $saved_errors[$thread_id] = mysqli_errno($link);
-                    printf("[003] '%s' caused %d\n", $links[$thread_id]['query'],	mysqli_errno($link));
                 }
             }
         }
@@ -115,10 +114,13 @@ if (!$IS_MYSQLND)
 
     // Checking if all lines are still usable
     foreach ($links as $thread_id => $link) {
-        if (isset($saved_errors[$thread_id]) &&
-            $saved_errors[$thread_id] != mysqli_errno($link['link'])) {
-            printf("[004] Error state not saved for query '%s', %d != %d\n", $link['query'],
+        if (isset($saved_errors[$thread_id])) {
+            printf("[003] '%s' caused %d\n",
+                $links[$thread_id]['query'], $saved_errors[$thread_id]);
+            if ($saved_errors[$thread_id] != mysqli_errno($link['link'])) {
+                printf("[004] Error state not saved for query '%s', %d != %d\n", $link['query'],
                     $saved_errors[$thread_id], mysqli_errno($link['link']));
+            }
         }
 
         if (!$res = mysqli_query($link['link'], 'SELECT * FROM test WHERE id = 100'))
@@ -164,10 +166,10 @@ if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 
 if (!mysqli_query($link, "DROP TABLE IF EXISTS test"))
-	printf("[c002] Cannot drop table, [%d] %s\n", mysqli_errno($link), mysqli_error($link));
+    printf("[c002] Cannot drop table, [%d] %s\n", mysqli_errno($link), mysqli_error($link));
 
 if (!mysqli_query($link, "DROP TABLE IF EXISTS bogus"))
-	printf("[c002] Cannot drop table, [%d] %s\n", mysqli_errno($link), mysqli_error($link));
+    printf("[c002] Cannot drop table, [%d] %s\n", mysqli_errno($link), mysqli_error($link));
 
 mysqli_query($link, "DROP PROCEDURE IF EXISTS p");
 

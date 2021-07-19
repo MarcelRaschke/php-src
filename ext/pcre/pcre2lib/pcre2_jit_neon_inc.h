@@ -87,6 +87,10 @@ static sljit_u8* SLJIT_FUNC FF_FUN(sljit_u8 *str_end, sljit_u8 *str_ptr, sljit_u
 {
 quad_word qw;
 int_char ic;
+
+SLJIT_UNUSED_ARG(offs1);
+SLJIT_UNUSED_ARG(offs2);
+
 ic.x = chars;
 
 #if defined(FFCS)
@@ -215,7 +219,7 @@ if (p1 < str_ptr)
   }
 else
   data2 = shift_left_n_lanes(data, offs1 - offs2);
-
+ 
 if (compare1_type == compare_match1)
   data = VCEQQ(data, cmp1a);
 else

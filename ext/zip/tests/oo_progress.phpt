@@ -1,9 +1,10 @@
 --TEST--
 registerProgressCallback
+--EXTENSIONS--
+zip
 --SKIPIF--
 <?php
 /* $Id$ */
-if(!extension_loaded('zip')) die('skip');
 if (!method_exists('ZipArchive', 'registerProgressCallback')) die('skip libzip too old');
 ?>
 --INI--
@@ -31,7 +32,7 @@ var_dump($zip->close());
 unlink($file);
 ?>
 Done
---EXPECTF--
+--EXPECT--
 bool(true)
 bool(true)
 start

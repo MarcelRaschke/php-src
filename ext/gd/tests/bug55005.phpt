@@ -1,9 +1,7 @@
 --TEST--
 Bug #55005 (imagepolygon num_points requirement)
---SKIPIF--
-<?php
-if (!extension_loaded('gd')) die('skip gd extension not available');
-?>
+--EXTENSIONS--
+gd
 --FILE--
 <?php
 require_once __DIR__ . '/func.inc';
@@ -17,5 +15,8 @@ trycatch_dump(
 );
 ?>
 --EXPECTF--
-!! [ValueError] Polygon must have at least 3 points
-!! [ValueError] Polygon must have at least 3 points
+Deprecated: imagefilledpolygon(): Using the $num_points parameter is deprecated in %s on line %d
+!! [ValueError] imagefilledpolygon(): Argument #3 ($num_points_or_color) must be greater than or equal to 3
+
+Deprecated: imagepolygon(): Using the $num_points parameter is deprecated in %s on line %d
+!! [ValueError] imagepolygon(): Argument #3 ($num_points_or_color) must be greater than or equal to 3

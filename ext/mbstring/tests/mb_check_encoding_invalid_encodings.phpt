@@ -1,7 +1,7 @@
 --TEST--
 mb_check_encoding() with invalid encodings
---SKIPIF--
-<?php extension_loaded('mbstring') or die('skip mbstring not available'); ?>
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
 
@@ -38,5 +38,5 @@ Using "BAD" as encoding
 mb_check_encoding(): Argument #2 ($encoding) must be a valid encoding, "BAD" given
 mb_check_encoding(): Argument #2 ($encoding) must be a valid encoding, "BAD" given
 Using "pass" as encoding
-mb_check_encoding() does not support the "pass" encoding
-mb_check_encoding() does not support the "pass" encoding
+mb_check_encoding(): Argument #2 ($encoding) must be a valid encoding, "pass" given
+mb_check_encoding(): Argument #2 ($encoding) must be a valid encoding, "pass" given

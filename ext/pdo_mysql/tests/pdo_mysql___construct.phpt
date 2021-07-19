@@ -1,8 +1,9 @@
 --TEST--
 MySQL PDO->__construct() - Generic + DSN
+--EXTENSIONS--
+pdo_mysql
 --SKIPIF--
 <?php
-require_once(__DIR__ . DIRECTORY_SEPARATOR . 'skipif.inc');
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'mysql_pdo_test.inc');
 MySQLPDOTest::skip();
 ?>
@@ -150,7 +151,8 @@ MySQLPDOTest::skip();
             $dsn = MySQLPDOTest::getDSN(array('dbname' => $db), 'dbname=' . $invalid_db);
             try { $db = @new PDO($dsn, $user, $pass); assert(false); printf("%s\n", $dsn); } catch (PDOException $e) {
                 $tmp = $e->getMessage();
-                if (!stristr($tmp, '42000') && !stristr($tmp, '1049'))
+                // 1044 may occur here if running tests using a custom user that does not have access to all databases
+                if (!stristr($tmp, '42000') && !stristr($tmp, '1049') && !stristr($tmp, '1044'))
                     printf("[022] Cannot find proper error codes: %s\n", $tmp);
             }
 

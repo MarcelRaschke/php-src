@@ -5,6 +5,7 @@ assert.active = 1
 assert.warning = 0
 assert.callback = f1
 assert.bail = 0
+assert.exception=0
 --FILE--
 <?php
 function f1()
@@ -67,7 +68,13 @@ var_dump($rao=assert_options(ASSERT_CALLBACK));
 echo "ini.get(\"assert.callback\") => [".ini_get("assert.callback")."]\n\n";
 var_dump($r2=assert(0 != 0));
 echo"\n";
---EXPECTF--
+
+echo "Set callback to something silly\n";
+assert_options(ASSERT_CALLBACK, 3.141);
+var_dump($rao = assert_options(ASSERT_CALLBACK));
+
+?>
+--EXPECT--
 Initial values: assert_options(ASSERT_CALLBACK) => [f1]
 Initial values: ini.get("assert.callback") => [f1]
 f1 called
@@ -124,3 +131,6 @@ ini.get("assert.callback") => [f2]
 
 Class assertion failed 60, "assert(0 != 0)"
 bool(false)
+
+Set callback to something silly
+float(3.141)

@@ -1,11 +1,9 @@
 --TEST--
 Bug #71835 (json_encode sometimes incorrectly detects recursion with JsonSerializable)
---SKIPIF--
-<?php if (!extension_loaded("json")) print "skip"; ?>
 --FILE--
 <?php
 class SomeClass implements JsonSerializable {
-    public function jsonSerialize() {
+    public function jsonSerialize(): mixed {
         return [get_object_vars($this)];
     }
 }
@@ -14,7 +12,7 @@ $arr = [$class];
 var_dump(json_encode($arr));
 
 class SomeClass2 implements JsonSerializable {
-    public function jsonSerialize() {
+    public function jsonSerialize(): mixed {
         return [(array)$this];
     }
 }

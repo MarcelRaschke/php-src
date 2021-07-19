@@ -1,5 +1,7 @@
 --TEST--
 Offset errors for various strpos functions
+--EXTENSIONS--
+mbstring
 --FILE--
 <?php
 
@@ -46,11 +48,11 @@ try {
 
 ?>
 --EXPECT--
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
-Offset not contained in string
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_strpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_strrpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_strrpos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_stripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_strripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)
+mb_strripos(): Argument #3 ($offset) must be contained in argument #1 ($haystack)

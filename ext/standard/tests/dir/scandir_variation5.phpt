@@ -3,17 +3,12 @@ Test scandir() function : usage variations - different directory permissions
 --SKIPIF--
 <?php
 if( substr(PHP_OS, 0, 3) == 'WIN') {
-	die('skip Not for Windows');
+    die('skip Not for Windows');
 }
 require __DIR__ . '/../skipif_root.inc';
 ?>
 --FILE--
 <?php
-/* Prototype  : array scandir(string $dir [, int $sorting_order [, resource $context]])
- * Description: List files & directories inside the specified path
- * Source code: ext/standard/dir.c
- */
-
 /*
  * remove the execute permission from the parent dir and test scandir() on child dir
  * 1. remove write & execute permission from the 1st parent and test scandir()

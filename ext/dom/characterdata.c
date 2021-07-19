@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -20,9 +20,8 @@
 #endif
 
 #include "php.h"
-#if HAVE_LIBXML && HAVE_DOM
+#if defined(HAVE_LIBXML) && defined(HAVE_DOM)
 #include "php_dom.h"
-#include "characterdata_arginfo.h"
 
 /*
 * class DOMCharacterData extends DOMNode
@@ -30,19 +29,6 @@
 * URL: https://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-FF21A306
 * Since:
 */
-
-const zend_function_entry php_dom_characterdata_class_functions[] = {
-	PHP_ME(domcharacterdata, substringData, arginfo_class_DOMCharacterData_substringData, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, appendData, arginfo_class_DOMCharacterData_appendData, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, insertData, arginfo_class_DOMCharacterData_insertData, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, deleteData, arginfo_class_DOMCharacterData_deleteData, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, replaceData, arginfo_class_DOMCharacterData_replaceData, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, remove, arginfo_class_DOMCharacterData_remove, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, after, arginfo_class_DOMCharacterData_after, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, before, arginfo_class_DOMCharacterData_before, ZEND_ACC_PUBLIC)
-	PHP_ME(domcharacterdata, replaceWith, arginfo_class_DOMCharacterData_replaceWith, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
 
 /* {{{ data	string
 readonly=no
@@ -55,7 +41,7 @@ int dom_characterdata_data_read(dom_object *obj, zval *retval)
 	xmlChar *content;
 
 	if (nodep == NULL) {
-		php_dom_throw_error(INVALID_STATE_ERR, 0);
+		php_dom_throw_error(INVALID_STATE_ERR, 1);
 		return FAILURE;
 	}
 
@@ -75,7 +61,7 @@ int dom_characterdata_data_write(dom_object *obj, zval *newval)
 	zend_string *str;
 
 	if (nodep == NULL) {
-		php_dom_throw_error(INVALID_STATE_ERR, 0);
+		php_dom_throw_error(INVALID_STATE_ERR, 1);
 		return FAILURE;
 	}
 
@@ -104,7 +90,7 @@ int dom_characterdata_length_read(dom_object *obj, zval *retval)
 	long length = 0;
 
 	if (nodep == NULL) {
-		php_dom_throw_error(INVALID_STATE_ERR, 0);
+		php_dom_throw_error(INVALID_STATE_ERR, 1);
 		return FAILURE;
 	}
 
@@ -122,11 +108,10 @@ int dom_characterdata_length_read(dom_object *obj, zval *retval)
 
 /* }}} */
 
-/* {{{ proto string dom_characterdata_substring_data(int offset, int count);
-URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-6531BCCF
+/* {{{ URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-6531BCCF
 Since:
 */
-PHP_METHOD(domcharacterdata, substringData)
+PHP_METHOD(DOMCharacterData, substringData)
 {
 	zval       *id;
 	xmlChar    *cur;
@@ -172,11 +157,10 @@ PHP_METHOD(domcharacterdata, substringData)
 }
 /* }}} end dom_characterdata_substring_data */
 
-/* {{{ proto void dom_characterdata_append_data(string arg);
-URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-32791A2F
+/* {{{ URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-32791A2F
 Since:
 */
-PHP_METHOD(domcharacterdata, appendData)
+PHP_METHOD(DOMCharacterData, appendData)
 {
 	zval *id;
 	xmlNode *nodep;
@@ -195,11 +179,10 @@ PHP_METHOD(domcharacterdata, appendData)
 }
 /* }}} end dom_characterdata_append_data */
 
-/* {{{ proto void dom_characterdata_insert_data(int offset, string arg);
-URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-3EDB695F
+/* {{{ URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-3EDB695F
 Since:
 */
-PHP_METHOD(domcharacterdata, insertData)
+PHP_METHOD(DOMCharacterData, insertData)
 {
 	zval *id;
 	xmlChar		*cur, *first, *second;
@@ -245,11 +228,10 @@ PHP_METHOD(domcharacterdata, insertData)
 }
 /* }}} end dom_characterdata_insert_data */
 
-/* {{{ proto void dom_characterdata_delete_data(int offset, int count);
-URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-7C603781
+/* {{{ URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-7C603781
 Since:
 */
-PHP_METHOD(domcharacterdata, deleteData)
+PHP_METHOD(DOMCharacterData, deleteData)
 {
 	zval *id;
 	xmlChar    *cur, *substring, *second;
@@ -301,11 +283,10 @@ PHP_METHOD(domcharacterdata, deleteData)
 }
 /* }}} end dom_characterdata_delete_data */
 
-/* {{{ proto void dom_characterdata_replace_data(int offset, int count, string arg);
-URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-E5CBA7FB
+/* {{{ URL: http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-E5CBA7FB
 Since:
 */
-PHP_METHOD(domcharacterdata, replaceData)
+PHP_METHOD(DOMCharacterData, replaceData)
 {
 	zval *id;
 	xmlChar		*cur, *substring, *second = NULL;
@@ -365,12 +346,11 @@ PHP_METHOD(domcharacterdata, replaceData)
 }
 /* }}} end dom_characterdata_replace_data */
 
-PHP_METHOD(domcharacterdata, remove)
+PHP_METHOD(DOMCharacterData, remove)
 {
 	zval *id = ZEND_THIS;
-	xmlNodePtr children, child;
+	xmlNodePtr child;
 	dom_object *intern;
-	int stricterror;
 
 	if (zend_parse_parameters_none() == FAILURE) {
 		RETURN_THROWS();
@@ -378,42 +358,11 @@ PHP_METHOD(domcharacterdata, remove)
 
 	DOM_GET_OBJ(child, id, xmlNodePtr, intern);
 
-	if (dom_node_children_valid(child) == FAILURE) {
-		RETURN_NULL();
-	}
-
-	stricterror = dom_get_strict_error(intern->document);
-
-	if (dom_node_is_read_only(child) == SUCCESS ||
-		(child->parent != NULL && dom_node_is_read_only(child->parent) == SUCCESS)) {
-		php_dom_throw_error(NO_MODIFICATION_ALLOWED_ERR, stricterror);
-		RETURN_NULL();
-	}
-
-	if (!child->parent) {
-		php_dom_throw_error(NOT_FOUND_ERR, stricterror);
-		RETURN_NULL();
-	}
-
-	children = child->parent->children;
-	if (!children) {
-		php_dom_throw_error(NOT_FOUND_ERR, stricterror);
-		RETURN_NULL();
-	}
-
-	while (children) {
-		if (children == child) {
-			xmlUnlinkNode(child);
-			RETURN_NULL();
-		}
-		children = children->next;
-	}
-
-	php_dom_throw_error(NOT_FOUND_ERR, stricterror);
+	dom_child_node_remove(intern);
 	RETURN_NULL();
 }
 
-PHP_METHOD(domcharacterdata, after)
+PHP_METHOD(DOMCharacterData, after)
 {
 	int argc;
 	zval *args, *id;
@@ -430,7 +379,7 @@ PHP_METHOD(domcharacterdata, after)
 	dom_parent_node_after(intern, args, argc);
 }
 
-PHP_METHOD(domcharacterdata, before)
+PHP_METHOD(DOMCharacterData, before)
 {
 	int argc;
 	zval *args, *id;
@@ -447,7 +396,7 @@ PHP_METHOD(domcharacterdata, before)
 	dom_parent_node_before(intern, args, argc);
 }
 
-PHP_METHOD(domcharacterdata, replaceWith)
+PHP_METHOD(DOMCharacterData, replaceWith)
 {
 	int argc;
 	zval *args, *id;

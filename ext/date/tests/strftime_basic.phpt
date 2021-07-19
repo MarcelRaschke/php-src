@@ -2,12 +2,6 @@
 Test strftime() function : basic functionality
 --FILE--
 <?php
-/* Prototype  : string strftime(string format [, int timestamp])
- * Description: Format a local time/date according to locale settings
- * Source code: ext/date/php_date.c
- * Alias to functions:
- */
-
 echo "*** Testing strftime() : basic functionality ***\n";
 
 date_default_timezone_set("Asia/Calcutta");
@@ -24,5 +18,9 @@ var_dump( strftime($format) );
 ?>
 --EXPECTF--
 *** Testing strftime() : basic functionality ***
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(20) "Aug 08 2008 08:08:08"
+
+Deprecated: Function strftime() is deprecated in %s on line %d
 string(%d) "%s %d %d %d:%d:%d"

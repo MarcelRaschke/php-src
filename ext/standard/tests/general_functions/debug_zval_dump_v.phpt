@@ -2,11 +2,6 @@
 Test debug_zval_dump() function : usage variations
 --FILE--
 <?php
-/* Prototype: void debug_zval_dump ( mixed $variable );
-   Description: Dumps a string representation of an internal zend value
-                to output.
-*/
-
 echo "*** Testing debug_zval_dump() on functions ***\n";
 echo "--- Variation 1: global variable inside a function ---\n";
 $global_var = 10;  //declaring global variable
@@ -193,11 +188,11 @@ NULL
 -- Iteration 4 --
 NULL
 -- Iteration 5 --
-string(7) "TRUE123" refcount(%d)
+string(7) "TRUE123" interned
 -- Iteration 6 --
-string(9) "123string" refcount(%d)
+string(9) "123string" interned
 -- Iteration 7 --
-string(9) "string123" refcount(%d)
+string(9) "string123" interned
 -- Iteration 8 --
-string(10) "NULLstring" refcount(%d)
+string(10) "NULLstring" interned
 Done

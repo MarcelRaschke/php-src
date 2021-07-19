@@ -2,11 +2,6 @@
 Test array_map() function : error conditions
 --FILE--
 <?php
-/* Prototype  : array array_map  ( callback $callback  , array $arr1  [, array $...  ] )
- * Description: Applies the callback to the elements of the given arrays
- * Source code: ext/standard/array.c
- */
-
 echo "*** Testing array_map() : error conditions ***\n";
 
 // Testing array_map with one less than the expected number of arguments
@@ -38,11 +33,11 @@ var_dump( array_map('callback2', $arr1, $arr2, $arr3) );
 
 echo "Done";
 ?>
---EXPECTF--
+--EXPECT--
 *** Testing array_map() : error conditions ***
 
 -- Testing array_map() function with one less than expected no. of arguments --
-Exception: array_map() expects at least 2 parameters, 1 given
+Exception: array_map() expects at least 2 arguments, 1 given
 
 -- Testing array_map() function with less no. of arrays than callback function arguments --
 Exception: Too few arguments to function callback2(), 1 passed and exactly 2 expected

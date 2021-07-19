@@ -1,9 +1,9 @@
 --TEST--
 mysqli_multi_query()
+--EXTENSIONS--
+mysqli
 --SKIPIF--
 <?php
-require_once('skipif.inc');
-require_once('skipifemb.inc');
 require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
@@ -112,9 +112,9 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-	require_once("clean_table.inc");
+    require_once("clean_table.inc");
 ?>
---EXPECTF--
+--EXPECT--
 [006] 3
 [008] 0
 [009] [2014] Commands out of sync; you can't run this command now

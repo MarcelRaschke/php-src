@@ -3,6 +3,8 @@ Test session_set_save_handler() : full handler implementation
 --INI--
 session.save_handler=files
 session.name=PHPSESSID
+--EXTENSIONS--
+session
 --SKIPIF--
 <?php include('skipif.inc'); ?>
 --FILE--
@@ -10,18 +12,12 @@ session.name=PHPSESSID
 
 ob_start();
 
-/*
- * Prototype : bool session_set_save_handler(SessionHandler $handler [, bool $register_shutdown_function = true])
- * Description : Sets user-level session storage functions
- * Source code : ext/session/session.c
- */
-
 echo "*** Testing session_set_save_handler() : full handler implementation ***\n";
 
 class MySession2 extends SessionHandler {
     public $path;
 
-    public function open($path, $name) {
+    public function open($path, $name): bool {
         if (!$path) {
             $path = sys_get_temp_dir();
         }
@@ -29,24 +25,24 @@ class MySession2 extends SessionHandler {
         return true;
     }
 
-    public function close() {
+    public function close(): bool {
         return true;
     }
 
-    public function read($id) {
+    public function read($id): string|false {
         return (string)@file_get_contents($this->path . $id);
     }
 
-    public function write($id, $data) {
+    public function write($id, $data): bool {
         return (bool)file_put_contents($this->path . $id, $data);
     }
 
-    public function destroy($id) {
+    public function destroy($id): bool {
         @unlink($this->path . $id);
         return true;
     }
 
-    public function gc($maxlifetime) {
+    public function gc($maxlifetime): int|false {
         foreach (glob($this->path . '*') as $filename) {
             if (filemtime($filename) + $maxlifetime < time()) {
                 @unlink($filename);
@@ -89,6 +85,7 @@ var_dump($_SESSION);
 
 session_write_close();
 session_unset();
+?>
 --EXPECTF--
 *** Testing session_set_save_handler() : full handler implementation ***
 string(%d) "%s"

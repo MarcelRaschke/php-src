@@ -6,9 +6,6 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 obscure_filename
 --FILE--
 <?php
-/* Prototype: string readlink ( string $path );
-   Description: Returns the target of a symbolic link */
-
 /* Testing readlink() with invalid arguments -int, float, bool, NULL, resource */
 
 $file_path = __DIR__;
@@ -20,7 +17,6 @@ $filenames = array(
   "",
   TRUE,
   FALSE,
-  NULL,
 
   /* scalars */
   1234,
@@ -40,9 +36,6 @@ unlink($file_path."/readlink_variation2.tmp");
 ?>
 --EXPECTF--
 *** Testing Invalid file types ***
-
-Warning: readlink(): %s in %s on line %d
-bool(false)
 
 Warning: readlink(): %s in %s on line %d
 bool(false)

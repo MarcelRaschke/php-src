@@ -1,49 +1,48 @@
 <?php
 
+/** @generate-class-entries */
+
 class finfo
 {
-    function __construct(int $options = FILEINFO_NONE, string $arg = "") {}
+    /** @alias finfo_open */
+    public function __construct(int $flags = FILEINFO_NONE, ?string $magic_database = null) {}
 
     /**
-     * @param ?resource $context
-     * @return string|false
+     * @param resource|null $context
+     * @tentative-return-type
+     * @alias finfo_file
      */
-    function file(string $file_name, int $options = FILEINFO_NONE, $context = null) {}
+    public function file(string $filename, int $flags = FILEINFO_NONE, $context = null): string|false {}
 
     /**
-     * @param ?resource $context
-     * @return string|false
+     * @param resource|null $context
+     * @tentative-return-type
+     * @alias finfo_buffer
      */
-    function buffer(string $string, int $options = FILEINFO_NONE, $context = null) {}
+    public function buffer(string $string, int $flags = FILEINFO_NONE, $context = null): string|false {}
 
-    /** @return bool */
-    function set_flags(int $options) {}
+    /**
+     * @return bool
+     * @alias finfo_set_flags
+     */
+    public function set_flags(int $flags) {} // TODO make return type void
 }
 
-/** @return resource|false */
-function finfo_open(int $options = FILEINFO_NONE, string $arg = "") {}
+function finfo_open(int $flags = FILEINFO_NONE, ?string $magic_database = null): finfo|false {}
+
+function finfo_close(finfo $finfo): bool {}
+
+function finfo_set_flags(finfo $finfo, int $flags): bool {} // TODO make return type void
 
 /**
- * @param resource $finfo
+ * @param resource|null $context
  */
-function finfo_close($finfo): bool {}
+function finfo_file(finfo $finfo, string $filename, int $flags = FILEINFO_NONE, $context = null): string|false {}
 
 /**
- * @param resource $finfo
+ * @param resource|null $context
  */
-function finfo_set_flags($finfo, int $options): bool {}
-
-/**
- * @param resource $finfo
- * @param ?resource $context
- */
-function finfo_file($finfo, string $file_name, int $options = FILEINFO_NONE, $context = null): string|false {}
-
-/**
- * @param resource $finfo
- * @param ?resource $context
- */
-function finfo_buffer($finfo, string $string, int $options = FILEINFO_NONE, $context = null): string|false {}
+function finfo_buffer(finfo $finfo, string $string, int $flags = FILEINFO_NONE, $context = null): string|false {}
 
 /**
  * @param resource|string $filename

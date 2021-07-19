@@ -1,24 +1,25 @@
 --TEST--
 Test imap_fetchbody() function : basic functionality
+--EXTENSIONS--
+imap
 --SKIPIF--
 <?php
-require_once(__DIR__.'/skipif.inc');
+require_once(__DIR__.'/setup/skipif.inc');
 ?>
 --FILE--
 <?php
-/* Prototype  : string imap_fetchbody(resource $stream_id, int $msg_no, string $section
- *           [, int $options])
+/*           [, int $options])
  * Description: Get a specific body section
  * Source code: ext/imap/php_imap.c
  */
 
 echo "*** Testing imap_fetchbody() : basic functionality ***\n";
-require_once(__DIR__.'/imap_include.inc');
+require_once(__DIR__.'/setup/imap_include.inc');
 
 // Initialise all required variables
 
 // set up mailbox with one message
-$stream_id = setup_test_mailbox('', 1, $mailbox, 'notSimple');
+$stream_id = setup_test_mailbox('imapfetchbodybasic', 1, $mailbox, false);
 
 $msg_no = 1;
 $section = '2';
@@ -58,12 +59,13 @@ var_dump( $overview[0]->seen );
 ?>
 --CLEAN--
 <?php
-require_once(__DIR__.'/clean.inc');
+$mailbox_suffix = 'imapfetchbodybasic';
+require_once(__DIR__.'/setup/clean.inc');
 ?>
 --EXPECTF--
 *** Testing imap_fetchbody() : basic functionality ***
 Create a temporary mailbox and add 1 msgs
-.. mailbox '{%s}%s' created
+New mailbox created
 
 -- All possible arguments --
 -- Option is FT_UID --

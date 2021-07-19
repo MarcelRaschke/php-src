@@ -5,7 +5,7 @@
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
    | available through the world-wide-web at the following url:           |
-   | http://www.php.net/license/3_01.txt                                  |
+   | https://www.php.net/license/3_01.txt                                 |
    | If you did not receive a copy of the PHP license and are unable to   |
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
@@ -276,8 +276,7 @@ PHP_COM_DOTNET_API IStream *php_com_wrapper_export_stream(php_stream *stream)
 	return (IStream*)stm;
 }
 
-#define CPH_ME(fname, arginfo)	PHP_ME(com_persist, fname, arginfo, ZEND_ACC_PUBLIC)
-#define CPH_METHOD(fname)		static PHP_METHOD(com_persist, fname)
+#define CPH_METHOD(fname)		PHP_METHOD(COMPersistHelper, fname)
 
 #define CPH_FETCH()				php_com_persist_helper *helper = (php_com_persist_helper*)Z_OBJ_P(getThis());
 
@@ -320,8 +319,7 @@ static inline HRESULT get_persist_file(php_com_persist_helper *helper)
 }
 
 
-/* {{{ proto string COMPersistHelper::GetCurFile()
-   Determines the filename into which an object will be saved, or false if none is set, via IPersistFile::GetCurFile */
+/* {{{ Determines the filename into which an object will be saved, or false if none is set, via IPersistFile::GetCurFile */
 CPH_METHOD(GetCurFileName)
 {
 	HRESULT res;
@@ -359,14 +357,13 @@ CPH_METHOD(GetCurFileName)
 /* }}} */
 
 
-/* {{{ proto bool COMPersistHelper::SaveToFile(string filename [, bool remember])
-   Persist object data to file, via IPersistFile::Save */
+/* {{{ Persist object data to file, via IPersistFile::Save */
 CPH_METHOD(SaveToFile)
 {
 	HRESULT res;
 	char *filename, *fullpath = NULL;
 	size_t filename_len;
-	zend_bool remember = TRUE;
+	bool remember = TRUE;
 	OLECHAR *olefilename = NULL;
 	CPH_FETCH();
 
@@ -421,8 +418,7 @@ CPH_METHOD(SaveToFile)
 }
 /* }}} */
 
-/* {{{ proto bool COMPersistHelper::LoadFromFile(string filename [, int flags])
-   Load object data from file, via IPersistFile::Load */
+/* {{{ Load object data from file, via IPersistFile::Load */
 CPH_METHOD(LoadFromFile)
 {
 	HRESULT res;
@@ -466,8 +462,7 @@ CPH_METHOD(LoadFromFile)
 }
 /* }}} */
 
-/* {{{ proto int COMPersistHelper::GetMaxStreamSize()
-   Gets maximum stream size required to store the object data, via IPersistStream::GetSizeMax (or IPersistStreamInit::GetSizeMax) */
+/* {{{ Gets maximum stream size required to store the object data, via IPersistStream::GetSizeMax (or IPersistStreamInit::GetSizeMax) */
 CPH_METHOD(GetMaxStreamSize)
 {
 	HRESULT res;
@@ -502,8 +497,7 @@ CPH_METHOD(GetMaxStreamSize)
 }
 /* }}} */
 
-/* {{{ proto int COMPersistHelper::InitNew()
-   Initializes the object to a default state, via IPersistStreamInit::InitNew */
+/* {{{ Initializes the object to a default state, via IPersistStreamInit::InitNew */
 CPH_METHOD(InitNew)
 {
 	HRESULT res;
@@ -530,8 +524,7 @@ CPH_METHOD(InitNew)
 }
 /* }}} */
 
-/* {{{ proto mixed COMPersistHelper::LoadFromStream(resource stream)
-   Initializes an object from the stream where it was previously saved, via IPersistStream::Load or OleLoadFromStream */
+/* {{{ Initializes an object from the stream where it was previously saved, via IPersistStream::Load or OleLoadFromStream */
 CPH_METHOD(LoadFromStream)
 {
 	zval *zstm;
@@ -589,8 +582,7 @@ CPH_METHOD(LoadFromStream)
 }
 /* }}} */
 
-/* {{{ proto int COMPersistHelper::SaveToStream(resource stream)
-   Saves the object to a stream, via IPersistStream::Save */
+/* {{{ Saves the object to a stream, via IPersistStream::Save */
 CPH_METHOD(SaveToStream)
 {
 	zval *zstm;
@@ -639,8 +631,7 @@ CPH_METHOD(SaveToStream)
 }
 /* }}} */
 
-/* {{{ proto COMPersistHelper::__construct([object com_object])
-   Creates a persistence helper object, usually associated with a com_object */
+/* {{{ Creates a persistence helper object, usually associated with a com_object */
 CPH_METHOD(__construct)
 {
 	php_com_dotnet_object *obj = NULL;
@@ -670,20 +661,6 @@ CPH_METHOD(__construct)
 }
 /* }}} */
 
-
-
-
-static const zend_function_entry com_persist_helper_methods[] = {
-	CPH_ME(__construct, arginfo_class_COMPersistHelper___construct)
-	CPH_ME(GetCurFileName, arginfo_class_COMPersistHelper_GetCurFileName)
-	CPH_ME(SaveToFile, arginfo_class_COMPersistHelper_SaveToFile)
-	CPH_ME(LoadFromFile, arginfo_class_COMPersistHelper_LoadFromFile)
-	CPH_ME(GetMaxStreamSize, arginfo_class_COMPersistHelper_GetMaxStreamSize)
-	CPH_ME(InitNew, arginfo_class_COMPersistHelper_InitNew)
-	CPH_ME(LoadFromStream, arginfo_class_COMPersistHelper_LoadFromStream)
-	CPH_ME(SaveToStream, arginfo_class_COMPersistHelper_SaveToStream)
-	PHP_FE_END
-};
 
 static void helper_free_storage(zend_object *obj)
 {
@@ -744,16 +721,12 @@ static zend_object* helper_new(zend_class_entry *ce)
 
 int php_com_persist_minit(INIT_FUNC_ARGS)
 {
-	zend_class_entry ce;
-
 	memcpy(&helper_handlers, &std_object_handlers, sizeof(helper_handlers));
 	helper_handlers.free_obj = helper_free_storage;
 	helper_handlers.clone_obj = helper_clone;
 
-	INIT_CLASS_ENTRY(ce, "COMPersistHelper", com_persist_helper_methods);
-	ce.create_object = helper_new;
-	helper_ce = zend_register_internal_class(&ce);
-	helper_ce->ce_flags |= ZEND_ACC_FINAL;
+	helper_ce = register_class_COMPersistHelper();
+	helper_ce->create_object = helper_new;
 
 	le_istream = zend_register_list_destructors_ex(istream_dtor,
 			NULL, "com_dotnet_istream_wrapper", module_number);

@@ -1,9 +1,14 @@
 <?php
 
+/** @generate-class-entries */
+
 function readline(?string $prompt = null): string|false {}
 
-/** @return mixed */
-function readline_info(string $varname = UNKNOWN, string $newvalue = UNKNOWN) {}
+/**
+ * @param int|string|bool|null $value
+ * @return array|int|string|bool|null
+ */
+function readline_info(?string $var_name = null, $value = null): mixed {}
 
 function readline_add_history(string $prompt): bool {}
 
@@ -13,21 +18,15 @@ function readline_clear_history(): bool {}
 function readline_list_history(): array {}
 #endif
 
-function readline_read_history(string $filename = UNKNOWN): bool {}
+function readline_read_history(?string $filename = null): bool {}
 
-function readline_write_history(string $filename = UNKNOWN): bool {}
+function readline_write_history(?string $filename = null): bool {}
 
-/**
- * @param callable $funcname
- */
-function readline_completion_function($funcname): bool {}
+function readline_completion_function(callable $callback): bool {}
 
 
 #if HAVE_RL_CALLBACK_READ_CHAR
-/**
- * @param callable $callback
- */
-function readline_callback_handler_install(string $prompt, $callback): bool {}
+function readline_callback_handler_install(string $prompt, callable $callback): bool {}
 
 function readline_callback_read_char(): void {}
 

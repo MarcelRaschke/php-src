@@ -1,17 +1,13 @@
 --TEST--
 Test mb_ereg() function : usage variations - different regex features in $pattern
+--EXTENSIONS--
+mbstring
 --SKIPIF--
 <?php
-extension_loaded('mbstring') or die('skip');
 function_exists('mb_ereg') or die("skip mb_ereg() is not available in this build");
 ?>
 --FILE--
 <?php
-/* Prototype  : int mb_ereg(string $pattern, string $string [, array $registers])
- * Description: Regular expression match for multibyte string
- * Source code: ext/mbstring/php_mbregex.c
- */
-
 /*
  * Testing the following regular expression features match correctly:
  * 1. definite quantifiers
@@ -65,7 +61,7 @@ echo "Done";
 --EXPECT--
 *** Testing mb_ereg() : usage variations ***
 Regex encoding set to utf-8
-int(38)
+bool(true)
 array(5) {
   [0]=>
   string(52) "VGhpcyBpcyBhbiBFbmdsaXNoIHN0cmluZy4gMDEyMzQ1Njc4OS4="
@@ -78,7 +74,7 @@ array(5) {
   [4]=>
   string(4) "ODk="
 }
-int(64)
+bool(true)
 array(5) {
   [0]=>
   string(88) "zpHPhc+Ez4wgzrXOr869zrHOuSDOtc67zrvOt869zrnOus+MIM66zrXOr868zrXOvc6/LiAwMTIzNDU2Nzg5Lg=="

@@ -1,7 +1,7 @@
 --TEST--
 Test dictionary usage on zlib methods
---SKIPIF--
-<?php if(!extension_loaded('zlib')) die('skip zlib extension not loaded'); ?>
+--EXTENSIONS--
+zlib
 --FILE--
 <?php
 
@@ -17,7 +17,6 @@ var_dump($dictStr_a === $a);
 
 $r = inflate_init(ZLIB_ENCODING_DEFLATE, ["dictionary" => $dict]);
 var_dump(inflate_add($r, $a, ZLIB_FINISH));
-
 
 $r = inflate_init(ZLIB_ENCODING_DEFLATE, ["dictionary" => ["8"] + range("a", "z")]);
 var_dump(inflate_add($r, $a, ZLIB_FINISH));

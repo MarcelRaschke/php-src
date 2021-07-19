@@ -2,12 +2,6 @@
 Test parse_url() function: Parse a load of URLs without specifying PHP_URL_PASS as the URL component
 --FILE--
 <?php
-/* Prototype  : proto mixed parse_url(string url, [int url_component])
- * Description: Parse a URL and return its components
- * Source code: ext/standard/url.c
- * Alias to functions:
- */
-
 /*
  * Parse a load of URLs without specifying PHP_URL_PASS as the URL component
  */
@@ -111,6 +105,8 @@ echo "Done";
 -->    : NULL
 --> /   : NULL
 --> /rest/Users?filter={"id":"123"}   : NULL
+--> %:x   : NULL
+--> https://example.com:0/   : NULL
 --> http:///blah.com   : bool(false)
 --> http://:80   : bool(false)
 --> http://user@:80   : bool(false)

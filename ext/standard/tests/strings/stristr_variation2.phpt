@@ -3,15 +3,7 @@ Test stristr() function : usage variations - test values for $needle argument
 --FILE--
 <?php
 
-/* Prototype: string stristr ( string $haystack, string $needle );
-   Description: Case-insensitive strstr().
-*/
-
 echo "*** Testing stristr() function: with unexpected inputs for 'needle' argument ***\n";
-
-//get an unset variable
-$unset_var = 'string_val';
-unset($unset_var);
 
 //defining a class
 class sample  {
@@ -48,21 +40,11 @@ $inputs =  array (
           TRUE,
           FALSE,
 
-          // null values
-/*15*/	  NULL,
-          null,
-
           // objects
 /*17*/	  new sample(),
 
           // resource
 /*18*/	  $file_handle,
-
-          // undefined variable
-/*19*/	  @$undefined_var,
-
-          // unset variable
-/*20*/	  @$unset_var
 );
 
 //defining '$pad_length' argument
@@ -114,14 +96,6 @@ bool(false)
 -- Iteration 14 --
 string(11) "Hello World"
 -- Iteration 15 --
-string(11) "Hello World"
--- Iteration 16 --
-string(11) "Hello World"
--- Iteration 17 --
 bool(false)
--- Iteration 18 --
+-- Iteration 16 --
 stristr(): Argument #2 ($needle) must be of type string, resource given
--- Iteration 19 --
-string(11) "Hello World"
--- Iteration 20 --
-string(11) "Hello World"
